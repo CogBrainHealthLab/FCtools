@@ -1,25 +1,17 @@
-Visualizing brain connectivity
+FCtools: Visualizing brain connectivity
 ================
 Cognitive and Brain Health Laboratory
 2023-12-11
 
 ### **1. Introduction**
 
-This R markdown document will show you how to generate connectograms and
+This readme will show you how to generate connectograms and
 chord diagrams to illustrate your brain connectivity-related results,
 both SC and FC. Currently, in our neuroimaging database, we have
 connectivity data that are derived from different atlas parcellation
 schemes, as a result, the lengths of the input vectors (N x N FC/SC
 matrix stringed out into a single vector) are contingent upon the atlas
-parcellation schemes used. Previously, I had written out many R
-codes/markdown documents to deal with these different parcellation
-schemes, which have been somewhat confusing and messy.
-
-To this end, I decided to implement a unified approach to generate these
-figures, regardless of the parcellation schemes used to generate the
-FC/SC matrices. This approach is also a lot simpler and cleaner because
-most of the code is placed in the cloud (i.e., github) and you will only
-need to enter one line of code to generate the figures
+parcellation schemes used. 
 
 ### **2. Connectogram**
 
