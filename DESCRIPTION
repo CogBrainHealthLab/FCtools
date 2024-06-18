@@ -1,0 +1,33 @@
+Package: FCtools
+Type: Package
+Title: Post-processing, analyzing and visualizng brain connectivity data
+Version: 0.1.0
+Author: person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",comment = c(ORCID = "0000-0002-2563-9658"))
+Maintainer: Junhong Yu <junhong.yu@ntu.edu.sg>
+Description: A collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Depends: 
+    R (>= 4.1.0)
+Imports:
+    caret,
+    ciftiTools,
+    cowplot,
+    doParallel,
+    doSNOW,
+    fMRItools,
+    foreach,
+    ggplot2,
+    ggplotify,
+    ggraph,
+    grid,
+    gridExtra,
+    igraph,
+    parallel,
+    ggplotify,
+    psych,
+    stringr
+    
