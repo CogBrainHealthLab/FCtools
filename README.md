@@ -5,7 +5,7 @@ Cognitive and Brain Health Laboratory
 
 ### **1. Introduction**
 
-The FCtools package contains a collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data. This readme will show you how to generate connectograms and chord diagrams to illustrate your brain connectivity-related results, both SC and FC. Currently, in our neuroimaging database, we have connectivity data that are derived from different atlas parcellation schemes, as a result, the lengths of the input vectors (N x N FC/SC matrix stringed out into a single vector) are contingent upon the atlas parcellation schemes used. 
+The FCtools package contains a collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data (see [here](https://cogbrainhealthlab.github.io/FCtools/reference/index.html) for the full list of functions). This readme will show you how to generate connectograms and chord diagrams to illustrate your brain connectivity-related results, both SC and FC. Currently, in our neuroimaging database, we have connectivity data that are derived from different atlas parcellation schemes, as a result, the lengths of the input vectors (N x N FC/SC matrix stringed out into a single vector) are contingent upon the atlas parcellation schemes used. 
 
 ### **2. Connectogram**
 
