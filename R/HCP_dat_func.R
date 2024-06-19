@@ -180,7 +180,7 @@ extractFC=function(wb_path,
       }
       for(volume in 2:length(movement.path))
       {
-        frame.ends[[volume]]=frame.ends[[1]][1]+frame.ends[[volume]]
+        frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
       }
       movement.dat=unlist(movement.dat)
       frame.ends=unlist(frame.ends)
