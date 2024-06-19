@@ -135,7 +135,7 @@ extractFC=function(wb_path,
                   destfile =paste(system.file(package='FCtools'),"/extdata/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
 
   }
-  parc=c(as.matrix(read_cifti(paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
+  parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/extdata/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
