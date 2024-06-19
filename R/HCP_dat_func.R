@@ -97,10 +97,10 @@ extractFC=function(wb_path,
   dir.create(file.path(output_dir), showWarnings = FALSE)
   
   ## file and subject listing
-  fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T)
+  fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
-  movement.filelist=list.files(pattern =movement.extension,recursive = T)
+  movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
   movement.filelist=movement.filelist[order(movement.filelist)]
   
   ##setup report dataframe
