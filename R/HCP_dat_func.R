@@ -105,7 +105,14 @@ extractFC=function(wb_path,
 
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
-  colnames(report)=c("subj","Mean_RMS")
+  if(FD==F)
+  {
+    colnames(report)=c("subj","Mean_RMS")
+  } else
+  {
+    colnames(report)=c("subj","Mean_FD")
+  }
+
   report$subj=sub.list
   if(scrub==T)
   {
