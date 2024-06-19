@@ -35,12 +35,6 @@
 ########################################################################################################
 vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1800, height=1800,filename="conn.png", colorscheme, colorbar=TRUE)
 {
-  ## check required packages
-  if(length(new.packages))
-  {
-    cat(paste("The following package(s) are required and will be installed:\n",new.packages,"\n"))
-    install.packages(new.packages)
-  }
   ##redirect to other functions depending on length of data
   if((length(data)==23871 |length(data)==7021)| length(data)==30135)
   {
