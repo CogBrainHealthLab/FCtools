@@ -24,7 +24,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 {
   #read manifest and remove first row; the first row contains description of the column, hence not used.
   manifest=read.table(manifest,header = T)[-1,]
-
+  
   #identify indices of the associated file
   idx.list=list()
   for(file in 1:NROW(files))
@@ -90,19 +90,19 @@ extractFC=function(wb_path,
                    report_filename="report.csv")
 {
   ##load and configure ciftitools
-
+  
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
-
+  
   ##create output_dir if it doesnt exist
   dir.create(file.path(output_dir), showWarnings = FALSE)
-
+  
   ## file and subject listing
-  fmri.filelist=list.files(pattern = paste(task,".*",extension,sep=""),recursive = T)
+  fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T)
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   movement.filelist=list.files(pattern =movement.extension,recursive = T)
   movement.filelist=movement.filelist[order(movement.filelist)]
-
+  
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
   if(FD==F)
@@ -112,7 +112,7 @@ extractFC=function(wb_path,
   {
     colnames(report)=c("subj","Mean_FD")
   }
-
+  
   report$subj=sub.list
   if(scrub==T)
   {
@@ -132,7 +132,7 @@ extractFC=function(wb_path,
     cat("\nYou can either delete these subject folders or re-download their files\n")
     stop()
   }
-
+  
   #atlas check
   if(is.na(match(atlas,(1:10)*100)))
   {
@@ -144,11 +144,11 @@ extractFC=function(wb_path,
     cat(paste("The",paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),"template file does not exist and will be downloaded\n"),sep=" ")
     download.file(url=paste0("https://raw.githubusercontent.com/ThomasYeoLab/CBIG/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/HCP/fslr32k/cifti/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii"),
                   destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
-
+    
   }
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
-
-
+  
+  
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
   {
@@ -157,7 +157,7 @@ extractFC=function(wb_path,
     #filepaths
     fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
     movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]
-
+    
     ##check number of movement files
     if(length(movement.path)>1)
     {
@@ -172,13 +172,13 @@ extractFC=function(wb_path,
         {
           movement.dat[[volume]]=extractFD(read.table(movement.path[volume])[,1:6])
         }
-
+        
         if(volume!=length(movement.path))
         {
           frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
         }
       }
-      for(volume in 2:length(movement.path))
+      for(volume in 2:(length(movement.path)-1))
       {
         frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
       }
@@ -201,8 +201,8 @@ extractFC=function(wb_path,
     {
       report$Mean_FD[sub]=mean(movement.dat)
     }
-
-
+    
+    
     ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
     if(length(fmri.path)>1)
     {
@@ -212,7 +212,7 @@ extractFC=function(wb_path,
         xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")
       }
       xii.base=xii.list[[1]]
-
+      
       for(vol in 1:length(fmri.path))
       {
         if(vol==1)
@@ -229,7 +229,7 @@ extractFC=function(wb_path,
       xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
       xii.mat=as.matrix(xii.base)
     }
-
+    
     ##scrubbing
     if(scrub==T)
     {
@@ -237,7 +237,7 @@ extractFC=function(wb_path,
       exc_frames=which(movement.dat>motion.thresh)
       exc_frames=exc_frames[order(exc_frames)]
       exc_framesOLD=exc_frames
-
+      
       for (frameno in 1:(NROW(exc_framesOLD)-1))
       {
         if(exc_framesOLD[frameno+1]-exc_framesOLD[frameno] <5 )
@@ -258,7 +258,7 @@ extractFC=function(wb_path,
       }
       exc_frames=unique(exc_frames)
       exc_frames=exc_frames[order(exc_frames)]
-
+      
       #remove frames if necessary
       if(NCOL(xii.mat)!=length(movement.dat))
       {
@@ -275,7 +275,7 @@ extractFC=function(wb_path,
       xii.scrubbed=xii.mat
       n_timepoints=NCOL(xii.scrubbed)
     }
-
+    
     ##Global Signal Regression
     if(GSR==T)
     {
@@ -291,13 +291,13 @@ extractFC=function(wb_path,
       xii.final=ciftiTools::move_from_mwall(xii.final, NA)
       remove(xii.base,xii.scrubbed)
     }
-
+    
     ##generate parcellated timeseries
     sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
     brain_vec=c(parc, sub_keys)
     xii_pmean=matrix(ncol=atlas+19,nrow=n_timepoints)
     timeseries.dat=as.matrix(xii.final)
-
+    
     for (p in 1:(atlas+19))
     {
       data_p=timeseries.dat[brain_vec==p,]
@@ -307,7 +307,7 @@ extractFC=function(wb_path,
     write.table(cor(xii_pmean), file=paste(output_dir,"/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",")
     remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p)
     end=Sys.time()
-
+    
     cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))
   }
   write.table(report,file = report_filename,sep = ",",row.names = F)
@@ -329,4 +329,3 @@ extractFD=function(mot_dat)
   mot_datdiff <- apply(mot_dat, 2, diff, lag = 1)
   return(c(rep(0, 1), rowSums(abs(mot_datdiff))))
 }
-
