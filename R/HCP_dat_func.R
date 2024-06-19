@@ -52,7 +52,9 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' installed prior to running the function.
 #'
 #' @param wb_path The filepath to the workbench folder that you have previously downloaded and unzipped
+#' @param base_dir The filepath to directory containing the subject folders. Set to `fmriresults01/"` by default.
 #' @param atlas The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.
+#' @param FD option to use FD instead of RMSD for measuring head motion. Set to `FALSE` by default.
 #' @param task The name of the task (case-sensitive), without any numbers or acquisition direction labels
 #' @param extension The filename extension of the fMRI volumes. Set to `_Atlas_MSMAll_hp0_clean.dtseries.nii` by default
 #' @param movement.extension The filename extension of the head motion files. Set to `Movement_RelativeRMS.txt` by default
@@ -75,7 +77,9 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 ########################################################################################################
 ########################################################################################################
 extractFC=function(wb_path,
+                   base_dir="fmriresults01/",
                    atlas,
+                   FD=F,
                    motion.thresh=0.25,
                    scrub=F,
                    GSR=F,
@@ -95,7 +99,7 @@ extractFC=function(wb_path,
   ## file and subject listing
   fmri.filelist=list.files(pattern = paste(task,".*",extension,sep=""),recursive = T)
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
-  sub.list=list.files("fmriresults01/")
+  sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   movement.filelist=list.files(pattern =movement.extension,recursive = T)
   movement.filelist=movement.filelist[order(movement.filelist)]
 
@@ -128,14 +132,14 @@ extractFC=function(wb_path,
     stop("Atlas should be a multiple of 100 from 100 to 1000")
   }
   #download atlas template if it is missing
-  if(!file.exists(paste(system.file(package='FCtools'),"/extdata/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep="")))
+  if(!file.exists(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep="")))
   {
     cat(paste("The",paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),"template file does not exist and will be downloaded\n"),sep=" ")
     download.file(url=paste0("https://raw.githubusercontent.com/ThomasYeoLab/CBIG/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/HCP/fslr32k/cifti/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii"),
-                  destfile =paste(system.file(package='FCtools'),"/extdata/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
+                  destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
 
   }
-  parc=c(as.matrix(read_cifti(paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
+  parc=c(as.matrix(ciftiTools::read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
@@ -153,19 +157,43 @@ extractFC=function(wb_path,
       frame.ends=list()
       for(volume in 1:length(movement.path))
       {
-        movement.dat[[volume]]=read.table(movement.path[volume])$V1
+        if(FD==F)
+        {
+          movement.dat[[volume]]=read.table(movement.path[volume])$V1
+        } else
+        {
+          movement.dat[[volume]]=extractFD(read.table(movement.path[volume])[,1:6])
+        }
+
         if(volume!=length(movement.path))
         {
-          frame.ends[[volume]]=c(length(movement.dat[[volume]])*volume,length(movement.dat[[volume]])*volume+1)
+          frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
         }
+      }
+      for(volume in 2:length(movement.path))
+      {
+        frame.ends[[volume]]=frame.ends[[1]][1]+frame.ends[[volume]]
       }
       movement.dat=unlist(movement.dat)
       frame.ends=unlist(frame.ends)
     } else
     {
-      movement.dat=read.table(movement.path)$V1
+      if(FD==F)
+      {
+        movement.dat=read.table(movement.path)$V1
+      } else
+      {
+        movement.dat=extractFD(read.table(movement.path)[,1:6])
+      }
     }
-    report$Mean_RMS[sub]=mean(movement.dat)
+    if(FD==F)
+    {
+      report$Mean_RMS[sub]=mean(movement.dat)
+    } else
+    {
+      report$Mean_FD[sub]=mean(movement.dat)
+    }
+
 
     ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
     if(length(fmri.path)>1)
@@ -173,7 +201,7 @@ extractFC=function(wb_path,
       xii.list=list()
       for(vol in 1:length(fmri.path))
       {
-        xii.list[[vol]]=read_xifti(fmri.path[vol], brainstructures="all")
+        xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")
       }
       xii.base=xii.list[[1]]
 
@@ -190,7 +218,7 @@ extractFC=function(wb_path,
       remove(xii.list,vol)
     } else
     {
-      xii.base=read_xifti(fmri.path, brainstructures="all")
+      xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
       xii.mat=as.matrix(xii.base)
     }
 
@@ -246,13 +274,13 @@ extractFC=function(wb_path,
       dmat=xii.scrubbed
       gsig=colMeans(dmat)
       dmat=fMRItools::nuisance_regression(dmat, cbind(1, gsig,gsig^2))
-      xii.regressed=newdata_xifti(xii.base, dmat)
-      xii.final=move_from_mwall(xii.regressed, NA)
+      xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
+      xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
       remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
     } else if(GSR==F)
     {
-      xii.final=newdata_xifti(xii.base, xii.scrubbed)
-      xii.final=move_from_mwall(xii.final, NA)
+      xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
+      xii.final=ciftiTools::move_from_mwall(xii.final, NA)
       remove(xii.base,xii.scrubbed)
     }
 
@@ -273,8 +301,24 @@ extractFC=function(wb_path,
     end=Sys.time()
 
     cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))
-    write.table(report,file = report_filename,sep = ",",row.names = F)
   }
+  write.table(report,file = report_filename,sep = ",",row.names = F)
 }
 ########################################################################################################
 ########################################################################################################
+##function to extract FD, adapted from fMRItools
+
+extractFD=function(mot_dat)
+{
+  detrend = F
+  mot_dat[, 4:6] <- mot_dat[, 4:6]
+  if (!isFALSE(detrend)) {
+    if (isTRUE(detrend)) {
+      detrend <- 4
+    }
+    mot_dat <- fMRItools::nuisance_regression(mot_dat, cbind(1, dct_bases(nrow(mot_dat), detrend)))
+  }
+  mot_datdiff <- apply(mot_dat, 2, diff, lag = 1)
+  return(c(rep(0, 1), rowSums(abs(mot_datdiff))))
+}
+

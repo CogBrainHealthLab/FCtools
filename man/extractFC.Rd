@@ -6,7 +6,9 @@
 \usage{
 extractFC(
   wb_path,
+  base_dir = "fmriresults01/",
   atlas,
+  FD = F,
   motion.thresh = 0.25,
   scrub = F,
   GSR = F,
@@ -20,7 +22,11 @@ extractFC(
 \arguments{
 \item{wb_path}{The filepath to the workbench folder that you have previously downloaded and unzipped}
 
+\item{base_dir}{The filepath to directory containing the subject folders. Set to \verb{fmriresults01/"} by default.}
+
 \item{atlas}{The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.}
+
+\item{FD}{option to use FD instead of RMSD for measuring head motion. Set to \code{FALSE} by default.}
 
 \item{motion.thresh}{the threshold (Root Mean Squared displacement) used for scrubbing frames. Set to 0.25 by default.}
 
