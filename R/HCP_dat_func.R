@@ -240,7 +240,7 @@ extractFC=function(wb_path,
       
       for (frameno in 1:(NROW(exc_framesOLD)-1))
       {
-        if(exc_framesOLD[frameno+1]-exc_framesOLD[frameno] <5 )
+        if(((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)=T)
         {
           if(length(movement.path)>1)
           {
