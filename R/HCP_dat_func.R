@@ -230,16 +230,16 @@ extractFC=function(wb_path,
     }
     
     ##scrubbing
-    if(scrub==T)
+    if(scrub==T & length(which(movement.dat>motion.thresh))!=0) #if there are no frames less then the motion threshold, no scrubbing is needed
     {
       #identify frames for scrubbing
       exc_frames=which(movement.dat>motion.thresh)
       exc_frames=exc_frames[order(exc_frames)]
       exc_framesOLD=exc_frames
-      
+
       for (frameno in 1:(NROW(exc_framesOLD)-1))
       {
-        if(((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)==T)
+        if((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)
         {
           if(length(movement.path)>1)
           {
