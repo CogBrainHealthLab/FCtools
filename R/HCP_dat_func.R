@@ -241,27 +241,30 @@ extractFC=function(wb_path,
       exc_frames=exc_frames[order(exc_frames)]
       exc_framesOLD=exc_frames
 
-      for (frameno in 1:(NROW(exc_framesOLD)-1))
-      {
-        if((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)
+      if(length(exc_framesOLD)>1) #if there is only 1 bad frame, there is between-frames interval to scrub
         {
-          if(length(movement.path)>1)
-          {
-            totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
-            totest=totest[-is.na(totest)]
-            if(length(totest)!=2)
+          for (frameno in 1:(NROW(exc_framesOLD)-1))
             {
-              exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
+            if((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)
+            {
+              if(length(movement.path)>1)
+              {
+                totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
+                totest=totest[-is.na(totest)]
+                if(length(totest)!=2)
+                {
+                  exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
+                }
+              } else
+              {
+                exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
+              }
             }
-          } else
-          {
-            exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
           }
-        }
-      }
-      exc_frames=unique(exc_frames)
-      exc_frames=exc_frames[order(exc_frames)]
-      
+          exc_frames=unique(exc_frames)
+          exc_frames=exc_frames[order(exc_frames)]
+        } 
+
       #remove frames if necessary
       if(NCOL(xii.mat)!=length(movement.dat))
       {
