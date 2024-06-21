@@ -89,8 +89,12 @@ extractFC=function(wb_path,
                    output_dir="FCmat",
                    report_filename="report.csv")
 {
+  ##check base_dir
+  if(!dir.exists(base_dir))
+    {
+    stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))
+    }
   ##load and configure ciftitools
-  
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
   
   ##create output_dir if it doesnt exist
