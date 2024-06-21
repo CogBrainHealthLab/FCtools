@@ -54,14 +54,13 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param wb_path The filepath to the workbench folder that you have previously downloaded and unzipped
 #' @param base_dir The filepath to directory containing the subject folders. Set to `fmriresults01/"` by default.
 #' @param atlas The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.
-#' @param FD option to use FD instead of RMSD for measuring head motion. Set to `FALSE` by default.
 #' @param task The name of the task (case-sensitive), without any numbers or acquisition direction labels
 #' @param extension The filename extension of the fMRI volumes. Set to `_Atlas_MSMAll_hp0_clean.dtseries.nii` by default
-#' @param movement.extension The filename extension of the head motion files. Set to `Movement_RelativeRMS.txt` by default
-#' @param motion.thresh the threshold (Root Mean Squared displacement) used for scrubbing frames. Set to 0.25 by default.
-#' @param GSR If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data. Note, that while the use of GSR enhances brain-behavior association, its use is controversial in the literature
+#' @param movement.extension The filename extension of the head motion files. Set to `Movement_RelativeRMS.txt` by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.
+#' @param motion.thresh the threshold used for scrubbing frames. Set to 0.25 by default.
+#' @param GSR If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.
 #' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
-#' @param output_dir The output directory where the FC matrices will be saved
+#' @param output_dir The output directory where the FC matrices will be saved. This directory will be created if it does not exist.
 #' @param report_filename The desired filename of the report containing columns of `subj`(subject ID),`Mean_RMS`(Mean Root Mean Squared displacement), and `no_frames_removed`(number of frames removed; only if `scrub=TRUE`)
 #' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
 #'
@@ -79,7 +78,6 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 extractFC=function(wb_path,
                    base_dir="fmriresults01/",
                    atlas,
-                   FD=F,
                    motion.thresh=0.25,
                    scrub=F,
                    GSR=F,
@@ -109,13 +107,7 @@ extractFC=function(wb_path,
   
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
-  if(FD==F)
-  {
-    colnames(report)=c("subj","Mean_RMS")
-  } else
-  {
-    colnames(report)=c("subj","Mean_FD")
-  }
+  colnames(report)=c("subj","mean_RMS/FD")
   
   report$subj=sub.list
   if(scrub==T)
@@ -167,20 +159,26 @@ extractFC=function(wb_path,
     {
       movement.dat=list()
       frame.ends=list()
+     
       for(volume in 1:length(movement.path))
       {
-        if(FD==F)
+        mov.dat=read.table(movement.path[volume])
+        if(NCOL(mov.dat)==1)
         {
-          movement.dat[[volume]]=read.table(movement.path[volume])$V1
+          movement.dat[[volume]]=mov.dat$V1
+        } else if(NCOL(mov.dat)>=6)
+        {
+          movement.dat[[volume]]=extractFD(mov.dat[,1:6])
         } else
         {
-          movement.dat[[volume]]=extractFD(read.table(movement.path[volume])[,1:6])
+          movement.dat[[volume]]=NA
         }
         
         if(volume!=length(movement.path))
         {
           frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
         }
+        remove(mov.dat)
       }
       for(volume in 2:(length(movement.path)-1))
       {
@@ -190,20 +188,24 @@ extractFC=function(wb_path,
       frame.ends=unlist(frame.ends)
     } else
     {
-      if(FD==F)
+      mov.dat=read.table(movement.path[volume])
+      if(NCOL(mov.dat)==1)
       {
-        movement.dat=read.table(movement.path)$V1
+        movement.dat[[volume]]=mov.dat$V1
+      } else if(NCOL(mov.dat)>=6)
+      {
+        movement.dat[[volume]]=extractFD(mov.dat[,1:6])
       } else
       {
-        movement.dat=extractFD(read.table(movement.path)[,1:6])
+        movement.dat[[volume]]=NA
       }
     }
-    if(FD==F)
+    if(!any(is.na(movement.dat)))
     {
-      report$Mean_RMS[sub]=mean(movement.dat)
+      report$`mean_RMS/FD`[sub]=mean(movement.dat)
     } else
     {
-      report$Mean_FD[sub]=mean(movement.dat)
+      report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"
     }
     
     ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
@@ -234,7 +236,8 @@ extractFC=function(wb_path,
     }
     
     ##scrubbing
-    if(scrub==T & length(which(movement.dat>motion.thresh))!=0) #if there are no frames less then the motion threshold, no scrubbing is needed
+
+    if((scrub==T & length(which(movement.dat>motion.thresh))!=0)) #if there are no frames less then the motion threshold, no scrubbing is needed
     {
       #identify frames for scrubbing
       exc_frames=which(movement.dat>motion.thresh)
@@ -266,10 +269,12 @@ extractFC=function(wb_path,
         } 
 
       #remove frames if necessary
-      if(NCOL(xii.mat)!=length(movement.dat))
+        #if there is any missing movement data, or number of timepoints in the headmotion file do not match the number of frames, no scrubbing will be carried out.
+      if(NCOL(xii.mat)!=length(movement.dat) | any(is.na(movement.dat)))
       {
-        cat(paste("Number of timepoints in movement files do not match number of timepoints in fMRI volume.\nIt is likely that the subject is missing some movement files.\nScrubbing will not be carried out for",sub.list[sub]))
+        cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
         xii.scrubbed=xii.mat
+        report$no_frames_removed[sub]="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
       } else
       {
         xii.scrubbed=xii.mat[,-exc_frames]
@@ -320,7 +325,7 @@ extractFC=function(wb_path,
 }
 ########################################################################################################
 ########################################################################################################
-##function to extract FD, adapted from fMRItools
+##function to extract FD, adapted from fMRItools::FD
 
 extractFD=function(mot_dat)
 {

@@ -8,7 +8,6 @@ extractFC(
   wb_path,
   base_dir = "fmriresults01/",
   atlas,
-  FD = F,
   motion.thresh = 0.25,
   scrub = F,
   GSR = F,
@@ -26,21 +25,19 @@ extractFC(
 
 \item{atlas}{The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.}
 
-\item{FD}{option to use FD instead of RMSD for measuring head motion. Set to \code{FALSE} by default.}
-
-\item{motion.thresh}{the threshold (Root Mean Squared displacement) used for scrubbing frames. Set to 0.25 by default.}
+\item{motion.thresh}{the threshold used for scrubbing frames. Set to 0.25 by default.}
 
 \item{scrub}{If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.}
 
-\item{GSR}{If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data. Note, that while the use of GSR enhances brain-behavior association, its use is controversial in the literature}
+\item{GSR}{If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.}
 
 \item{task}{The name of the task (case-sensitive), without any numbers or acquisition direction labels}
 
 \item{extension}{The filename extension of the fMRI volumes. Set to \verb{_Atlas_MSMAll_hp0_clean.dtseries.nii} by default}
 
-\item{movement.extension}{The filename extension of the head motion files. Set to \code{Movement_RelativeRMS.txt} by default}
+\item{movement.extension}{The filename extension of the head motion files. Set to \code{Movement_RelativeRMS.txt} by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.}
 
-\item{output_dir}{The output directory where the FC matrices will be saved}
+\item{output_dir}{The output directory where the FC matrices will be saved. This directory will be created if it does not exist.}
 
 \item{report_filename}{The desired filename of the report containing columns of \code{subj}(subject ID),\code{Mean_RMS}(Mean Root Mean Squared displacement), and \code{no_frames_removed}(number of frames removed; only if \code{scrub=TRUE})}
 }

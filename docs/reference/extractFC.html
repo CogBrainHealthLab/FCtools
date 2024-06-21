@@ -48,7 +48,6 @@
 <span>  <span class="va">wb_path</span>,</span>
 <span>  base_dir <span class="op">=</span> <span class="st">"fmriresults01/"</span>,</span>
 <span>  <span class="va">atlas</span>,</span>
-<span>  FD <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  motion.thresh <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  scrub <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  GSR <span class="op">=</span> <span class="cn">F</span>,</span>
@@ -74,12 +73,8 @@
 <dd><p>The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.</p></dd>
 
 
-<dt>FD</dt>
-<dd><p>option to use FD instead of RMSD for measuring head motion. Set to <code>FALSE</code> by default.</p></dd>
-
-
 <dt>motion.thresh</dt>
-<dd><p>the threshold (Root Mean Squared displacement) used for scrubbing frames. Set to 0.25 by default.</p></dd>
+<dd><p>the threshold used for scrubbing frames. Set to 0.25 by default.</p></dd>
 
 
 <dt>scrub</dt>
@@ -87,7 +82,7 @@
 
 
 <dt>GSR</dt>
-<dd><p>If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data. Note, that while the use of GSR enhances brain-behavior association, its use is controversial in the literature</p></dd>
+<dd><p>If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.</p></dd>
 
 
 <dt>task</dt>
@@ -99,11 +94,11 @@
 
 
 <dt>movement.extension</dt>
-<dd><p>The filename extension of the head motion files. Set to <code>Movement_RelativeRMS.txt</code> by default</p></dd>
+<dd><p>The filename extension of the head motion files. Set to <code>Movement_RelativeRMS.txt</code> by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.</p></dd>
 
 
 <dt>output_dir</dt>
-<dd><p>The output directory where the FC matrices will be saved</p></dd>
+<dd><p>The output directory where the FC matrices will be saved. This directory will be created if it does not exist.</p></dd>
 
 
 <dt>report_filename</dt>
