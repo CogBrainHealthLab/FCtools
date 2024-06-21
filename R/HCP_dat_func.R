@@ -241,7 +241,7 @@ extractFC=function(wb_path,
       exc_frames=exc_frames[order(exc_frames)]
       exc_framesOLD=exc_frames
 
-      if(length(exc_framesOLD)>1) #if there is only 1 bad frame, there is between-frames interval to scrub
+      if(length(exc_framesOLD)>1) #if there is only 1 bad frame, there is no between-frames interval to scrub
         {
           for (frameno in 1:(NROW(exc_framesOLD)-1))
             {
