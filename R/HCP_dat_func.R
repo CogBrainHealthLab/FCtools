@@ -117,8 +117,8 @@ extractFC=function(wb_path,
     movement.path.idx=list()
     for (subj in 1:length(subjects))
       {
-      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
-      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]      
+      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)
+      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)
       }
     }
   
