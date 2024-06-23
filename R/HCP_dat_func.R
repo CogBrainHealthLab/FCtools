@@ -71,7 +71,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' }
 #' @importFrom stringr str_detect
 #' @importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall
-#' @importFrom fMRItools nuisance_regression
+#' @importFrom fMRItools nuisance_regression dct_bases
 #' @export
 
 ########################################################################################################
@@ -149,7 +149,6 @@ extractFC=function(wb_path,
     
   }
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
-  
   
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
@@ -329,6 +328,9 @@ extractFC=function(wb_path,
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
         }
+    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite=F))
+    {
+      report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
     }
     write.table(report,file = report_filename,sep = ",",row.names = F)
 }
@@ -344,7 +346,7 @@ extractFD=function(mot_dat)
     if (isTRUE(detrend)) {
       detrend <- 4
     }
-    mot_dat <- fMRItools::nuisance_regression(mot_dat, cbind(1, dct_bases(nrow(mot_dat), detrend)))
+    mot_dat <- fMRItools::nuisance_regression(mot_dat, cbind(1, fMRItools::dct_bases(nrow(mot_dat), detrend)))
   }
   mot_datdiff <- apply(mot_dat, 2, diff, lag = 1)
   return(c(rep(0, 1), rowSums(abs(mot_datdiff))))
