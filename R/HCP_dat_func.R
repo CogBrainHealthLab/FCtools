@@ -113,10 +113,12 @@ extractFC=function(wb_path,
 
   if(!missing(subjects))
     {
+    fmri.path.idx=list()
+    movement.path.idx=list()
     for (subj in 1:length(subjects))
       {
-      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
-      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]      
+      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
+      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]      
       }
     }
   
@@ -163,7 +165,7 @@ extractFC=function(wb_path,
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]))
-    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F))
+    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F)
       {
       start=Sys.time()
       #filepaths
@@ -336,7 +338,7 @@ extractFC=function(wb_path,
       end=Sys.time()
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
-    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F))
+    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F)
     {
       report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
     }
