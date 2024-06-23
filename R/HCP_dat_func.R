@@ -111,6 +111,15 @@ extractFC=function(wb_path,
   if(length(movement.filelist==0)) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
   movement.filelist=movement.filelist[order(movement.filelist)]
 
+  if(!missing(subjects))
+    {
+    for (subj in 1:length(subjects))
+      {
+      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
+      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]      
+      }
+    }
+  
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
   colnames(report)=c("subj","mean_RMS/FD")
@@ -154,7 +163,7 @@ extractFC=function(wb_path,
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]))
-    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite=F)
+    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F)
       {
       start=Sys.time()
       #filepaths
@@ -328,7 +337,7 @@ extractFC=function(wb_path,
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
         }
-    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite=F))
+    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F))
     {
       report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
     }
