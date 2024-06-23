@@ -119,7 +119,7 @@ extractFC=function(wb_path,
       movement.filelist=movement.filelist[movement.path.idx]
       }
   
-  ##check if any fMRI volumes/movement files is found; returns error if 0 files are found
+  ##check if any fMRI volumes/movement files are found; returns error if 0 files are found
   if(length(fmri.filelist)==0)  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
   if(length(movement.filelist)==0) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
   
@@ -135,15 +135,23 @@ extractFC=function(wb_path,
         fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
         fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
     }
-  if(length(which(fmri_dir.check!=1,arr.ind=T))!=0)
-    {
-    cat(paste("The following subject fMRI directories do not contain an fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])==0],sep=""))
-    cat(paste("The following subject fMRI directories do not contain a movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])==0],sep=""))
-
-    cat(paste("The following subject fMRI directories contain more than one fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])>1],sep=""))
-    cat(paste("The following subject fMRI directories contain more than one movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])>10],sep=""))
-    stop()
-    }
+  if(any(fmri_dir.check[,1]==0))
+  {
+    cat(paste("The following subject fMRI directories do not contain an fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])==0],"\n",sep=""))
+  }
+  if(any(fmri_dir.check[,2]==0))
+  {
+    cat(paste("The following subject fMRI directories do not contain a movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])==0],"\n",sep="")) 
+  }
+  if(any(fmri_dir.check[,1]>1))
+  {
+    cat(paste("The following subject fMRI directories contain more than one fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])>1],"\n",sep=""))
+  }
+  if(any(fmri_dir.check[,2]>2))
+  {
+    cat(paste("The following subject fMRI directories contain more than one movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])>1],"\n",sep="")) 
+  }
+  if(any(fmri_dir.check!=1)) {stop()}
   
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
