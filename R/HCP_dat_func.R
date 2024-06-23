@@ -90,38 +90,59 @@ extractFC=function(wb_path,
                    report_filename="report.csv",
                    overwrite=TRUE)
 {
-  ##check base_dir
-  if(!dir.exists(base_dir))
-    {
-    stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))
-    }
-  ##load and configure ciftitools
-  ciftiTools::ciftiTools.setOption('wb_path', wb_path)
+  ##check base_dir and sub.list
+  if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
+  sub.list=list.dirs(base_dir,recursive=F,full.names=F)
+  if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   
   ##create output_dir if it doesnt exist
   dir.create(file.path(output_dir), showWarnings = FALSE)
   
-  ## file and subject listing; returns error if 0 files are found
+  ## file and subject listing
   fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
-  if(length(fmri.filelist)==0)  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
-  fmri.filelist=fmri.filelist[order(fmri.filelist)]
-  sub.list=list.dirs(base_dir,recursive=F,full.names=F)
-  if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
-  if(length(movement.filelist)==0) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
-  movement.filelist=movement.filelist[order(movement.filelist)]
 
-  if(!missing(subjects))
-    {
-    fmri.path.idx=list()
-    movement.path.idx=list()
-    for (subj in 1:length(subjects))
+    #if subjects vector is specified
+    if(!missing(subjects))
       {
-      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
-      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
+      fmri.path.idx=list()
+      movement.path.idx=list()
+      for (subj in 1:length(subjects))
+        {
+        fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
+        movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
+        }
+      fmri.path.idx=unlist(fmri.path.idx)
+      movement.path.idx=unlist(movement.path.idx)
+  
+      fmri.filelist=fmri.filelist[fmri.path.idx]
+      movement.filelist=movement.filelist[movement.path.idx]
       }
-    fmri.path.idx=unlist(fmri.path.idx)
-    movement.path.idx=unlist(movement.path.idx)
+  
+  ##check if any fMRI volumes/movement files is found; returns error if 0 files are found
+  if(length(fmri.filelist)==0)  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
+  if(length(movement.filelist)==0) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
+  
+  fmri.filelist=fmri.filelist[order(fmri.filelist)]
+  movement.filelist=movement.filelist[order(movement.filelist)]
+  
+  ##subject level checks
+  fmri.filelist.check=unique(dirname(fmri.filelist))
+  fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
+
+  for (fmri_dir in 1:length(fmri.filelist.check))
+    {
+        fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
+        fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
+    }
+  if(length(which(fmri_dir.check!=1,arr.ind=T))!=0)
+    {
+    cat(paste("The following subject fMRI directories do not contain an fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])==0],sep=""))
+    cat(paste("The following subject fMRI directories do not contain a movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])==0],sep=""))
+
+    cat(paste("The following subject fMRI directories contain more than one fMRI volume:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,1])>1],sep=""))
+    cat(paste("The following subject fMRI directories contain more than one movement file:\n",fmri.filelist.check[which(fmri_dir.check[fmri_dir,2])>10],sep=""))
+    stop()
     }
   
   ##setup report dataframe
@@ -147,6 +168,9 @@ extractFC=function(wb_path,
     cat("\nYou can either delete these subject folders or re-download their files\n")
     stop()
   }
+
+  ##load and configure ciftitools
+  ciftiTools::ciftiTools.setOption('wb_path', wb_path)
   
   #atlas check
   if(is.na(match(atlas,(1:10)*100)))
@@ -162,7 +186,7 @@ extractFC=function(wb_path,
     
   }
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
-  
+
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
   {
