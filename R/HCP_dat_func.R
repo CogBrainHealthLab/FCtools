@@ -106,7 +106,7 @@ extractFC=function(wb_path,
   if(length(fmri.filelist)==0)  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
-  if(length(sub.list)==0)) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
+  if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
   if(length(movement.filelist)==0) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
   movement.filelist=movement.filelist[order(movement.filelist)]
