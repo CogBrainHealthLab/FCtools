@@ -8,14 +8,16 @@ extractFC(
   wb_path,
   base_dir = "fmriresults01/",
   atlas,
+  subjects,
   motion.thresh = 0.25,
-  scrub = F,
-  GSR = F,
+  scrub = FALSE,
+  GSR = FALSE,
   task,
   extension = "_Atlas_MSMAll_hp0_clean.dtseries.nii",
   movement.extension = "Movement_RelativeRMS.txt",
   output_dir = "FCmat",
-  report_filename = "report.csv"
+  report_filename = "report.csv",
+  overwrite = TRUE
 )
 }
 \arguments{
@@ -40,6 +42,8 @@ extractFC(
 \item{output_dir}{The output directory where the FC matrices will be saved. This directory will be created if it does not exist.}
 
 \item{report_filename}{The desired filename of the report containing columns of \code{subj}(subject ID),\code{Mean_RMS}(Mean Root Mean Squared displacement), and \code{no_frames_removed}(number of frames removed; only if \code{scrub=TRUE})}
+
+\item{overwrite}{If set to \code{FALSE}, subjects that already have their FC matrices in \code{output_dir} will be skipped. Set to \code{TRUE} by default.}
 }
 \value{
 outputs M x M matrices in the \code{output_dir} and a report file (.csv format) in the working directory containing the head motion measurements
