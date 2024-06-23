@@ -120,6 +120,8 @@ extractFC=function(wb_path,
       fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
       movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
       }
+    fmri.path.idx=unlist(fmri.path.idx)
+    movement.path.idx=unlist(movement.path.idx)
     }
   
   ##setup report dataframe
@@ -169,8 +171,8 @@ extractFC=function(wb_path,
       {
       start=Sys.time()
       #filepaths
-      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T),]
-      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T),]
+      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
+      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]
       
       ##check number of movement files
       if(length(movement.path)>1)
