@@ -62,7 +62,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
 #' @param output_dir The output directory where the FC matrices will be saved. This directory will be created if it does not exist.
 #' @param report_filename The desired filename of the report containing columns of `subj`(subject ID),`Mean_RMS`(Mean Root Mean Squared displacement), and `no_frames_removed`(number of frames removed; only if `scrub=TRUE`)
-#' @param overwrite If set to `FALSE`, 
+#' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
 #' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
 #'
 #' @examples
