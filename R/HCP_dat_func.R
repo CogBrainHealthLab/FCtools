@@ -336,7 +336,6 @@ extractFC=function(wb_path,
       end=Sys.time()
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
-        }
     } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F))
     {
       report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
