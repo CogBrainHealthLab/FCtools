@@ -162,20 +162,6 @@ extractFC=function(wb_path,
   {
     report$no_frames_removed=NA
   }
-  ##checks
-  #check missing fMRI volumes
-  if(length(sub.list)>length(fmri.filelist))
-  {
-    missing.idx=rep(NA,length(sub.list))
-    for(sub in 1:NROW(sub.list))
-    {
-      missing.idx[sub]=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)
-    }
-    cat("the number of fMRI volumes is less the number of subject folders. the following subjects do not have an fMRI volume\n")
-    cat(paste(sub.list[which(is.na(c(missing.idx)))]))
-    cat("\nYou can either delete these subject folders or re-download their files\n")
-    stop()
-  }
 
   ##load and configure ciftitools
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
