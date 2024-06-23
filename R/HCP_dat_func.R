@@ -340,15 +340,17 @@ extractFC=function(wb_path,
     {
       report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
     }
-    write.table(report,file = report_filename,sep = ",",row.names = F)
+  }
+  write.table(report,file = report_filename,sep = ",",row.names = F)
 }
+
 ########################################################################################################
 ########################################################################################################
 ##function to extract FD, adapted from fMRItools::FD
 
 extractFD=function(mot_dat)
 {
-  detrend = T
+  detrend = F
   mot_dat[, 4:6] <- mot_dat[, 4:6]
   if (!isFALSE(detrend)) {
     if (isTRUE(detrend)) {
