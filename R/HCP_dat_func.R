@@ -117,8 +117,8 @@ extractFC=function(wb_path,
     movement.path.idx=list()
     for (subj in 1:length(subjects))
       {
-      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)
-      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)
+      fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
+      movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
       }
     }
   
@@ -169,8 +169,8 @@ extractFC=function(wb_path,
       {
       start=Sys.time()
       #filepaths
-      fmri.path=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)
-      movement.path=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)
+      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T),]
+      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T),]
       
       ##check number of movement files
       if(length(movement.path)>1)
