@@ -103,12 +103,12 @@ extractFC=function(wb_path,
   
   ## file and subject listing; returns error if 0 files are found
   fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
-  if(length(fmri.filelist==0))  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
+  if(length(fmri.filelist)==0)  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
-  if(length(sub.list==0)) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
+  if(length(sub.list)==0)) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
-  if(length(movement.filelist==0)) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
+  if(length(movement.filelist)==0) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
   movement.filelist=movement.filelist[order(movement.filelist)]
 
   if(!missing(subjects))
@@ -167,8 +167,8 @@ extractFC=function(wb_path,
       {
       start=Sys.time()
       #filepaths
-      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
-      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]
+      fmri.path=which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)
+      movement.path=which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)
       
       ##check number of movement files
       if(length(movement.path)>1)
