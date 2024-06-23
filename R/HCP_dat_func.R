@@ -81,8 +81,8 @@ extractFC=function(wb_path,
                    atlas,
                    subjects,
                    motion.thresh=0.25,
-                   scrub=FALSE,
-                   GSR=FALSE,
+                   scrub=F,
+                   GSR=F,
                    task,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_RelativeRMS.txt",
@@ -91,10 +91,11 @@ extractFC=function(wb_path,
                    overwrite=TRUE)
 {
   ##check base_dir and sub.list
+  cat("checking directory structure...")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
-  
+  sub.list=sub.list[order(sub.list)]
   ##create output_dir if it doesnt exist
   dir.create(file.path(output_dir), showWarnings = FALSE)
   
@@ -107,16 +108,24 @@ extractFC=function(wb_path,
       {
       fmri.path.idx=list()
       movement.path.idx=list()
+      sub.list.idx=list()
+      
       for (subj in 1:length(subjects))
         {
         fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
         movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
+        sub.list.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = sub.list)==T)
         }
       fmri.path.idx=unlist(fmri.path.idx)
       movement.path.idx=unlist(movement.path.idx)
+      sub.list.idx=unlist(sub.list.idx)
+
+      #if the user provides a wrong subject ID
+      if(length(sub.list.idx)!=length(subjects))  {stop("not all specified subjects' directories could be found")}
   
       fmri.filelist=fmri.filelist[fmri.path.idx]
       movement.filelist=movement.filelist[movement.path.idx]
+      sub.list=subjects
       }
   
   ##check if any fMRI volumes/movement files are found; returns error if 0 files are found
@@ -156,39 +165,35 @@ extractFC=function(wb_path,
     cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
   }
   if(any(fmri_dir.check!=1)) {stop("Each fMRI directory can only contain 1 fMRI volume and 1 movement file")}
-  
+
+  cat(" Done.\n")
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
   colnames(report)=c("subj","mean_RMS/FD")
   
   report$subj=sub.list
-  if(scrub==T)
-  {
-    report$no_frames_removed=NA
-  }
+  if(scrub==T)  {report$no_frames_removed=NA}
 
   ##load and configure ciftitools
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
   
-  #atlas check
-  if(is.na(match(atlas,(1:10)*100)))
-  {
-    stop("Atlas should be a multiple of 100 from 100 to 1000")
-  }
-  #download atlas template if it is missing
-  if(!file.exists(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep="")))
-  {
-    cat(paste("The",paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),"template file does not exist and will be downloaded\n"),sep=" ")
-    download.file(url=paste0("https://raw.githubusercontent.com/ThomasYeoLab/CBIG/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/HCP/fslr32k/cifti/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii"),
-                  destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
-    
-  }
+  ##atlas checks
+  if(is.na(match(atlas,(1:10)*100)))  {stop("Atlas should be a multiple of 100 from 100 to 1000")}
+    #download atlas template if it is missing
+    if(!file.exists(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep="")))
+    {
+      cat(paste("The",paste("Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),"template file does not exist and will be downloaded\n"),sep=" ")
+      download.file(url=paste0("https://raw.githubusercontent.com/ThomasYeoLab/CBIG/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/HCP/fslr32k/cifti/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii"),
+                    destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
+      
+    }
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
+  cat("Processing subjects...\n")
   for (sub in 1:NROW(sub.list))
   {
-    cat(paste(sub.list[sub]))
+    cat(paste(sub.list[sub],sub,"/",length(sub.list),"...",sep=""))
     if((!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F) | overwrite==T)
       {
       start=Sys.time()
@@ -205,70 +210,39 @@ extractFC=function(wb_path,
         for(volume in 1:length(movement.path))
         {
           mov.dat=read.table(movement.path[volume])
-          if(NCOL(mov.dat)==1)
-          {
-            movement.dat[[volume]]=mov.dat$V1
-          } else if(NCOL(mov.dat)>=6)
-          {
-            movement.dat[[volume]]=extractFD(mov.dat[,1:6])
-          } else
-          {
-            movement.dat[[volume]]=NA
-          }
+          if(NCOL(mov.dat)==1)  {movement.dat[[volume]]=mov.dat$V1} 
+          else if(NCOL(mov.dat)>=6)  {movement.dat[[volume]]=extractFD(mov.dat[,1:6])} 
+          else  {movement.dat[[volume]]=NA}
           
-          if(volume!=length(movement.path))
-          {
-            frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
-          }
+          if(volume!=length(movement.path))  {frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)}
           remove(mov.dat)
         }
-        for(volume in 2:(length(movement.path)-1))
-        {
-          frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
-        }
+        
+        for(volume in 2:(length(movement.path)-1))  {frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]}
         movement.dat=unlist(movement.dat)
         frame.ends=unlist(frame.ends)
+        
       } else
       {
         mov.dat=read.table(movement.path[volume])
-        if(NCOL(mov.dat)==1)
-        {
-          movement.dat[[volume]]=mov.dat$V1
-        } else if(NCOL(mov.dat)>=6)
-        {
-          movement.dat[[volume]]=extractFD(mov.dat[,1:6])
-        } else
-        {
-          movement.dat[[volume]]=NA
-        }
+        if(NCOL(mov.dat)==1)  {movement.dat[[volume]]=mov.dat$V1} 
+        else if(NCOL(mov.dat)>=6)  {movement.dat[[volume]]=extractFD(mov.dat[,1:6])} 
+        else  {movement.dat[[volume]]=NA}
       }
-      if(!any(is.na(movement.dat)))
-      {
-        report$`mean_RMS/FD`[sub]=mean(movement.dat)
-      } else
-      {
-        report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"
-      }
+      if(!any(is.na(movement.dat)))  {report$`mean_RMS/FD`[sub]=mean(movement.dat)} 
+      else  {report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"}
       
       ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
       if(length(fmri.path)>1)
       {
         xii.list=list()
-        for(vol in 1:length(fmri.path))
-        {
-          xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")
-        }
+        for(vol in 1:length(fmri.path))  {xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")}
         xii.base=xii.list[[1]]
         
         for(vol in 1:length(fmri.path))
         {
-          if(vol==1)
-          {
-            xii.mat=as.matrix(xii.list[[1]])
-          } else
-          {
-            xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))
-          }
+          if(vol==1)  {xii.mat=as.matrix(xii.list[[1]])} 
+          else  {xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))}
         }
         remove(xii.list,vol)
       } else
@@ -296,14 +270,9 @@ extractFC=function(wb_path,
                 {
                   totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
                   totest=totest[-is.na(totest)]
-                  if(length(totest)!=2)
-                  {
-                    exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
-                  }
-                } else
-                {
-                  exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
-                }
+                  if(length(totest)!=2)  {exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])}
+                } 
+                else  {exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])}
               }
             }
             exc_frames=unique(exc_frames)
@@ -362,10 +331,8 @@ extractFC=function(wb_path,
       end=Sys.time()
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
-    } else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F)
-    {
-      report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"
-    }
+    } 
+    else if (file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F)  {report$`mean_RMS/FD`="output file already exists, no post-processing was carried out"}
   }
   write.table(report,file = report_filename,sep = ",",row.names = F)
 }
