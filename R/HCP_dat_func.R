@@ -88,7 +88,7 @@ extractFC=function(wb_path,
                    movement.extension="Movement_RelativeRMS.txt",
                    output_dir="FCmat",
                    report_filename="report.csv",
-                   overwrite=FALSE)
+                   overwrite=TRUE)
 {
   ##check base_dir
   if(!dir.exists(base_dir))
@@ -167,7 +167,7 @@ extractFC=function(wb_path,
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]))
-    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F)
+    if((!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F) | overwrite==T)
       {
       start=Sys.time()
       #filepaths
