@@ -163,7 +163,7 @@ extractFC=function(wb_path,
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]))
-    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F)
+    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite==F))
       {
       start=Sys.time()
       #filepaths
