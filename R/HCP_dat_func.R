@@ -62,6 +62,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
 #' @param output_dir The output directory where the FC matrices will be saved. This directory will be created if it does not exist.
 #' @param report_filename The desired filename of the report containing columns of `subj`(subject ID),`Mean_RMS`(Mean Root Mean Squared displacement), and `no_frames_removed`(number of frames removed; only if `scrub=TRUE`)
+#' @param overwrite If set to `FALSE`, 
 #' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
 #'
 #' @examples
@@ -78,6 +79,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 extractFC=function(wb_path,
                    base_dir="fmriresults01/",
                    atlas,
+                   subjects,
                    motion.thresh=0.25,
                    scrub=F,
                    GSR=F,
@@ -85,7 +87,8 @@ extractFC=function(wb_path,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_RelativeRMS.txt",
                    output_dir="FCmat",
-                   report_filename="report.csv")
+                   report_filename="report.csv",
+                   overwrite=FALSE)
 {
   ##check base_dir
   if(!dir.exists(base_dir))
@@ -98,13 +101,16 @@ extractFC=function(wb_path,
   ##create output_dir if it doesnt exist
   dir.create(file.path(output_dir), showWarnings = FALSE)
   
-  ## file and subject listing
+  ## file and subject listing; returns error if 0 files are found
   fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
+  if(length(fmri.filelist==0))  {stop("no fMRI volumes were found. Please check if 'task' and 'extension' are correctly specified")}
   fmri.filelist=fmri.filelist[order(fmri.filelist)]
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
+  if(length(sub.list==0)) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
+  if(length(movement.filelist==0)) {stop("no movement files were found. Please check if 'movement.extension' is correctly specified")}
   movement.filelist=movement.filelist[order(movement.filelist)]
-  
+
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
   colnames(report)=c("subj","mean_RMS/FD")
@@ -148,19 +154,47 @@ extractFC=function(wb_path,
   ## loop thru subjects
   for (sub in 1:NROW(sub.list))
   {
-    start=Sys.time()
     cat(paste(sub.list[sub]))
-    #filepaths
-    fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
-    movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]
-    
-    ##check number of movement files
-    if(length(movement.path)>1)
-    {
-      movement.dat=list()
-      frame.ends=list()
-     
-      for(volume in 1:length(movement.path))
+    if(!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="") & overwrite=F)
+      {
+      start=Sys.time()
+      #filepaths
+      fmri.path=fmri.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = fmri.filelist)==T)]
+      movement.path=movement.filelist[which(stringr::str_detect(pattern = sub.list[sub],string = movement.filelist)==T)]
+      
+      ##check number of movement files
+      if(length(movement.path)>1)
+      {
+        movement.dat=list()
+        frame.ends=list()
+       
+        for(volume in 1:length(movement.path))
+        {
+          mov.dat=read.table(movement.path[volume])
+          if(NCOL(mov.dat)==1)
+          {
+            movement.dat[[volume]]=mov.dat$V1
+          } else if(NCOL(mov.dat)>=6)
+          {
+            movement.dat[[volume]]=extractFD(mov.dat[,1:6])
+          } else
+          {
+            movement.dat[[volume]]=NA
+          }
+          
+          if(volume!=length(movement.path))
+          {
+            frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
+          }
+          remove(mov.dat)
+        }
+        for(volume in 2:(length(movement.path)-1))
+        {
+          frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
+        }
+        movement.dat=unlist(movement.dat)
+        frame.ends=unlist(frame.ends)
+      } else
       {
         mov.dat=read.table(movement.path[volume])
         if(NCOL(mov.dat)==1)
@@ -173,155 +207,130 @@ extractFC=function(wb_path,
         {
           movement.dat[[volume]]=NA
         }
-        
-        if(volume!=length(movement.path))
-        {
-          frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
-        }
-        remove(mov.dat)
       }
-      for(volume in 2:(length(movement.path)-1))
+      if(!any(is.na(movement.dat)))
       {
-        frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
-      }
-      movement.dat=unlist(movement.dat)
-      frame.ends=unlist(frame.ends)
-    } else
-    {
-      mov.dat=read.table(movement.path[volume])
-      if(NCOL(mov.dat)==1)
-      {
-        movement.dat[[volume]]=mov.dat$V1
-      } else if(NCOL(mov.dat)>=6)
-      {
-        movement.dat[[volume]]=extractFD(mov.dat[,1:6])
+        report$`mean_RMS/FD`[sub]=mean(movement.dat)
       } else
       {
-        movement.dat[[volume]]=NA
+        report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"
       }
-    }
-    if(!any(is.na(movement.dat)))
-    {
-      report$`mean_RMS/FD`[sub]=mean(movement.dat)
-    } else
-    {
-      report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"
-    }
-    
-    ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
-    if(length(fmri.path)>1)
-    {
-      xii.list=list()
-      for(vol in 1:length(fmri.path))
-      {
-        xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")
-      }
-      xii.base=xii.list[[1]]
       
-      for(vol in 1:length(fmri.path))
+      ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
+      if(length(fmri.path)>1)
       {
-        if(vol==1)
+        xii.list=list()
+        for(vol in 1:length(fmri.path))
         {
-          xii.mat=as.matrix(xii.list[[1]])
-        } else
-        {
-          xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))
+          xii.list[[vol]]=ciftiTools::read_xifti(fmri.path[vol], brainstructures="all")
         }
-      }
-      remove(xii.list,vol)
-    } else
-    {
-      xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
-      xii.mat=as.matrix(xii.base)
-    }
-    
-    ##scrubbing
-
-    if((scrub==T & length(which(movement.dat>motion.thresh))!=0)) #if there are no frames less then the motion threshold, no scrubbing is needed
-    {
-      #identify frames for scrubbing
-      exc_frames=which(movement.dat>motion.thresh)
-      exc_frames=exc_frames[order(exc_frames)]
-      exc_framesOLD=exc_frames
-
-      if(length(exc_framesOLD)>1) #if there is only 1 bad frame, there is no between-frames interval to scrub
+        xii.base=xii.list[[1]]
+        
+        for(vol in 1:length(fmri.path))
         {
-          for (frameno in 1:(NROW(exc_framesOLD)-1))
-            {
-            if((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)
-            {
-              if(length(movement.path)>1)
+          if(vol==1)
+          {
+            xii.mat=as.matrix(xii.list[[1]])
+          } else
+          {
+            xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))
+          }
+        }
+        remove(xii.list,vol)
+      } else
+      {
+        xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
+        xii.mat=as.matrix(xii.base)
+      }
+      
+      ##scrubbing
+  
+      if((scrub==T & length(which(movement.dat>motion.thresh))!=0)) #if there are no frames less then the motion threshold, no scrubbing is needed
+      {
+        #identify frames for scrubbing
+        exc_frames=which(movement.dat>motion.thresh)
+        exc_frames=exc_frames[order(exc_frames)]
+        exc_framesOLD=exc_frames
+  
+        if(length(exc_framesOLD)>1) #if there is only 1 bad frame, there is no between-frames interval to scrub
+          {
+            for (frameno in 1:(NROW(exc_framesOLD)-1))
               {
-                totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
-                totest=totest[-is.na(totest)]
-                if(length(totest)!=2)
+              if((exc_framesOLD[frameno+1]-exc_framesOLD[frameno]) <5)
+              {
+                if(length(movement.path)>1)
+                {
+                  totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
+                  totest=totest[-is.na(totest)]
+                  if(length(totest)!=2)
+                  {
+                    exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
+                  }
+                } else
                 {
                   exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
                 }
-              } else
-              {
-                exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])
               }
             }
-          }
-          exc_frames=unique(exc_frames)
-          exc_frames=exc_frames[order(exc_frames)]
-        } 
-
-      #remove frames if necessary
-        #if there is any missing movement data, or number of timepoints in the headmotion file do not match the number of frames, no scrubbing will be carried out.
-      if(NCOL(xii.mat)!=length(movement.dat) | any(is.na(movement.dat)))
-      {
-        cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
-        xii.scrubbed=xii.mat
-        report$no_frames_removed[sub]="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
+            exc_frames=unique(exc_frames)
+            exc_frames=exc_frames[order(exc_frames)]
+          } 
+  
+        #remove frames if necessary
+          #if there is any missing movement data, or number of timepoints in the headmotion file do not match the number of frames, no scrubbing will be carried out.
+        if(NCOL(xii.mat)!=length(movement.dat) | any(is.na(movement.dat)))
+        {
+          cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
+          xii.scrubbed=xii.mat
+          report$no_frames_removed[sub]="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
+        } else
+        {
+          xii.scrubbed=xii.mat[,-exc_frames]
+          report$no_frames_removed[sub]=length(exc_frames)
+        }
+        n_timepoints=NCOL(xii.scrubbed)
       } else
       {
-        xii.scrubbed=xii.mat[,-exc_frames]
-        report$no_frames_removed[sub]=length(exc_frames)
+        xii.scrubbed=xii.mat
+        n_timepoints=NCOL(xii.scrubbed)
       }
-      n_timepoints=NCOL(xii.scrubbed)
-    } else
-    {
-      xii.scrubbed=xii.mat
-      n_timepoints=NCOL(xii.scrubbed)
+      
+      ##Global Signal Regression
+      if(GSR==T)
+      {
+        dmat=xii.scrubbed
+        gsig=colMeans(dmat)
+        dmat=fMRItools::nuisance_regression(dmat, cbind(1, gsig,gsig^2))
+        xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
+        xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
+        remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
+      } else if(GSR==F)
+      {
+        xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
+        xii.final=ciftiTools::move_from_mwall(xii.final, NA)
+        remove(xii.base,xii.scrubbed)
+      }
+      
+      ##generate parcellated timeseries
+      sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
+      brain_vec=c(parc, sub_keys)
+      xii_pmean=matrix(ncol=atlas+19,nrow=n_timepoints)
+      timeseries.dat=as.matrix(xii.final)
+      
+      for (p in 1:(atlas+19))
+      {
+        data_p=timeseries.dat[brain_vec==p,]
+        xii_pmean[,p]=colMeans(data_p,na.rm = T)
+      }
+      #output FC matrix
+      write.table(cor(xii_pmean), file=paste(output_dir,"/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",")
+      remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p)
+      end=Sys.time()
+      
+      cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
+        }
     }
-    
-    ##Global Signal Regression
-    if(GSR==T)
-    {
-      dmat=xii.scrubbed
-      gsig=colMeans(dmat)
-      dmat=fMRItools::nuisance_regression(dmat, cbind(1, gsig,gsig^2))
-      xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
-      xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
-      remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
-    } else if(GSR==F)
-    {
-      xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
-      xii.final=ciftiTools::move_from_mwall(xii.final, NA)
-      remove(xii.base,xii.scrubbed)
-    }
-    
-    ##generate parcellated timeseries
-    sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
-    brain_vec=c(parc, sub_keys)
-    xii_pmean=matrix(ncol=atlas+19,nrow=n_timepoints)
-    timeseries.dat=as.matrix(xii.final)
-    
-    for (p in 1:(atlas+19))
-    {
-      data_p=timeseries.dat[brain_vec==p,]
-      xii_pmean[,p]=colMeans(data_p,na.rm = T)
-    }
-    #output FC matrix
-    write.table(cor(xii_pmean), file=paste(output_dir,"/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",")
-    remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p)
-    end=Sys.time()
-    
-    cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))
-  }
-  write.table(report,file = report_filename,sep = ",",row.names = F)
+    write.table(report,file = report_filename,sep = ",",row.names = F)
 }
 ########################################################################################################
 ########################################################################################################
@@ -329,7 +338,7 @@ extractFC=function(wb_path,
 
 extractFD=function(mot_dat)
 {
-  detrend = F
+  detrend = T
   mot_dat[, 4:6] <- mot_dat[, 4:6]
   if (!isFALSE(detrend)) {
     if (isTRUE(detrend)) {
