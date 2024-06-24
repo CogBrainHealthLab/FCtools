@@ -224,10 +224,10 @@ extractFC=function(wb_path,
         
       } else
       {
-        mov.dat=read.table(movement.path[volume])
-        if(NCOL(mov.dat)==1)  {movement.dat[[volume]]=mov.dat$V1} 
-        else if(NCOL(mov.dat)>=6)  {movement.dat[[volume]]=extractFD(mov.dat[,1:6])} 
-        else  {movement.dat[[volume]]=NA}
+        mov.dat=read.table(movement.path)
+        if(NCOL(mov.dat)==1)  {movement.dat=mov.dat$V1} 
+        else if(NCOL(mov.dat)>=6)  {movement.dat=extractFD(mov.dat[,1:6])} 
+        else  {movement.dat=NA}
       }
       if(!any(is.na(movement.dat)))  {report$`mean_RMS/FD`[sub]=mean(movement.dat)} 
       else  {report$`mean_RMS/FD`[sub]="Unable to compute. Missing/corrupted head motion data"}
