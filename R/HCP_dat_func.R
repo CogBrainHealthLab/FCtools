@@ -193,7 +193,7 @@ extractFC=function(wb_path,
   cat("Processing subjects...\n")
   for (sub in 1:NROW(sub.list))
   {
-    cat(paste(sub.list[sub],sub,"/",length(sub.list),"...",sep=""))
+    cat(paste(sub.list[sub]," ",sub,"/",length(sub.list),"...",sep=""))
     if((!file.exists(paste(output_dir,"/",sub.list[sub],".csv",sep="")) & overwrite==F) | overwrite==T)
       {
       start=Sys.time()
