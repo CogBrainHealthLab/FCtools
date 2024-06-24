@@ -63,11 +63,12 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param output_dir The output directory where the FC matrices will be saved. This directory will be created if it does not exist.
 #' @param report_filename The desired filename of the report containing columns of `subj`(subject ID),`Mean_RMS`(Mean Root Mean Squared displacement), and `no_frames_removed`(number of frames removed; only if `scrub=TRUE`)
 #' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
+#' @param dir.check check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to `TRUE` by default.
 #' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
 #'
 #' @examples
 #' \dontrun{
-#' extractFC(wb_path = "/home/junhong.yu/workbench/",task="CONFLICT",atlas=100,GSR=TRUE,scrub=TRUE,output_dir = "FCmat")
+#' extractFC(wb_path = "/home/junhong.yu/workbench/",task="REST",atlas=100,GSR=TRUE,scrub=TRUE,output_dir = "FCmat")
 #' }
 #' @importFrom stringr str_detect
 #' @importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall
@@ -88,7 +89,8 @@ extractFC=function(wb_path,
                    movement.extension="Movement_RelativeRMS.txt",
                    output_dir="FCmat",
                    report_filename="report.csv",
-                   overwrite=TRUE)
+                   overwrite=TRUE,
+                   dir.check=TRUE)
 {
   ##check base_dir and sub.list
   cat("checking directory structure...")
@@ -136,35 +138,39 @@ extractFC=function(wb_path,
   movement.filelist=movement.filelist[order(movement.filelist)]
   
   ##subject level checks
-  fmri.filelist.check=unique(dirname(fmri.filelist))
-  fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
-
-  for (fmri_dir in 1:length(fmri.filelist.check))
+  if(dir.check==T)
+  {
+    fmri.filelist.check=unique(dirname(fmri.filelist))
+    fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
+    
+    for (fmri_dir in 1:length(fmri.filelist.check))
     {
-        fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
-        fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
+      fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
+      fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
     }
-  if(any(fmri_dir.check[,1]==0))
-  {
-    cat("The following subject fMRI directories do not contain an fMRI volume:\n")
-    cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]==0)]),"\n")
+    if(any(fmri_dir.check[,1]==0))
+    {
+      cat("The following subject fMRI directories do not contain an fMRI volume:\n")
+      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]==0)]),"\n")
+    }
+    if(any(fmri_dir.check[,2]==0))
+    {
+      cat("The following subject fMRI directories do not contain a movement file:\n")
+      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]==0)]),"\n")
+    }
+    if(any(fmri_dir.check[,1]>1))
+    {
+      cat("The following subject fMRI directories contain more than one fMRI volume:\n")
+      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]>1)]),"\n")
+    }
+    #if(any(fmri_dir.check[,2]>2))
+    #{
+    #  cat("The following subject fMRI directories contain more than one movement file:\n")
+    #  cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
+    #}
+    if(any(fmri_dir.check!=1)) {stop("Each fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
   }
-  if(any(fmri_dir.check[,2]==0))
-  {
-    cat("The following subject fMRI directories do not contain a movement file:\n")
-    cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]==0)]),"\n")
-  }
-  if(any(fmri_dir.check[,1]>1))
-  {
-    cat("The following subject fMRI directories contain more than one fMRI volume:\n")
-    cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]>1)]),"\n")
-  }
-  #if(any(fmri_dir.check[,2]>2))
-  #{
-  #  cat("The following subject fMRI directories contain more than one movement file:\n")
-  #  cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
-  #}
-  #if(any(fmri_dir.check!=1)) {stop("Each fMRI directory can only contain 1 fMRI volume and 1 movement file")}
+  
 
   cat(" Done.\n")
   ##setup report dataframe
