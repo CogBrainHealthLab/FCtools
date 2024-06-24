@@ -168,8 +168,8 @@ extractFC=function(wb_path,
 
   cat(" Done.\n")
   ##setup report dataframe
-  report=data.frame(matrix(NA,nrow=length(sub.list),ncol=2))
-  colnames(report)=c("subj","mean_RMS/FD")
+  report=data.frame(matrix(NA,nrow=length(sub.list),ncol=3))
+  colnames(report)=c("subj","mean_RMS/FD","total_frames")
   
   report$subj=sub.list
   if(scrub==T)  {report$no_frames_removed=NA}
@@ -250,6 +250,7 @@ extractFC=function(wb_path,
         xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
         xii.mat=as.matrix(xii.base)
       }
+      report$total_frames[sub]=NCOL(xii.mat)
       
       ##scrubbing
   
