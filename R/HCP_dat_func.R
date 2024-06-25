@@ -162,7 +162,7 @@ extractFC=function(wb_path,
     {
       cat(paste0("\nThe folowing subject directories are empty and will be ignored:\n"))
       cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
-      sub.list=sub.list[-sub_dir.check==0]
+      sub.list=sub.list[-which(sub_dir.check==0)]
     }
 
     #check for missing movement files or fMRI directories containing more than one fMRI volume
