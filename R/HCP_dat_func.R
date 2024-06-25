@@ -146,23 +146,45 @@ extractFC=function(wb_path,
     all_dir.check=rep(NA, length(dir.list))
     sub_dir.check=rep(NA, length(sub.list))
 
+
+    #check for empty subject directories
+    for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(list.files(paste0(base_dir,sub.list[subj]),recursive=T))}
+    
+    if(any(sub_dir.check==0)) 
+    {
+      cat(paste0("\nThe folowing subject directories are empty and will be ignored:\n"))
+      cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
+      exc.sub=sub.list[sub_dir.check==0]
+      sub.list=sub.list[-which(sub_dir.check==0)]
+    }
+    
     #check for empty fMRI directories
     for (dir in 1:length(dir.list))  {all_dir.check[dir]=length(list.files(dir.list[dir],recursive=T))}
     
     if(any(all_dir.check==0)) 
     {
-      cat(paste0("\nThe folowing directories are empty and will be ignored:\n"))
-      cat(paste0(gsub(pattern=base_dir,replacement = "",dir.list[all_dir.check==0]),"\n"))
-    }
+      dir.empty=dir.list[all_dir.check==0]
 
-    #check for empty subject directories
-    for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(list.files(paste0(base_dir,sub.list[subj]),recursive=T))}
-    
-    if(any(all_dir.check==0)) 
-    {
-      cat(paste0("\nThe folowing subject directories are empty and will be ignored:\n"))
-      cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
-      sub.list=sub.list[-which(sub_dir.check==0)]
+      if(length(exc.sub)>0)
+        {
+        remove.idx=list()
+        for (sub.exc in 1:length(exc.sub)
+             {
+              remove.idx[[sub.exc]]=which(stringr::str_detect(pattern = exc.sub[sub.exc],string = dir.empty)==T)    
+             }
+        remove.idx=unlist(remove.idx)
+        remove.idx=remove.idx[!is.na(remove.idx)]
+        if(length(remove.idx>0))
+          {
+          dir.empty=dir.empty[-remove.idx]
+          }
+        }
+
+      if(length(dir.empty>0))
+         {
+          cat(paste0("\nThe folowing directories are empty and will be ignored:\n"))
+          cat(paste0(gsub(pattern=base_dir,replacement = "",dir.empty),"\n"))     
+         }
     }
 
     #check for missing movement files or fMRI directories containing more than one fMRI volume
