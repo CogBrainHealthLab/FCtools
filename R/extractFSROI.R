@@ -23,7 +23,7 @@ extractFS.ROI=function(basename="dat")
   rh=read.table(file="RHDestrieux.table",header = T)
   CT=cbind(lh[,-c(1,76:78)],rh[,-c(1,76:78)])
   lh$eTIV
-  subGM=read.table("aseg.vol.table",header = T)[,-c(1,15,34:40)]/lh$eTIV
+  subGM=read.table(file="aseg.vol.table",header = T)[,-c(1,15,34:40)]/lh$eTIV
   write.table(CT,file=paste0(basename,"_CT.csv"),sep =",",row.names = F)
   write.table(subGM,file=paste0(basename,"_subGM.csv"),sep =",",row.names = F)
 }
