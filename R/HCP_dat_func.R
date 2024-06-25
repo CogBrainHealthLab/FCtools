@@ -164,8 +164,8 @@ extractFC=function(wb_path,
     if(any(all_dir.check==0)) 
     {
       dir.empty=dir.list[all_dir.check==0]
-
-      if(length(exc.sub)>0)
+        
+      if(length(exc.sub)>0) #remove invalid subjects detected earlier
         {
         remove.idx=list()
         for (sub.exc in 1:length(exc.sub))  {remove.idx[[sub.exc]]=which(stringr::str_detect(pattern = exc.sub[sub.exc],string = dir.empty)==T)}
@@ -228,7 +228,7 @@ extractFC=function(wb_path,
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
-  cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig," listed subject directories...\n",sep=" "))
+  cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig," listed subject directories...\n\n",sep=" "))
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]," ",sub,"/",length(sub.list),"...",sep=""))
