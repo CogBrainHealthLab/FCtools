@@ -63,7 +63,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param output_dir The output directory where the FC matrices and headmotion parameters will be saved. A default `output_dir` directory will be created if it does not exist.
 #' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
 #' @param dir.check check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to `TRUE` by default.
-#' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
+#' @returns outputs M x M matrices in `output_dir\FCmat`, headmotion measurements in `output_dir\headmotion` and a summary headmotion measurements across all subjects `output_dir\report.csv`.
 #'
 #' @examples
 #' \dontrun{
