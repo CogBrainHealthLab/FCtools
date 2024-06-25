@@ -86,7 +86,6 @@ extractFC=function(wb_path,
                    task,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_RelativeRMS.txt",
-                   headmotion_dir="headmotion",
                    output_dir="output_dir",
                    overwrite=TRUE,
                    dir.check=TRUE)
