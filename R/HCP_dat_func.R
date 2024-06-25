@@ -93,7 +93,7 @@ extractFC=function(wb_path,
                    dir.check=TRUE)
 {
   ##check base_dir and sub.list
-  cat("checking directory structure...")
+  cat("checking directory structure...\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
