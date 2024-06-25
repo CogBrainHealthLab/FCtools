@@ -222,7 +222,7 @@ extractFC=function(wb_path,
                     destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
       
     }
-  parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
+  parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),brainstructures=c("left","right"))))
 
   ## loop thru subjects
   cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig,"listed subject directories...\n\n",sep=" "))
