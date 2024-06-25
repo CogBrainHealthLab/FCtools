@@ -287,7 +287,7 @@ extractFC=function(wb_path,
         xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
         xii.mat=as.matrix(xii.base)
       }
-      headmotion.param$total_frames[sub]=NCOL(xii.mat)
+      headmotion.param$total_frames=NCOL(xii.mat)
       
       ##scrubbing
   
