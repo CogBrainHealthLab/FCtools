@@ -60,9 +60,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param motion.thresh the threshold used for scrubbing frames. Set to 0.25 by default.
 #' @param GSR If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.
 #' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
-#' @param output_dir The output directory where the FC matrices will be saved. This directory will be created if it does not exist.
-#' @param headmotion_dir The directory where the headmotion parameters for each subject will be saved. This directory will be created if it does not exist.
-#' @param report_filename The desired filename of the report containing columns of `subj`(subject ID),`Mean_RMS`(Mean Root Mean Squared displacement), and `no_frames_removed`(number of frames removed; only if `scrub=TRUE`)
+#' @param output_dir The output directory where the FC matrices will be saved. A default `output_dir` directory will be created if it does not exist.
 #' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
 #' @param dir.check check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to `TRUE` by default.
 #' @returns outputs M x M matrices in the `output_dir` and a report file (.csv format) in the working directory containing the head motion measurements
@@ -89,8 +87,7 @@ extractFC=function(wb_path,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_RelativeRMS.txt",
                    headmotion_dir="headmotion",
-                   output_dir="FCmat",
-                   report_filename="report.csv",
+                   output_dir="output_dir",
                    overwrite=TRUE,
                    dir.check=TRUE)
 {
@@ -102,8 +99,8 @@ extractFC=function(wb_path,
   if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   sub.list=sub.list[order(sub.list)]
   ##create output_dir and headmotion_dir if they dont exist
-  dir.create(file.path(output_dir), showWarnings = FALSE)
-  dir.create(file.path(headmotion_dir), showWarnings = FALSE)
+  dir.create(file.path(paste0(output_dir,"/FCmat"), showWarnings = FALSE)
+  dir.create(file.path(paste0(output_dir,"/headmotion"), showWarnings = FALSE)
   
   ## file and subject listing
   fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
@@ -366,8 +363,8 @@ extractFC=function(wb_path,
       #output FC matrix
       headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
       
-      write.table(headmotion.row, file=paste(headmotion_dir,"/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",")
-      write.table(cor(xii_pmean), file=paste(output_dir,"/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",")
+      write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",")
+      write.table(cor(xii_pmean), file=paste(output_dir,"/FCnat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quotes=F)
       
       remove(xii.final, sub_keys,brain_vec,xii_pmean,data_pm, headmotion.row, headmotion.param)
       end=Sys.time()
@@ -377,7 +374,7 @@ extractFC=function(wb_path,
   }
 
   ##compiling headmotion parameters across subjects
-  headmotion.output.filelist=list.files(headmotion_dir)
+  headmotion.output.filelist=list.files(paste0(output_dir,"/headmotion/"))
   if(scrub==T)  
   {
     report.all=data.frame(matrix(NA,nrow=NROW(headmotion.output.filelist),ncol=4))
@@ -390,9 +387,9 @@ extractFC=function(wb_path,
 
   for (sub in 1:length(headmotion.output))
   {
-    report.all[sub,]=read.table(paste0("headmotion/",headmotion.output[sub]),header = F,sep=",")[1,]
+    report.all[sub,]=read.table(headmotion.output.filelist[sub],header = F,sep=",")[1,]
   }
-  write.table(report.all,file=report_filename,row.names = F,sep=",")
+  write.table(report.all,file=paste0(output_dir,"/report.csv"),row.names = F,sep=",")
 }
 
 ########################################################################################################
