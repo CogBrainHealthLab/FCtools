@@ -96,6 +96,7 @@ extractFC=function(wb_path,
   cat("checking directory structure...\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
+  N.orig=length(sub.list)
   if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   sub.list=sub.list[order(sub.list)]
   ##create output_dir if it doesnt exist
@@ -141,26 +142,25 @@ extractFC=function(wb_path,
   if(dir.check==T)
   {
     dir.list=list.dirs(base_dir,recursive=T,full.names=T)
-    fmri.filelist.check=unique(dirname(fmri.filelist))
-    fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
+    fmri.dir.list=unique(dirname(fmri.filelist))
     all_dir.check=rep(NA, length(dir.list))
     sub_dir.check=rep(NA, length(sub.list))
-
-
-    #check for empty subject directories
-    for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(list.files(paste0(base_dir,sub.list[subj]),recursive=T))}
+    fmri_dir.check = matrix(NA, nrow = length(fmri.filelist.check), ncol = 2)
     
+    #check for subject directories without an fMRI volume
+    for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(which(stringr::str_detect(pattern = sub.list[subj],string = fmri.filelist)==T))}
+  
     if(any(sub_dir.check==0)) 
     {
-      cat(paste0("\nThe folowing subject directories are empty and will be ignored:\n"))
+      cat(paste0("\nThe folowing subject directories do not contain an fMRI file; they will be ignored:\n"))
       cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
       exc.sub=sub.list[sub_dir.check==0]
       sub.list=sub.list[-which(sub_dir.check==0)]
     }
     
-    #check for empty fMRI directories
-    for (dir in 1:length(dir.list))  {all_dir.check[dir]=length(list.files(dir.list[dir],recursive=T))}
-    
+    #check for fMRI directories without fMRI volumes
+    for (dir in 1:length(dir.list))  {all_dir.check[dir]=length(which(stringr::str_detect(pattern = dir.list[dir],string = fmri.filelist)))}
+
     if(any(all_dir.check==0)) 
     {
       dir.empty=dir.list[all_dir.check==0]
@@ -168,16 +168,12 @@ extractFC=function(wb_path,
       if(length(exc.sub)>0)
         {
         remove.idx=list()
-        for (sub.exc in 1:length(exc.sub)
-             {
-              remove.idx[[sub.exc]]=which(stringr::str_detect(pattern = exc.sub[sub.exc],string = dir.empty)==T)    
-             }
+        for (sub.exc in 1:length(exc.sub))  {remove.idx[[sub.exc]]=which(stringr::str_detect(pattern = exc.sub[sub.exc],string = dir.empty)==T)}
+        
         remove.idx=unlist(remove.idx)
         remove.idx=remove.idx[!is.na(remove.idx)]
-        if(length(remove.idx>0))
-          {
-          dir.empty=dir.empty[-remove.idx]
-          }
+        
+        if(length(remove.idx>0))  {dir.empty=dir.empty[-remove.idx]}
         }
 
       if(length(dir.empty>0))
@@ -188,27 +184,22 @@ extractFC=function(wb_path,
     }
 
     #check for missing movement files or fMRI directories containing more than one fMRI volume
-    for (fmri_dir in 1:length(fmri.filelist.check))
+    for (fmri_dir in 1:length(fmri.dir.list))
     {
-      fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
-      fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
+      fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.dir.list[fmri_dir],string = movement.filelist)==T))
+      fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.dir.list[fmri_dir],string = fmri.filelist)==T))
     }
     
     if(any(fmri_dir.check[,2]==0))
     {
       cat("\nThe following subject fMRI directories do not contain a movement file:\n")
-      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,2]==0]),"\n"))
+      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.dir.list[fmri_dir.check[,2]==0]),"\n"))
     }
     if(any(fmri_dir.check[,1]>1))
     {
       cat("\nThe following subject fMRI directories contain more than one fMRI volume:\n")
-      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,1]>1]),"\n"))
+      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.dir.list[fmri_dir.check[,1]>1]),"\n"))
     }
-    #if(any(fmri_dir.check[,2]>2))
-    #{
-    #  cat("The following subject fMRI directories contain more than one movement file:\n")
-    #  cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
-    #}
     
     if(any(fmri_dir.check!=1)) {stop("\nEach fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
   }
@@ -237,7 +228,7 @@ extractFC=function(wb_path,
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
-  cat("Processing subjects...\n")
+  cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig,"...\n",sep=" "))
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]," ",sub,"/",length(sub.list),"...",sep=""))
