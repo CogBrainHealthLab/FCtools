@@ -16,6 +16,9 @@
 ##to train CPM models using a fixed p value threshold
 extractFS.ROI=function(basename="dat")
 {
+  . <- LHDestrieux.table <- NULL 
+  . <- RHDestrieux.table <- NULL 
+  . <- aseg.vol.table <- NULL 
   lh=read.table("LHDestrieux.table",header = T)
   rh=read.table("RHDestrieux.table",header = T)
   CT=cbind(lh[,-c(1,76:78)],rh[,-c(1,76:78)])
@@ -25,3 +28,4 @@ extractFS.ROI=function(basename="dat")
   write.table(subGM,file=paste0(basename,"_subGM.csv"),sep =",",row.names = F)
 }
 extractFS.ROI("SYN")
+
