@@ -145,7 +145,7 @@ extractFC=function(wb_path,
     fmri.dir.list=unique(dirname(fmri.filelist))
     all_dir.check=rep(NA, length(dir.list))
     sub_dir.check=rep(NA, length(sub.list))
-    fmri_dir.check = matrix(NA, nrow = length(fmri.filelist.check), ncol = 2)
+    fmri_dir.check = matrix(NA, nrow = length(fmri.dir.list), ncol = 2)
     
     #check for subject directories without an fMRI volume
     for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(which(stringr::str_detect(pattern = sub.list[subj],string = fmri.filelist)==T))}
