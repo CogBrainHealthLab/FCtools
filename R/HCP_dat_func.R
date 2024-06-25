@@ -140,38 +140,45 @@ extractFC=function(wb_path,
   ##subject level checks
   if(dir.check==T)
   {
+    dir.list=list.dirs(base_dir,recursive=T,full.names=T)
     fmri.filelist.check=unique(dirname(fmri.filelist))
     fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
+    all_dir.check=rep(NA, length(dir.list))
     
+    for (dir in 1:length(dir.list))
+    {
+      all_dir.check[dir]=length(list.files(dir.list[dir]))
+    }
+    if(any(all_dir.check==0)) 
+    {
+      cat(paste0("The folowing directories are empty and will be ignored:\n"))
+      cat(paste0(gsub(pattern=base_dir,replacement = "",dir.list[all_dir.check==0]),"\n"))
+    }
     for (fmri_dir in 1:length(fmri.filelist.check))
     {
       fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
       fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
     }
-    if(any(fmri_dir.check[,1]==0))
-    {
-      cat("The following subject fMRI directories do not contain an fMRI volume:\n")
-      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]==0)]),"\n")
-    }
+
     if(any(fmri_dir.check[,2]==0))
     {
       cat("The following subject fMRI directories do not contain a movement file:\n")
-      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]==0)]),"\n")
+      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,2]==0]),"\n"))
     }
     if(any(fmri_dir.check[,1]>1))
     {
       cat("The following subject fMRI directories contain more than one fMRI volume:\n")
-      cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,1]>1)]),"\n")
+      cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,1]>1]),"\n"))
     }
     #if(any(fmri_dir.check[,2]>2))
     #{
     #  cat("The following subject fMRI directories contain more than one movement file:\n")
     #  cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
     #}
+    
     if(any(fmri_dir.check!=1)) {stop("Each fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
   }
   
-
   cat(" Done.\n")
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=3))
