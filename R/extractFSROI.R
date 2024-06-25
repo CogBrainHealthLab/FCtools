@@ -27,5 +27,3 @@ extractFS.ROI=function(basename="dat")
   write.table(CT,file=paste0(basename,"_CT.csv"),sep =",",row.names = F)
   write.table(subGM,file=paste0(basename,"_subGM.csv"),sep =",",row.names = F)
 }
-extractFS.ROI("SYN")
-
