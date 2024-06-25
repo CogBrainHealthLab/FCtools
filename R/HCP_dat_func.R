@@ -225,7 +225,7 @@ extractFC=function(wb_path,
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""))))
 
   ## loop thru subjects
-  cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig," listed subject directories...\n\n",sep=" "))
+  cat(paste("Processing",length(sub.list), "valid subjects out of",N.orig,"listed subject directories...\n\n",sep=" "))
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]," ",sub,"/",length(sub.list),"...",sep=""))
