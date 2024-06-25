@@ -204,7 +204,7 @@ extractFC=function(wb_path,
     if(any(fmri_dir.check!=1)) {stop("\nEach fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
   }
   
-  cat(" Done.\n")
+  cat("\n Directory structure check completed.\n\n")
   ##setup report dataframe
   report=data.frame(matrix(NA,nrow=length(sub.list),ncol=3))
   colnames(report)=c("subj","mean_RMS/FD","total_frames")
