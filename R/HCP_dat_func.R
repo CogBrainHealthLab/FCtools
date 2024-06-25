@@ -144,30 +144,42 @@ extractFC=function(wb_path,
     fmri.filelist.check=unique(dirname(fmri.filelist))
     fmri_dir.check=matrix(NA, nrow=length(fmri.filelist.check), ncol=2)
     all_dir.check=rep(NA, length(dir.list))
+    sub_dir.check=rep(NA, length(sub.list))
+
+    #check for empty fMRI directories
+    for (dir in 1:length(dir.list))  {all_dir.check[dir]=length(list.files(dir.list[dir],recursive=T))}
     
-    for (dir in 1:length(dir.list))
-    {
-      all_dir.check[dir]=length(list.files(dir.list[dir]))
-    }
     if(any(all_dir.check==0)) 
     {
-      cat(paste0("The folowing directories are empty and will be ignored:\n"))
+      cat(paste0("\nThe folowing directories are empty and will be ignored:\n"))
       cat(paste0(gsub(pattern=base_dir,replacement = "",dir.list[all_dir.check==0]),"\n"))
     }
+
+    #check for empty subject directories
+    for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(list.files(paste0(base_dir,sub.list[subj]),recursive=T))}
+    
+    if(any(all_dir.check==0)) 
+    {
+      cat(paste0("\nThe folowing subject directories are empty and will be ignored:\n"))
+      cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
+      sub.list=sub.list[-sub_dir.check==0]
+    }
+
+    #check for missing movement files or fMRI directories containing more than one fMRI volume
     for (fmri_dir in 1:length(fmri.filelist.check))
     {
       fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = fmri.filelist)==T))
       fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.filelist.check[fmri_dir],string = movement.filelist)==T))
     }
-
+    
     if(any(fmri_dir.check[,2]==0))
     {
-      cat("The following subject fMRI directories do not contain a movement file:\n")
+      cat("\nThe following subject fMRI directories do not contain a movement file:\n")
       cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,2]==0]),"\n"))
     }
     if(any(fmri_dir.check[,1]>1))
     {
-      cat("The following subject fMRI directories contain more than one fMRI volume:\n")
+      cat("\nThe following subject fMRI directories contain more than one fMRI volume:\n")
       cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[fmri_dir.check[,1]>1]),"\n"))
     }
     #if(any(fmri_dir.check[,2]>2))
@@ -176,7 +188,7 @@ extractFC=function(wb_path,
     #  cat(gsub(pattern=base_dir,replacement = "",fmri.filelist.check[which(fmri_dir.check[,2]>1)]),"\n")
     #}
     
-    if(any(fmri_dir.check!=1)) {stop("Each fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
+    if(any(fmri_dir.check!=1)) {stop("\nEach fMRI directory can only contain 1 fMRI volume and at least 1 movement file")}
   }
   
   cat(" Done.\n")
