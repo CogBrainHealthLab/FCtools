@@ -366,10 +366,10 @@ extractFC=function(wb_path,
       #output FC matrix
       headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
       
-      write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
       write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
-      
-      remove(xii.final, sub_keys,brain_vec,xii_pmean,data_pm, headmotion.row, headmotion.param)
+      write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
+    
+      remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p, headmotion.row, headmotion.param)
       end=Sys.time()
       
       cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
