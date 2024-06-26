@@ -381,7 +381,10 @@ extractFC=function(wb_path,
         {
           cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject")   
         }
-    } 
+    } else
+    {
+      cat("Not processed; Output files from a previous are detected.\n")  
+    }
   }
 
   ##compiling headmotion parameters across subjects
