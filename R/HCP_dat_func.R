@@ -229,7 +229,7 @@ extractFC=function(wb_path,
   for (sub in 1:NROW(sub.list))
   {
     cat(paste(sub.list[sub]," ",sub,"/",length(sub.list),"...",sep=""))
-    if(((!file.exists(paste(output_dir,"/headmotion/",sub.list[sub],".csv",sep="")) & !file.exists(paste(output_dir,"/FCmat/",sub.list[sub],".txt",sep=""))) & overwrite==F) | overwrite==T)
+    if(((!file.exists(paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep="")) & !file.exists(paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""))) & overwrite==F) | overwrite==T)
       {
       start=Sys.time()
       #filepaths
