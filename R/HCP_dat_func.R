@@ -378,14 +378,8 @@ extractFC=function(wb_path,
           end=Sys.time()
           
           cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
-        } else
-        {
-          cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject")   
-        }
-    } else
-    {
-      cat(" Not processed; output files from a previous run are detected.\n")  
-    }
+        } else  {cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject")}
+    } else  {cat(" Not processed; output files from a previous run are detected.\n")}
   }
 
   ##compiling headmotion parameters across subjects
@@ -407,7 +401,6 @@ extractFC=function(wb_path,
   }
   write.table(report.all,file=paste0(output_dir,"/report.csv"),row.names = F,sep=",")
   cat(paste0("done. Report written to ",output_dir,"/report.csv")) 
-  
 }
 
 ########################################################################################################
