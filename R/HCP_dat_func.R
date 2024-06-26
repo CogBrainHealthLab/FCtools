@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 26/6/2024 4.10pm\n checking directory structure...\n")
+  cat("ExtractFC tool: last updated 26/6/2024 10.10pm\n checking directory structure...\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -400,7 +400,7 @@ extractFC=function(wb_path,
     colnames(report.all)=c("subject","mean FD/RMS", "total frames")
   }
 
-  for (sub in 1:length(headmotion.output))
+  for (sub in 1:length(headmotion.output.filelist))
   {
     report.all[sub,]=read.table(headmotion.output.filelist[sub],header = F,sep=",")[1,]
   }
