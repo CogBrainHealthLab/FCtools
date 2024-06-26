@@ -262,12 +262,14 @@ extractFC=function(wb_path,
       } else
       {
         mov.dat=read.table(movement.path)
-        if(NCOL(mov.dat)==1)  {movement.dat=mov.dat$V1} 
-        else if(NCOL(mov.dat)>=6)  {movement.dat=extractFD(mov.dat[,1:6])} 
-        else  {movement.dat=NA}
+        if(NCOL(mov.dat)==1)  {movement.dat=mov.dat$V1
+        } else if(NCOL(mov.dat)>=6)  
+        {movement.dat=extractFD(mov.dat[,1:6])
+        } else  
+        {movement.dat=NA}
       }
-      if(!any(is.na(movement.dat)))  {headmotion.param$mean=mean(movement.dat)} 
-      else  {headmotion.param$mean="Unable to compute. Missing/corrupted head motion data"}
+      if(!any(is.na(movement.dat)))  {headmotion.param$mean=mean(movement.dat)
+      } else  {headmotion.param$mean="Unable to compute. Missing/corrupted head motion data"}
       
       ##check number of fmri volumes, if multiple fmri volumes are detected, they are to be concatenated
       if(length(fmri.path)>1)
@@ -316,63 +318,69 @@ extractFC=function(wb_path,
             exc_frames=unique(exc_frames)
             exc_frames=exc_frames[order(exc_frames)]
           } 
-  
-        #remove frames if necessary
-          #if there is any missing movement data, or number of timepoints in the headmotion file do not match the number of frames, no scrubbing will be carried out.
-        if(NCOL(xii.mat)!=length(movement.dat) | any(is.na(movement.dat)))
+
+      ##proceed with generating FC matrices if there are at least 10 frames
+      if((headmotion.param$total_frames-length(exc_frames))>10)
         {
-          cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
-          xii.scrubbed=xii.mat
-          headmotion.param$no_frames_removed="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
+          #remove frames if necessary
+          #if there is any missing movement data, or number of timepoints in the headmotion file do not match the number of frames, no scrubbing will be carried out.
+          if(NCOL(xii.mat)!=length(movement.dat) | any(is.na(movement.dat)))
+          {
+            cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
+            xii.scrubbed=xii.mat
+            headmotion.param$no_frames_removed="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
+          } else
+          {
+            xii.scrubbed=xii.mat[,-exc_frames]
+            headmotion.param$no_frames_removed=length(exc_frames)
+          }
+          n_timepoints=NCOL(xii.scrubbed)
+          } else
+          {
+            xii.scrubbed=xii.mat
+            n_timepoints=NCOL(xii.scrubbed)
+          }
+          ##Global Signal Regression
+          if(GSR==T)
+          {
+            dmat=xii.scrubbed
+            gsig=colMeans(dmat)
+            dmat=fMRItools::nuisance_regression(dmat, cbind(1, gsig,gsig^2))
+            xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
+            xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
+            remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
+          } else if(GSR==F)
+          {
+            xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
+            xii.final=ciftiTools::move_from_mwall(xii.final, NA)
+            remove(xii.base,xii.scrubbed)
+          }
+          
+          ##generate parcellated timeseries
+          sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
+          brain_vec=c(parc, sub_keys)
+          xii_pmean=matrix(ncol=atlas+19,nrow=n_timepoints)
+          timeseries.dat=as.matrix(xii.final)
+          
+          for (p in 1:(atlas+19))
+          {
+            data_p=timeseries.dat[brain_vec==p,]
+            xii_pmean[,p]=colMeans(data_p,na.rm = T)
+          }
+          #output FC matrix
+          headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
+          
+          write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
+          write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
+        
+          remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p, headmotion.row, headmotion.param)
+          end=Sys.time()
+          
+          cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
         } else
         {
-          xii.scrubbed=xii.mat[,-exc_frames]
-          headmotion.param$no_frames_removed=length(exc_frames)
+          cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject")   
         }
-        n_timepoints=NCOL(xii.scrubbed)
-      } else
-      {
-        xii.scrubbed=xii.mat
-        n_timepoints=NCOL(xii.scrubbed)
-      }
-      
-      ##Global Signal Regression
-      if(GSR==T)
-      {
-        dmat=xii.scrubbed
-        gsig=colMeans(dmat)
-        dmat=fMRItools::nuisance_regression(dmat, cbind(1, gsig,gsig^2))
-        xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
-        xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
-        remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
-      } else if(GSR==F)
-      {
-        xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
-        xii.final=ciftiTools::move_from_mwall(xii.final, NA)
-        remove(xii.base,xii.scrubbed)
-      }
-      
-      ##generate parcellated timeseries
-      sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
-      brain_vec=c(parc, sub_keys)
-      xii_pmean=matrix(ncol=atlas+19,nrow=n_timepoints)
-      timeseries.dat=as.matrix(xii.final)
-      
-      for (p in 1:(atlas+19))
-      {
-        data_p=timeseries.dat[brain_vec==p,]
-        xii_pmean[,p]=colMeans(data_p,na.rm = T)
-      }
-      #output FC matrix
-      headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
-      
-      write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
-      write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
-    
-      remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p, headmotion.row, headmotion.param)
-      end=Sys.time()
-      
-      cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
     } 
   }
 
