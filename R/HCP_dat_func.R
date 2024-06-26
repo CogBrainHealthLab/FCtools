@@ -383,7 +383,7 @@ extractFC=function(wb_path,
         }
     } else
     {
-      cat("Not processed; Output files from a previous are detected.\n")  
+      cat("Not processed; Output files from a previous run are detected.\n")  
     }
   }
 
