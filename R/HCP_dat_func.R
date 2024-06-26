@@ -389,6 +389,7 @@ extractFC=function(wb_path,
   }
 
   ##compiling headmotion parameters across subjects
+  cat("\n Compiling report...")  
   headmotion.output.filelist=list.files(paste0(output_dir,"/headmotion/"))
   if(scrub==T)  
   {
@@ -405,6 +406,8 @@ extractFC=function(wb_path,
     report.all[sub,]=read.table(paste0(output_dir,"/headmotion/",headmotion.output.filelist[sub]),header = F,sep=",")[1,]
   }
   write.table(report.all,file=paste0(output_dir,"/report.csv"),row.names = F,sep=",")
+  cat(paste0("done. Report written to ",output_dir,"/report.csv")) 
+  
 }
 
 ########################################################################################################
