@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 26/6/2024 3.40pm\n checking directory structure...\n")
+  cat("ExtractFC tool: last updated 26/6/2024 4.00pm\n checking directory structure...\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -146,7 +146,8 @@ extractFC=function(wb_path,
   if(dir.check==T)
   {
     dir.list=list.dirs(base_dir,recursive=T,full.names=T)
-    fmri.dir.list=unique(dirname(fmri.filelist))
+    fmri.dirs.list=unique(dirname(fmri.filelist))
+    fmri.dirslash.list=paste0(unique(dirname(fmri.filelist)),"/")
     all_dir.check=rep(NA, length(dir.list))
     sub_dir.check=rep(NA, length(sub.list))
     fmri_dir.check = matrix(NA, nrow = length(fmri.dir.list), ncol = 2)
@@ -191,7 +192,7 @@ extractFC=function(wb_path,
     for (fmri_dir in 1:length(fmri.dir.list))
     {
       fmri_dir.check[fmri_dir,1]=length(which(stringr::str_detect(pattern = fmri.dir.list[fmri_dir],string = movement.filelist)==T))
-      fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.dir.list[fmri_dir],string = fmri.filelist)==T))
+      fmri_dir.check[fmri_dir,2]=length(which(stringr::str_detect(pattern = fmri.dirslash.list[fmri_dir],string = fmri.filelist)==T))
     }
     
     if(any(fmri_dir.check[,2]==0))
