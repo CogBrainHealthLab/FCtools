@@ -168,7 +168,7 @@ extractFC=function(wb_path,
     {
       dir.empty=dir.list[all_dir.check==0]
         
-      if(length(exc.sub)>0) #remove invalid subjects detected earlier
+      if(any(sub_dir.check==0)) #remove invalid subjects detected earlier
         {
         remove.idx=list()
         for (sub.exc in 1:length(exc.sub))  {remove.idx[[sub.exc]]=which(stringr::str_detect(pattern = exc.sub[sub.exc],string = dir.empty)==T)}
