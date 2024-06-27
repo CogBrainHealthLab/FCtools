@@ -169,18 +169,18 @@ extractFC=function(wb_path,
     sub_dir.check=rep(NA, length(sub.list))
     fmri_dir.check = matrix(NA, nrow = length(fmri.dir.list), ncol = 2)
     
-    #check for subject directories without an fMRI volume
+    #check for subject directories without at least one fMRI volume
     for (subj in 1:length(sub.list))  {sub_dir.check[subj]=length(which(stringr::str_detect(pattern = sub.list[subj],string = fmri.filelist)==T))}
   
     if(any(sub_dir.check==0)) 
     {
-      cat(paste0("\nThe folowing subject directories do not contain an fMRI file; they will be ignored:\n"))
+      cat(paste0("\nThe folowing subject directories do not contain at least 1 fMRI voluume; they will be ignored:\n"))
       cat(paste0(gsub(pattern=base_dir,replacement = "",sub.list[sub_dir.check==0]),"\n"))
       exc.sub=sub.list[sub_dir.check==0]
       sub.list=sub.list[-which(sub_dir.check==0)]
     }
     
-    #check for fMRI directories without fMRI volumes
+    #check for fMRI directories without at least one fMRI volumes
     for (dir in 1:length(dir.list))  {all_dir.check[dir]=length(which(stringr::str_detect(pattern = dir.list[dir],string = fmri.filelist)))}
 
     if(any(all_dir.check==0)) 
@@ -200,7 +200,7 @@ extractFC=function(wb_path,
 
       if(length(dir.empty>0))
          {
-          cat(paste0("\nThe folowing directories are empty and will be ignored:\n"))
+          cat(paste0("\nThe folowing subjects' fMRI directories do not contain an fMRI volume and will be ignored:\n"))
           cat(paste0(gsub(pattern=base_dir,replacement = "",dir.empty),"\n"))     
          }
     }
