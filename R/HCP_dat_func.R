@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 27/6/2024 4.15pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 27/6/2024 4.50pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -109,6 +109,7 @@ extractFC=function(wb_path,
   ## file and subject listing
   fmri.filelist=list.files(path = base_dir,pattern = paste(task,".*",extension,sep=""),recursive = T,full.names=T)
   movement.filelist=list.files(path = base_dir,pattern =movement.extension,recursive = T,full.names=T)
+  dir.list=list.dirs(base_dir,recursive=T,full.names=T)
 
     #if subjects vector is specified
     if(!missing(subjects))
@@ -116,22 +117,26 @@ extractFC=function(wb_path,
       fmri.path.idx=list()
       movement.path.idx=list()
       sub.list.idx=list()
+      dir.list.idx=list()
       
       for (subj in 1:length(subjects))
         {
         fmri.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = fmri.filelist)==T)
         movement.path.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = movement.filelist)==T)
         sub.list.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = sub.list)==T)
+        dir.list.idx[[subj]]=which(stringr::str_detect(pattern = subjects[subj],string = dir.list)==T)
         }
       fmri.path.idx=unlist(fmri.path.idx)
       movement.path.idx=unlist(movement.path.idx)
       sub.list.idx=unlist(sub.list.idx)
+      dir.list.idx=unlist(dir.list.idx)
 
       #if the user provides a wrong subject ID
       if(length(sub.list.idx)!=length(subjects))  {stop("not all specified subjects' directories could be found")}
   
       fmri.filelist=fmri.filelist[fmri.path.idx]
       movement.filelist=movement.filelist[movement.path.idx]
+      dir.list=dir.list[dir.list.idx]
       sub.list=subjects
       }
   
@@ -159,7 +164,6 @@ extractFC=function(wb_path,
   ##subject level checks
   if(dir.check==T)
   {
-    dir.list=list.dirs(base_dir,recursive=T,full.names=T)
     fmri.dir.list=unique(dirname(fmri.filelist))
     all_dir.check=rep(NA, length(dir.list))
     sub_dir.check=rep(NA, length(sub.list))
@@ -220,9 +224,8 @@ extractFC=function(wb_path,
       cat(paste0(gsub(pattern=base_dir,replacement = "",fmri.dir.list[fmri_dir.check[,2]>1]),"\n"))
       stop()
     }
+    cat("\n Directory structure check completed.\n\n")
   }
-  
-  cat("\n Directory structure check completed.\n\n")
 
   ##load and configure ciftitools
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
