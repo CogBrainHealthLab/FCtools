@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 27/6/2024 4.50pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 28/6/2024 2.10pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -265,15 +265,22 @@ extractFC=function(wb_path,
         for(volume in 1:length(movement.path))
         {
           mov.dat=read.table(movement.path[volume])
-          if(NCOL(mov.dat)==1)  {movement.dat[[volume]]=mov.dat$V1} 
-          else if(NCOL(mov.dat)>=6)  {movement.dat[[volume]]=extractFD(mov.dat[,1:6])} 
-          else  {movement.dat[[volume]]=NA}
-          
+          if(NCOL(mov.dat)==1)  
+            {movement.dat[[volume]]=mov.dat$V1} else if(NCOL(mov.dat)>=6)  
+            {movement.dat[[volume]]=extractFD(mov.dat[,1:6])} else  
+            {movement.dat[[volume]]=NA}
+
+          ##if its not the last volume 
           if(volume!=length(movement.path))  {frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)}
           remove(mov.dat)
         }
+
+        ##concatenat vectors of frame ends only if there are more than 2 volumes
+        if(length(movement.path)>2)  
+        {
+          for(volume in 2:(length(movement.path)-1))  {frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]}
+        }
         
-        for(volume in 2:(length(movement.path)-1))  {frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]}
         movement.dat=unlist(movement.dat)
         frame.ends=unlist(frame.ends)
         
