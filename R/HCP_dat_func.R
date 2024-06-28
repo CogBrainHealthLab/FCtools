@@ -402,7 +402,7 @@ extractFC=function(wb_path,
           end=Sys.time()
           
           cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
-        } else  {cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject")}
+        } else  {cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject.\n")}
     } else  {cat(" Not processed; output files from a previous run are detected.\n")}
   }
 
