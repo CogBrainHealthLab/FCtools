@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 28/6/2024 5.40pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 28/6/2024 5.45pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -399,7 +399,8 @@ extractFC=function(wb_path,
           
           cat(paste(" completed in",round(difftime(end,start, units="secs"),1),"secs\n",sep=" "))   
         } else  {cat("Less than 10 valid frames exist after scrubbing. FC matrix will not be generated for this subject.\n")}
-    } else  {cat(" Not processed; output files from a previous run are detected.\n")}
+      }
+    }  else  {cat(" Not processed; output files from a previous run are detected.\n")}
   }
 
   ##compiling headmotion parameters across subjects
