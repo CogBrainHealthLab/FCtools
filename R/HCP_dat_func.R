@@ -275,7 +275,7 @@ extractFC=function(wb_path,
           remove(mov.dat)
         }
 
-        ##concatenat vectors of frame ends only if there are more than 2 volumes
+        ##edit frame end indices only if there are more than 2 volumes; i.e. frame ends + number of frames in previous volumes
         if(length(movement.path)>2)  
         {
           for(volume in 2:(length(movement.path)-1))  {frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]}
