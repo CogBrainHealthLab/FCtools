@@ -154,7 +154,7 @@ vizChord_edge=function(data,width,height,hot,cold, colorscheme, filename, colorb
       ggplot2::guides(color=ggplot2::guide_colorbar(ticks=F,title.position = "left",barheight = 0.5))+
       ggplot2::theme(legend.position = "bottom",legend.title=ggplot2::element_text(face="bold", size=7,vjust=1),
                      legend.text =ggplot2::element_text(size=6))
-    legend = cowplot::get_legend(legend.plot)
+    legend = cowplot::get_plot_component(legend.plot, 'guide-box-bottom', return_all = TRUE)
 
     png(filename =filename, width = width, height = height, res = 300)
     p=cowplot::plot_grid(FCchord,legend,ncol=1, nrow=2, rel_heights = c(0.95,0.05))
@@ -240,7 +240,7 @@ vizChord_12x12=function(data,width,height,hot,cold, colorscheme, filename,colorb
       ggplot2::guides(color=ggplot2::guide_colorbar(ticks=F,title.position = "left",barheight = 0.5))+
       ggplot2::theme(legend.position = "bottom",legend.title=ggplot2::element_text(face="bold", size=7,vjust=1),
                      legend.text =ggplot2::element_text(size=6))
-    legend = cowplot::get_legend(legend.plot)
+    legend = cowplot::get_plot_component(legend.plot, 'guide-box-bottom', return_all = TRUE)
 
     png(filename =filename, width = width, height = height, res = 300)
     p=cowplot::plot_grid(FCchord,legend,ncol=1, nrow=2, rel_heights = c(0.95,0.05))
