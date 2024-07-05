@@ -310,11 +310,16 @@ cpm.lesion=function(train.data,test.data,train.outcome, test.outcome,p=0.05)
 
   ##atlas selection
   edge_lengths=c(4005,7021,23871,30135)
-
-  if(is.na(match(NCOL(data),edge_lengths)))
-  {stop("The number of columns in the input matrix is not consistent with any of the recognized parcellation schemes. The input matrix should contain 4005, 7021, 23871 or 30135 columns")}
+  if(is.na(match(length(data),edge_lengths)))
+  {
+    stop("The length of the input vector does not fit any of the recognized parcellation schemes. The input vector should contain 4005, 7021, 23871 or 30135 values")
+  } else
+  {
+    atlas=match(length(data),edge_lengths)
+  }
 
   ##preparing atlas labels for removing networks of edges
+  label=labels_dat[[match(length(data),edge_lengths)]]
   label=labels_dat[[match(length(data),edge_lengths)]]
   nnode=NROW(label)
   networks.list=data.frame(unique(cbind(as.numeric(label$region),label$regionlabel)))
