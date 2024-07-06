@@ -174,27 +174,27 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
 
   ##processing results
-  #saving cluster-related results into a data.frame object
-  orig.clust=data.frame(orig.clust)
-  orig.clust$p.unweighted=NA
-  orig.clust$p.weighted=NA
+    #saving cluster-related results into a data.frame object
+    orig.clust=data.frame(orig.clust)
+    orig.clust$p.unweighted=NA
+    orig.clust$p.weighted=NA
 
-  #thresholding clusters using permuted null distribution
-  for(row in 1:nrow(orig.clust))
-  {
-    orig.clust[row,3]=sum(max.netstr[,1] > orig.clust[row,1])/nperm
-    orig.clust[row,4]=sum(max.netstr[,2] > orig.clust[row,2])/nperm
-  }
+    #thresholding clusters using permuted null distribution
+    for(row in 1:nrow(orig.clust))
+    {
+      orig.clust[row,3]=sum(max.netstr[,1] > orig.clust[row,1])/nperm
+      orig.clust[row,4]=sum(max.netstr[,2] > orig.clust[row,2])/nperm
+    }
 
-  #formatting results table
-  orig.clust[,c(3,4)][orig.clust[,c(3,4)]==0]=paste("<",1/nperm,sep="") #if p=0
-  orig.clust=cbind(c(1:nrow(orig.clust)),orig.clust)
-  colnames(orig.clust)=c("network no.","strength.unweighted","strength.weighted","pFWE.unweighted","pFWE.weighted")
-
-  #objects to return
-  returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
-  names(returnobj)=c("results","t.orig","tcrit","max.netstr")
-  return(returnobj)
+    #formatting results table
+    orig.clust[,c(3,4)][orig.clust[,c(3,4)]==0]=paste("<",1/nperm,sep="") #if p=0
+    orig.clust=cbind(c(1:nrow(orig.clust)),orig.clust)
+    colnames(orig.clust)=c("network no.","strength.unweighted","strength.weighted","pFWE.unweighted","pFWE.weighted")
+  
+    #objects to return
+    returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
+    names(returnobj)=c("results","t.orig","tcrit","max.netstr")
+    return(returnobj)
 }
 ############################################################################################################################
 ############################################################################################################################
@@ -256,15 +256,15 @@ extract.edges=function(NBS.obj,clust.no=1)
   mask=FC_mat.mask[upper.tri(FC_mat.mask,diag = F)]
   clust.tstat=tstat.thresholded*mask
 
-  #positive mask
-  clust.pos.mask=clust.tstat
-  clust.pos.mask[clust.pos.mask>0]=1
-  clust.pos.mask[clust.pos.mask<0]=0
-
-  #negative mask
-  clust.neg.mask=clust.tstat
-  clust.neg.mask[clust.neg.mask>0]=0
-  clust.neg.mask[clust.neg.mask<0]=1
+    #positive mask
+    clust.pos.mask=clust.tstat
+    clust.pos.mask[clust.pos.mask>0]=1
+    clust.pos.mask[clust.pos.mask<0]=0
+  
+    #negative mask
+    clust.neg.mask=clust.tstat
+    clust.neg.mask[clust.neg.mask>0]=0
+    clust.neg.mask[clust.neg.mask<0]=1
 
   ##objects to return
   returnobj=list(as.numeric(clust.tstat),as.numeric(clust.pos.mask),as.numeric(clust.neg.mask))
@@ -283,7 +283,6 @@ cluster.stat=function(data,nnodes,tcrit)
   tstat.thresholded.bin[abs(tstat.thresholded.bin)>0]=1
 
   ##setting up FCmatrices
-  nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -length(data))) / (2 * 0.5)
   FC_mat.unweighted=matrix(0,nrow=nnodes,ncol=nnodes)
   FC_mat.weighted=matrix(0,nrow=nnodes,ncol=nnodes)
 
@@ -291,6 +290,7 @@ cluster.stat=function(data,nnodes,tcrit)
   FC_mat.weighted[upper.tri(FC_mat.weighted,diag = F)]=tstat.thresholded
   FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag = F)]=tstat.thresholded.bin
   FC_mat.weighted=abs(FC_mat.weighted)-(FC_mat.unweighted*tcrit)
+  
   #clustering
   com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='undirected', weighted=NULL))
 
