@@ -26,7 +26,7 @@
 #'
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text
 #' @importFrom circlize colorRamp2 chordDiagram
-#' @importFrom cowplot get_legend plot_grid
+#' @importFrom cowplot get_plot_component plot_grid
 #' @importFrom ggplotify as.grob
 #' @export
 
