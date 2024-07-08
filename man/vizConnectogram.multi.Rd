@@ -43,7 +43,7 @@ vizConnectogram.multi(
 
 \item{leg.height}{height (in pixels) of legend, in pixels. Set to 100 by default}
 
-\item{margins}{vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. set to \code{c(1.2,1.2,1,1.5)} by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend.}
+\item{margins}{vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to \code{c(1.2,1.2,1,1.5)} by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend.}
 
 \item{nrownumber}{of rows in the plot}
 }
@@ -57,8 +57,8 @@ Visualizing mbrain connectivity profiles with multiple connectogram
 This function takes a matrix (NROW=number of connectogram; NCOL=number of edges in the connectogram) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
 }
 \examples{
-
+if (FALSE) {
 data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
 vizConnectogram.multi(data=data,ncol=3, nrow=2)
-
+}
 }
