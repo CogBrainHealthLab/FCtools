@@ -19,14 +19,14 @@
 #' @param width width (in pixels) of each connectogram. Set to 1000 by default
 #' @param height height (in pixels) of each connectogram . Set to 1050 by default
 #' @param leg.height height (in pixels) of legend, in pixels. Set to 100 by default
-#' @param margins vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. set to `c(1.2,1.2,1,1.5)` by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend.
+#' @param margins vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to `c(1.2,1.2,1,1.5)` by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend.
 #' @returns outputs a .png image
 #'
 #' @examples
-#'
+#' if (FALSE) {
 #' data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
 #' vizConnectogram.multi(data=data,ncol=3, nrow=2)
-#'
+#' }
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text scale_color_manual expand_limits unit guide_legend
 #' @importFrom igraph graph_from_adjacency_matrix get.edgelist E edge_attr
 #' @importFrom gridExtra grid.arrange

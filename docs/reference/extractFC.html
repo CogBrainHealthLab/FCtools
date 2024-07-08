@@ -55,8 +55,7 @@
 <span>  <span class="va">task</span>,</span>
 <span>  extension <span class="op">=</span> <span class="st">"_Atlas_MSMAll_hp0_clean.dtseries.nii"</span>,</span>
 <span>  movement.extension <span class="op">=</span> <span class="st">"Movement_RelativeRMS.txt"</span>,</span>
-<span>  output_dir <span class="op">=</span> <span class="st">"FCmat"</span>,</span>
-<span>  report_filename <span class="op">=</span> <span class="st">"report.csv"</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="st">"output_dir"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  dir.check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -101,11 +100,7 @@
 
 
 <dt>output_dir</dt>
-<dd><p>The output directory where the FC matrices will be saved. This directory will be created if it does not exist.</p></dd>
-
-
-<dt>report_filename</dt>
-<dd><p>The desired filename of the report containing columns of <code>subj</code>(subject ID),<code>Mean_RMS</code>(Mean Root Mean Squared displacement), and <code>no_frames_removed</code>(number of frames removed; only if <code>scrub=TRUE</code>)</p></dd>
+<dd><p>The output directory where the FC matrices and headmotion parameters will be saved. A default <code>output_dir</code> directory will be created if it does not exist.</p></dd>
 
 
 <dt>overwrite</dt>
@@ -120,7 +115,7 @@
     <h2>Value</h2>
     
 
-<p>outputs M x M matrices in the <code>output_dir</code> and a report file (.csv format) in the working directory containing the head motion measurements</p>
+<p>outputs M x M matrices in <code>output_dir\FCmat</code>, headmotion measurements in <code>output_dir\headmotion</code> and a summary headmotion measurements across all subjects <code>output_dir\report.csv</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -133,7 +128,7 @@ installed prior to running the function.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu">extractFC</span><span class="op">(</span>wb_path <span class="op">=</span> <span class="st">"/home/junhong.yu/workbench/"</span>,task<span class="op">=</span><span class="st">"CONFLICT"</span>,atlas<span class="op">=</span><span class="fl">100</span>,GSR<span class="op">=</span><span class="cn">TRUE</span>,scrub<span class="op">=</span><span class="cn">TRUE</span>,output_dir <span class="op">=</span> <span class="st">"FCmat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">extractFC</span><span class="op">(</span>wb_path <span class="op">=</span> <span class="st">"/home/junhong.yu/workbench/"</span>,task<span class="op">=</span><span class="st">"REST"</span>,atlas<span class="op">=</span><span class="fl">100</span>,GSR<span class="op">=</span><span class="cn">TRUE</span>,scrub<span class="op">=</span><span class="cn">TRUE</span>,output_dir <span class="op">=</span> <span class="st">"FCmat"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

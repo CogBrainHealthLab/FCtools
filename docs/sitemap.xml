@@ -31,6 +31,9 @@
     <loc>/reference/extractFC.html</loc>
   </url>
   <url>
+    <loc>/reference/extractFS.ROI.html</loc>
+  </url>
+  <url>
     <loc>/reference/extract_headmotion.html</loc>
   </url>
   <url>
@@ -50,5 +53,8 @@
   </url>
   <url>
     <loc>/reference/vizConnectogram.html</loc>
+  </url>
+  <url>
+    <loc>/reference/vizConnectogram.multi.html</loc>
   </url>
 </urlset>
