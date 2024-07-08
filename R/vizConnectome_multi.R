@@ -9,7 +9,7 @@
 #'
 #' @param data a matrix of edge values with 4005, 7021, 23871 or 30135 columns
 #' @param ncol number of columns in the plot
-#' @param nrownumber of rows in the plot
+#' @param nrow number of rows in the plot
 #' @param hot color for the positive connections. Set to `#F8766D` by default.
 #' @param cold color for the negative connections. Set to `#00BFC4` by default.
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.

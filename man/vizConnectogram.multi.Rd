@@ -29,6 +29,8 @@ vizConnectogram.multi(
 
 \item{ncol}{number of columns in the plot}
 
+\item{nrow}{number of rows in the plot}
+
 \item{edgethickness}{a value to adjust the thickness of the edges. Set to 0.8 by default.}
 
 \item{filename}{output filename with a *.png file extension. Set to "conn.png" by default}
@@ -44,8 +46,6 @@ vizConnectogram.multi(
 \item{leg.height}{height (in pixels) of legend, in pixels. Set to 100 by default}
 
 \item{margins}{vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to \code{c(1.2,1.2,1,1.5)} by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend.}
-
-\item{nrownumber}{of rows in the plot}
 }
 \value{
 outputs a .png image
