@@ -238,6 +238,23 @@ genplot=function(row_data,title,nnodes,label,edgethickness, hot, cold,colorschem
 }
 ########################################################################################################
 ########################################################################################################
+#' @title edgelist
+#' @description Listing the edges in a connectogram.
+#'
+#' @details This function takes a vector of edge-to-edge connections, and returns a data.frame object containing the edges (defined by their pair of connecting nodes) and their edge values
+#'
+#' @param data a vector of edge values with a length of 4005, 7021, 23871 or 30135.
+#' @returns a data.frame() object with the columns of `node_1`, `node_2` and `weight` columns
+#'
+#' @examples
+#'
+#' results=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.01, 0.98,0.01))
+#' edgelist(data=results)
+#'
+#' @importFrom igraph graph_from_adjacency_matrix get.edgelist E
+#' @export
+########################################################################################################
+########################################################################################################
 edgelist=function(data)
 {
   ##selecting atlas
