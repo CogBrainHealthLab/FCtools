@@ -1,6 +1,6 @@
 # FCtools: Visualizing brain connectivity
 
-Cognitive and Brain Health Laboratory 2024-06-19
+Cognitive and Brain Health Laboratory 2024-07-09
 
 ### **1. Introduction**
 
