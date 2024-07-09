@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # FCtools: Visualizing brain connectivity
 
 Cognitive and Brain Health Laboratory 2024-06-19
