@@ -48,11 +48,14 @@
 <span>  <span class="va">data</span>,</span>
 <span>  hot <span class="op">=</span> <span class="st">"#F8766D"</span>,</span>
 <span>  cold <span class="op">=</span> <span class="st">"#00BFC4"</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">1800</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">1800</span>,</span>
+<span>  width <span class="op">=</span> <span class="fl">1200</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">1200</span>,</span>
 <span>  filename <span class="op">=</span> <span class="st">"conn.png"</span>,</span>
 <span>  <span class="va">colorscheme</span>,</span>
-<span>  colorbar <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="va">title</span>,</span>
+<span>  leg.height <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  <span class="va">ncol</span>,</span>
+<span>  <span class="va">nrow</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -71,11 +74,11 @@
 
 
 <dt>width</dt>
-<dd><p>width of the chord diagram.Set to 1800 by default.</p></dd>
+<dd><p>width (in pixels) of each connectogram. Set to 1200 by default.</p></dd>
 
 
 <dt>height</dt>
-<dd><p>height of the chord diagram.Set to 1800 by default.</p></dd>
+<dd><p>height (in pixels) of each connectogram . Set to 1200 by default.</p></dd>
 
 
 <dt>filename</dt>
@@ -86,8 +89,20 @@
 <dd><p>an optional vector of color names or color codes to color code the networks.</p></dd>
 
 
-<dt>colorbar</dt>
-<dd><p><code>TRUE</code> or <code>FALSE</code> option on whether a colorbar for the connectivity strength will be displayed. Set to <code>TRUE</code> by default.</p></dd>
+<dt>title</dt>
+<dd><p>a vector of strings to be used as title</p></dd>
+
+
+<dt>leg.height</dt>
+<dd><p>height (in pixels) of legend, in pixels. Set to 100 by default. Not used for single row data</p></dd>
+
+
+<dt>ncol</dt>
+<dd><p>number of columns in the plot. Not used for single row data</p></dd>
+
+
+<dt>nrow</dt>
+<dd><p>number of rows in the plot. Not used for single row data</p></dd>
 
 </dl></div>
     <div id="value">

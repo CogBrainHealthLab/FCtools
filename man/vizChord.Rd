@@ -8,11 +8,14 @@ vizChord(
   data,
   hot = "#F8766D",
   cold = "#00BFC4",
-  width = 1800,
-  height = 1800,
+  width = 1200,
+  height = 1200,
   filename = "conn.png",
   colorscheme,
-  colorbar = TRUE
+  title,
+  leg.height = 100,
+  ncol,
+  nrow
 )
 }
 \arguments{
@@ -22,15 +25,21 @@ vizChord(
 
 \item{cold}{color for the negative connections.Set to \verb{#00BFC4} by default.}
 
-\item{width}{width of the chord diagram.Set to 1800 by default.}
+\item{width}{width (in pixels) of each connectogram. Set to 1200 by default.}
 
-\item{height}{height of the chord diagram.Set to 1800 by default.}
+\item{height}{height (in pixels) of each connectogram . Set to 1200 by default.}
 
 \item{filename}{output filename with a *.png file extension. Set to \code{conn.png} by default}
 
 \item{colorscheme}{an optional vector of color names or color codes to color code the networks.}
 
-\item{colorbar}{\code{TRUE} or \code{FALSE} option on whether a colorbar for the connectivity strength will be displayed. Set to \code{TRUE} by default.}
+\item{title}{a vector of strings to be used as title}
+
+\item{leg.height}{height (in pixels) of legend, in pixels. Set to 100 by default. Not used for single row data}
+
+\item{ncol}{number of columns in the plot. Not used for single row data}
+
+\item{nrow}{number of rows in the plot. Not used for single row data}
 }
 \value{
 outputs a .png image

@@ -1,11 +1,25 @@
-FCtools: Visualizing brain connectivity
-================
-Cognitive and Brain Health Laboratory
-2024-06-19
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# FCtools: Visualizing brain connectivity
+
+Cognitive and Brain Health Laboratory 2024-06-19
 
 ### **1. Introduction**
 
-The FCtools package contains a collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data (see [here](https://cogbrainhealthlab.github.io/FCtools/reference/index.html) for the full list of functions). This readme will show you how to generate connectograms and chord diagrams to illustrate your brain connectivity-related results, both SC and FC. Currently, in our neuroimaging database, we have connectivity data that are derived from different atlas parcellation schemes, as a result, the lengths of the input vectors (N x N FC/SC matrix stringed out into a single vector) are contingent upon the atlas parcellation schemes used. 
+The FCtools package contains a collection of in-house R functions for
+post-processing, analyzing and visualizing brain connectivity data (see
+[here](https://cogbrainhealthlab.github.io/FCtools/reference/index.html)
+for the full list of functions). This readme will show you how to
+generate connectograms and chord diagrams to illustrate your brain
+connectivity-related results, both SC and FC. Currently, in our
+neuroimaging database, we have connectivity data that are derived from
+different atlas parcellation schemes, as a result, the lengths of the
+input vectors (N x N FC/SC matrix stringed out into a single vector) are
+contingent upon the atlas parcellation schemes used.
 
 ### **2. Connectogram**
 
@@ -27,22 +41,22 @@ library(FCtools)
 The `vizConnectogram()` function can take input vectors of the following
 lengths:
 
-- 30135 — derived from 246x246 FC matrices generated using the
-  [Brainnetome](https://atlas.brainnetome.org/bnatlas.html) atlas
+-   30135 — derived from 246x246 FC matrices generated using the
+    [Brainnetome](https://atlas.brainnetome.org/bnatlas.html) atlas
 
-- 23871 — derived from 219x219 FC matrices generated using the
-  [Schaefer](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)-200
-  atlas + 19 subcortical regions from the freesurfer subcortical
-  segmentations. This is typically used in the NIMH datasets
+-   23871 — derived from 219x219 FC matrices generated using the
+    [Schaefer](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)-200
+    atlas + 19 subcortical regions from the freesurfer subcortical
+    segmentations. This is typically used in the NIMH datasets
 
-- 7021 — derived from 119x119 FC matrices generated using the
-  [Schaefer](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)-100
-  atlas + 19 subcortical regions from the freesurfer subcortical
-  segmentations. This is typically used in the ABCD dataset
+-   7021 — derived from 119x119 FC matrices generated using the
+    [Schaefer](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)-100
+    atlas + 19 subcortical regions from the freesurfer subcortical
+    segmentations. This is typically used in the ABCD dataset
 
-- 4005 — derived from 90x90 SC matrices generated using the
-  [AAL](https://www.sciencedirect.com/science/article/abs/pii/S1053811901909784?via%3Dihub)-90
-  atlas
+-   4005 — derived from 90x90 SC matrices generated using the
+    [AAL](https://www.sciencedirect.com/science/article/abs/pii/S1053811901909784?via%3Dihub)-90
+    atlas
 
 The number of nodes to display in the connectogram plot will be
 automatically determined from the length of the input vector.
@@ -79,18 +93,15 @@ across both hemispheres.
 The `vizConnectogram()` allows you to customize the following visual
 parameters
 
-- `hot` : color code or name for the color of positive edges
+-   `hot` : color code or name for the color of positive edges
 
-- `cold` : color code or name for the color of positive edges
+-   `cold` : color code or name for the color of positive edges
 
-- `edgethickness`: thickness of the edge links; default thickness is set
-  to `0.8`
+-   `edgethickness`: thickness of the edge links; default thickness is
+    set to `0.8`
 
-- `colorscheme`: a vector of 8 color codes/names for all FC matrices or
-  7 color codes/names for SC matrices
-
-- `colorbar`: option to include a colorbar legend. Set to `TRUE` by
-  default
+-   `colorscheme`: a vector of 8 color codes/names for all FC matrices
+    or 7 color codes/names for SC matrices
 
 In the next example, we will simulate results derived from the
 brainnetome atlas (246x246 FC matrices; length of input vector=30135)
@@ -130,13 +141,31 @@ You can make it look a little less cluttered by reducing the thickness
 of the edge links. Note that the default value is `0.8`
 
 ``` r
-vizConnectogram(data=results, filename="FC_119_thinedges.png",edgethickness = 0.5)
+vizConnectogram(data=results, filename="4xFC_119_thinedges.png",edgethickness = 0.5)
 ```
 
-![](man/figures/FC_119_thinedges.png) This will be very effective if the edges are
-nicely bundled up, which isn’t the case for the above. So if you tried
-to reduce the thickness of the edge links and it doesn’t help much, then
-perhaps you should use a chord diagram instead
+![](man/figures/FC_119_thinedges.png) This will be very effective if the
+edges are nicely bundled up, which isn’t the case for the above. So if
+you tried to reduce the thickness of the edge links and it doesn’t help
+much, then perhaps you should use a chord diagram instead
+
+**C. Multiple connectograms**
+
+If necessary, you can plot out multiple connectograms and fit them nicely in a grid format.
+
+``` r
+network1=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005,0.99,0.005)) 
+network2=sample(c(1,0, -1), 7021, replace = TRUE, prob =c(0.005, 0.99,0.005)) 
+network3=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005, 0.99,0.005)) 
+network4=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005, 0.99,0.005))
+
+vizConnectogram(data=rbind(network1,network2,network3,network4),
+                           filename="4xFC_119.png",
+                           ncol=2,
+                           nrow=2,
+                           title=c("a)Network 1","b)Network 2","c)Network 3","d)Network 4"))
+```
+![](man/figures/4xFC_119.png) 
 
 ### **3. Chord diagram**
 
@@ -178,5 +207,24 @@ colorcodes=c(paletteer_c("grDevices::Temps", 12))
 
 vizChord(data=results, filename="FC_chord12.png", hot="red", cold="blue", colorscheme = colorcodes)
 ```
-
 ![](man/figures/FC_chord12.png)
+
+**C. Multiple connectograms**
+
+Just as above, you can plot out multiple chord diagrams and fit them nicely in a grid format.
+
+``` r
+network1=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005,0.99,0.005)) 
+network2=sample(c(1,0, -1), 7021, replace = TRUE, prob =c(0.005, 0.99,0.005)) 
+network3=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005, 0.99,0.005)) 
+network4=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.005, 0.99,0.005))
+
+vizChord(data=rbind(network1,network2,network3,network4),
+                           filename="4xFCchord_119.png",
+                           ncol=2,
+                           nrow=2,
+                           title=c("a) Network 1","b) Network 2","c) Network 3","d) Network 4"))
+```
+![](man/figures/4xFCchord_119.png) 
+
+
