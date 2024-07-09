@@ -5,7 +5,7 @@
 #' @details This function reads the *.table freesurfer output files and outputs two .csv files for the Destrieux and ASEG ROIs
 #' @param basename The base name of the .csv file. Set to `dat` by default.
 #' @returns Returns outputs two .csv files
-#'}
+#'
 #' @examples
 #' \dontrun{
 #' extractFS.ROI(basename="dat")

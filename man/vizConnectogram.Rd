@@ -8,18 +8,28 @@ vizConnectogram(
   data,
   hot = "#F8766D",
   cold = "#00BFC4",
+  ncol,
+  nrow,
   edgethickness = 0.8,
   filename = "conn.png",
   colorscheme,
-  colorbar = T
+  title,
+  width = 1000,
+  height = 1050,
+  leg.height = 200,
+  margins = c(1.2, 1.2, 1, 1.5)
 )
 }
 \arguments{
-\item{data}{a vector of edge values with a length of 4005, 7021, 23871 or 30135.}
+\item{data}{a matrix of edge values with 4005, 7021, 23871 or 30135 columns}
 
 \item{hot}{color for the positive connections. Set to \verb{#F8766D} by default.}
 
 \item{cold}{color for the negative connections. Set to \verb{#00BFC4} by default.}
+
+\item{ncol}{number of columns in the plot. Not used for single row data}
+
+\item{nrow}{number of rows in the plot. Not used for single row data}
 
 \item{edgethickness}{a value to adjust the thickness of the edges. Set to 0.8 by default.}
 
@@ -27,20 +37,28 @@ vizConnectogram(
 
 \item{colorscheme}{an optional vector of color names or color codes to color code the networks.}
 
-\item{colorbar}{\code{TRUE} or \code{FALSE} option on whether a colorbar for the connectivity strength will be displayed. Set to \code{TRUE} by default.}
+\item{title}{a vector of strings to be used as title}
+
+\item{width}{width (in pixels) of each connectogram. Set to 1000 by default. Not used for single row data}
+
+\item{height}{height (in pixels) of each connectogram . Set to 1050 by default. Not used for single row data}
+
+\item{leg.height}{height (in pixels) of legend, in pixels. Set to 100 by default. Not used for single row data}
+
+\item{margins}{vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to \code{c(1.2,1.2,1,1.5)} by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend. Not used for single row data}
 }
 \value{
 outputs a .png image
 }
 \description{
-Visualizing brain connectivity profiles with a connectogram
+Visualizing mbrain connectivity profiles with multiple connectogram
 }
 \details{
-This function takes a vector of edges and visualizes the edge-to-edge connectivity in a connectogram.
+This function takes a matrix (NROW=number of connectogram; NCOL=number of edges in the connectogram) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
 }
 \examples{
-
-results=sample(c(1,0, -1), 7021, replace = TRUE, prob = c(0.01, 0.98,0.01))
-vizConnectogram(data=results, filename="FC_119.png")
-
+if (FALSE) {
+data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
+vizConnectogram(data=data,ncol=3, nrow=2)
+}
 }
