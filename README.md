@@ -157,7 +157,7 @@ vizConnectogram(data=rbind(network1,network2,network3,network4),
                            filename="4xFC_119.png",
                            ncol=2,
                            nrow=2,
-                           title=c("a)Network 1","b)Network 2","c)Network 3","d)Network 4"))
+                           title=c("a) Network 1","b) Network 2","c) Network 3","d) Network 4"))
 ```
 ![](man/figures/4xFC_119.png) 
 
