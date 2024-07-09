@@ -12,7 +12,6 @@ extractFS.ROI(basename = "dat")
 \value{
 Returns outputs two .csv files
 }
-}
 \description{
 function to extract Destrieux atlas and ASEG ROIs
 }
