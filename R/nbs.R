@@ -131,6 +131,9 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 
   remove(mod)
 
+  if(sum(orig.clust==0))  {cat(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
+  } else
+  {
   ##permuted models
   #generating permutation sequences
   permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
@@ -195,6 +198,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
     names(returnobj)=c("results","t.orig","tcrit","max.netstr")
     return(returnobj)
+  }
 }
 ############################################################################################################################
 ############################################################################################################################
