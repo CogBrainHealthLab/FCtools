@@ -26,23 +26,21 @@
 ########################################################################################################
 extract_headmotion=function(filename="motiondat.csv")
 {
-  filelist=list.files(pattern=".html")
-  subjlist=gsub(".html","",filelist)
-  motiondat=data.frame(cbind(subjlist,rep(0,NROW(subjlist)),rep(0,NROW(subjlist)),rep(0,NROW(subjlist)),rep(0,NROW(subjlist)),rep(0,NROW(subjlist))))
-  colnames(motiondat)=c("subj","no.frames","FD","RMSD","FD.20","RMSD.25")
-  filename=gsub(subjlist[1],"",list.files(path=paste(subjlist[1],"/func/", sep=""),pattern="confounds_timeseries.tsv"))
-  for (subjno in 1:NROW(subjlist))
-  {
-    confounds=read.table(file = paste(subjlist[subjno],"/func/",subjlist[subjno],filename,sep=""), sep = '\t', header = TRUE)
-    confounds[confounds=="n/a"]=NA
-
-    motiondat$RMSD[subjno]=mean(as.numeric(confounds$rmsd), na.rm=T)
-    motiondat$no.frames=NROW(confounds)
-    motiondat$FD[subjno]=mean(as.numeric(confounds$framewise_displacement), na.rm=T)
-    motiondat$RMSD.25[subjno]=NROW(which(confounds$rmsd>0.25))/nrow(confounds)
-    motiondat$FD.20[subjno]=NROW(which(confounds$framewise_displacement>0.20))/nrow(confounds)
+  filelist = list.files(pattern = "_desc-confounds_timeseries.tsv",recursive = T)
+  sub_task_list=gsub(pattern="_desc-confounds_timeseries.tsv",replacement = "",filelist)
+  motiondat = data.frame(cbind(sub_task_list, rep(0, NROW(filelist)),rep(0, NROW(filelist)), rep(0, NROW(filelist)), rep(0,NROW(filelist)), rep(0, NROW(filelist))))
+  colnames(motiondat) = c("subj_task", "no.frames", "FD", "RMSD","FD.20", "RMSD.25")
+  
+  for (fileno in 1:NROW(filelist)) {
+    confounds = read.table(file = filelist[fileno],sep = "\t", header = TRUE)
+    confounds[confounds == "n/a"] = NA
+    motiondat$RMSD[subjno] = mean(as.numeric(confounds$rmsd),na.rm = T)
+    motiondat$no.frames = NROW(confounds)
+    motiondat$FD[subjno] = mean(as.numeric(confounds$framewise_displacement),na.rm = T)
+    motiondat$RMSD.25[subjno] = NROW(which(confounds$rmsd >0.25))/nrow(confounds)
+    motiondat$FD.20[subjno] = NROW(which(confounds$framewise_displacement >0.2))/nrow(confounds)
   }
-  write.csv(motiondat,file=filename)
+  write.csv(motiondat, file = filename)
 }
 ########################################################################################################
 ########################################################################################################
