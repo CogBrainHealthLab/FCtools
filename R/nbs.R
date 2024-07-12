@@ -198,6 +198,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
     names(returnobj)=c("results","t.orig","tcrit","max.netstr")
     return(returnobj)
+    closeAllConnections()
   }
 }
 ############################################################################################################################
