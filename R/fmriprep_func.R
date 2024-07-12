@@ -41,7 +41,7 @@ extract_headmotion=function(filename="motiondat.csv")
     motiondat$RMSD.25[fileno] = NROW(which(confounds$rmsd >0.25))/nrow(confounds)
     motiondat$FD.20[fileno] = NROW(which(confounds$framewise_displacement >0.2))/nrow(confounds)
   }
-  write.csv(motiondat, file = filename)
+  write.table(motiondat, file = filename,sep = ",",quote = F,row.names = F)
   cat(paste0("headmotion data saved to ",filename))
 }
 ########################################################################################################
