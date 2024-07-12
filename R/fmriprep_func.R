@@ -32,6 +32,7 @@ extract_headmotion=function(filename="motiondat.csv")
   colnames(motiondat) = c("subj_task", "no.frames", "FD", "RMSD","FD.20", "RMSD.25")
   
   for (fileno in 1:NROW(filelist)) {
+    cat(paste(filelist[fileno],"\n"))
     confounds = read.table(file = filelist[fileno],sep = "\t", header = TRUE)
     confounds[confounds == "n/a"] = NA
     motiondat$RMSD[fileno] = mean(as.numeric(confounds$rmsd),na.rm = T)
