@@ -34,11 +34,11 @@ extract_headmotion=function(filename="motiondat.csv")
   for (fileno in 1:NROW(filelist)) {
     confounds = read.table(file = filelist[fileno],sep = "\t", header = TRUE)
     confounds[confounds == "n/a"] = NA
-    motiondat$RMSD[subjno] = mean(as.numeric(confounds$rmsd),na.rm = T)
+    motiondat$RMSD[fileno] = mean(as.numeric(confounds$rmsd),na.rm = T)
     motiondat$no.frames = NROW(confounds)
-    motiondat$FD[subjno] = mean(as.numeric(confounds$framewise_displacement),na.rm = T)
-    motiondat$RMSD.25[subjno] = NROW(which(confounds$rmsd >0.25))/nrow(confounds)
-    motiondat$FD.20[subjno] = NROW(which(confounds$framewise_displacement >0.2))/nrow(confounds)
+    motiondat$FD[fileno] = mean(as.numeric(confounds$framewise_displacement),na.rm = T)
+    motiondat$RMSD.25[fileno] = NROW(which(confounds$rmsd >0.25))/nrow(confounds)
+    motiondat$FD.20[fileno] = NROW(which(confounds$framewise_displacement >0.2))/nrow(confounds)
   }
   write.csv(motiondat, file = filename)
 }
