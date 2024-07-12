@@ -28,7 +28,7 @@ extract_headmotion=function(filename="motiondat.csv")
 {
   filelist = list.files(pattern = "_desc-confounds_timeseries.tsv",recursive = T)
   sub_task_list=gsub(pattern="_desc-confounds_timeseries.tsv",replacement = "",filelist)
-  motiondat = data.frame(cbind(sub_task_list, rep(0, NROW(filelist)),rep(0, NROW(filelist)), rep(0, NROW(filelist)), rep(0,NROW(filelist)), rep(0, NROW(filelist))))
+  motiondat = data.frame(cbind(basename(sub_task_list), rep(0, NROW(filelist)),rep(0, NROW(filelist)), rep(0, NROW(filelist)), rep(0,NROW(filelist)), rep(0, NROW(filelist))))
   colnames(motiondat) = c("subj_task", "no.frames", "FD", "RMSD","FD.20", "RMSD.25")
   
   for (fileno in 1:NROW(filelist)) {
