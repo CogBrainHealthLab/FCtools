@@ -32,7 +32,7 @@ extract_headmotion=function(filename="motiondat.csv")
   colnames(motiondat) = c("subj_task", "no.frames", "FD", "RMSD","FD.20", "RMSD.25")
   
   for (fileno in 1:NROW(filelist)) {
-    cat(paste(filelist[fileno],"\n"))
+    cat(paste0(filelist[fileno],"\n"))
     confounds = read.table(file = filelist[fileno],sep = "\t", header = TRUE)
     confounds[confounds == "n/a"] = NA
     motiondat$RMSD[fileno] = mean(as.numeric(confounds$rmsd),na.rm = T)
@@ -42,6 +42,7 @@ extract_headmotion=function(filename="motiondat.csv")
     motiondat$FD.20[fileno] = NROW(which(confounds$framewise_displacement >0.2))/nrow(confounds)
   }
   write.csv(motiondat, file = filename)
+  cat(paste0("headmotion data saved to ",filename))
 }
 ########################################################################################################
 ########################################################################################################
