@@ -17,7 +17,12 @@ vizConnectogram(
   width = 1000,
   height = 1050,
   leg.height = 200,
-  margins = c(1.2, 1.2, 1, 1.5)
+  margins = c(1.2, 1.2, 1, 1.5),
+  node.size,
+  node.text.size = 1,
+  legend.text.size = 7,
+  legend.title.size = 8,
+  title.size = 11
 )
 }
 \arguments{
@@ -46,6 +51,16 @@ vizConnectogram(
 \item{leg.height}{height (in pixels) of legend, in pixels. Set to 100 by default. Not used for single row data}
 
 \item{margins}{vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to \code{c(1.2,1.2,1,1.5)} by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend. Not used for single row data}
+
+\item{node.size}{size parameter for the dots representing the nodes. If not specified, an appropriate size will be set.}
+
+\item{node.text.size}{size parameter for the text labels on the nodes. Set to 1 by default.}
+
+\item{legend.text.size}{size parameter for the legend text. Set to 6 by default.}
+
+\item{legend.title.size}{size parameter for the legend title. Set to 8 by default.}
+
+\item{title.size}{size parameter for the title. Set to 1 by default.}
 }
 \value{
 outputs a .png image

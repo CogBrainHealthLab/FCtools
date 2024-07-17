@@ -174,6 +174,24 @@
 <span>                           title<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a) Network 1"</span>,<span class="st">"b) Network 2"</span>,<span class="st">"c) Network 3"</span>,<span class="st">"d) Network 4"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/4xFCchord_119.png"></p>
 </div>
+<div class="section level3">
+<h3 id="id_3-heatmap">
+<strong>3. Heatmap</strong><a class="anchor" aria-label="anchor" href="#id_3-heatmap"></a>
+</h3>
+<p>The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sub1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span> <span class="co">## load demo data</span></span>
+<span><span class="fu"><a href="reference/vizHeatmap.html">vizHeatmap</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sub1</span>, filename<span class="op">=</span><span class="st">"heatmap219.png"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/heatmap219.png"></p>
+<p>Multiple heatmaps can be generated in a similar manner</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sub1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span></span>
+<span><span class="va">sub2</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
+<span><span class="va">sub3</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span>,<span class="op">]</span></span>
+<span><span class="va">sub4</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span>,<span class="op">]</span><span class="co">## load demo data</span></span>
+<span><span class="fu"><a href="reference/vizHeatmap.html">vizHeatmap</a></span><span class="op">(</span>data<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">sub1</span>,<span class="va">sub2</span>,<span class="va">sub3</span>,<span class="va">sub4</span><span class="op">)</span>,title<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sub1"</span>,<span class="st">"sub2"</span>,<span class="st">"sub3"</span>,<span class="st">"sub4"</span><span class="op">)</span>, filename <span class="op">=</span> <span class="st">"4xheatmap219.png"</span>, ncol<span class="op">=</span><span class="fl">2</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/heatmap219.png"></p>
+</div>
 </div>
   </div>
 

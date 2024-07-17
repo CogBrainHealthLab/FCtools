@@ -221,4 +221,22 @@ vizChord(data=rbind(network1,network2,network3,network4),
 ```
 ![](man/figures/4xFCchord_119.png) 
 
+### **3. Heatmap**
 
+The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used
+
+``` r
+sub1=get("demomat")[1,] ## load demo data
+vizHeatmap(data=sub1, filename="heatmap219.png")
+```
+![](man/figures/heatmap219.png) 
+
+Multiple heatmaps can be generated in a similar manner
+``` r
+sub1=get("demomat")[1,]
+sub2=get("demomat")[2,]
+sub3=get("demomat")[3,]
+sub4=get("demomat")[4,]## load demo data
+vizHeatmap(data=rbind(sub1,sub2,sub3,sub4),title=c("sub1","sub2","sub3","sub4"), filename = "4xheatmap219.png", ncol=2, nrow=2)
+```
+![](man/figures/heatmap219.png) 

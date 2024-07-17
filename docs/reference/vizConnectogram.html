@@ -57,7 +57,12 @@
 <span>  width <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  height <span class="op">=</span> <span class="fl">1050</span>,</span>
 <span>  leg.height <span class="op">=</span> <span class="fl">200</span>,</span>
-<span>  margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="fl">1</span>, <span class="fl">1.5</span><span class="op">)</span></span>
+<span>  margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="fl">1</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
+<span>  <span class="va">node.size</span>,</span>
+<span>  node.text.size <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  legend.text.size <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  legend.title.size <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  title.size <span class="op">=</span> <span class="fl">11</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,6 +118,26 @@
 
 <dt>margins</dt>
 <dd><p>vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to <code>c(1.2,1.2,1,1.5)</code> by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend. Not used for single row data</p></dd>
+
+
+<dt>node.size</dt>
+<dd><p>size parameter for the dots representing the nodes. If not specified, an appropriate size will be set.</p></dd>
+
+
+<dt>node.text.size</dt>
+<dd><p>size parameter for the text labels on the nodes. Set to 1 by default.</p></dd>
+
+
+<dt>legend.text.size</dt>
+<dd><p>size parameter for the legend text. Set to 6 by default.</p></dd>
+
+
+<dt>legend.title.size</dt>
+<dd><p>size parameter for the legend title. Set to 8 by default.</p></dd>
+
+
+<dt>title.size</dt>
+<dd><p>size parameter for the title. Set to 1 by default.</p></dd>
 
 </dl></div>
     <div id="value">
