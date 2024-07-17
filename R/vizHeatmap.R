@@ -136,7 +136,7 @@ vizHeatmap=function(data,
     #combining both legends          
     legend=cowplot::plot_grid(cowplot::get_plot_component(colbar, 'guide-box-right', return_all = TRUE),
                             cowplot::get_plot_component(nodecol, 'guide-box-right', return_all = TRUE), nrow=2)
-    main=genplot(row_data=data[1,],title=title[1],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
+    main=genplot_heatmap(row_data=data[1,],title=title[1],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
     #output plot
     png(filename=filename,width=width+leg.size, height=height, res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,ncol=2, rel_widths = c(height,leg.size))))
@@ -146,7 +146,7 @@ vizHeatmap=function(data,
   {
     #generate multiple plots
     ggplot.obj=list()
-    for(row in 1:NROW(data))  {ggplot.obj[[row]]=genplot(row_data=data[row,],title=title[row],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)}
+    for(row in 1:NROW(data))  {ggplot.obj[[row]]=genplot_heatmap(row_data=data[row,],title=title[row],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)}
     
     ##bottom legend plots
       #node legend
@@ -183,7 +183,7 @@ vizHeatmap=function(data,
 }
   
 ##function to generate individual plots
-genplot=function(row_data,title,nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
+genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
 {
   ##generate first plot
   #reshaping FC vector to FC matrix
