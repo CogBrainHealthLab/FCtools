@@ -195,7 +195,16 @@
   }
 }
 ##function to generate individual plots
-genplot=function(row_data,title,nnodes,label,edgethickness, hot, cold,colorscheme,param, atlas)
+genplot=function(row_data,
+                 title,
+                 nnodes,
+                 label,
+                 edgethickness, 
+                 hot, 
+                 cold,
+                 colorscheme,
+                 param, 
+                 atlas)
 {
   conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
   conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = row_data

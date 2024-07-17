@@ -48,7 +48,7 @@ outputs a .png image
 Visualizing brain connectivity profiles with a chord diagram
 }
 \details{
-This function takes a vector of edges and visualizes the average network-to-network connectivity in a chord diagram.
+This function takes a matrix (NROW=number of edges in the connectome; NCOL=number of edges in the connectome) of edge values and visualizes the average network-to-network connectivity in a chord diagram.
 }
 \examples{
 
