@@ -179,7 +179,7 @@
                                           hjust = ifelse(x > 0, 0 ,1)), size=param$nodesize[atlas]) +
       ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
       ggplot2::expand_limits(x = param$xlim[[atlas]], y = param$ylim[[atlas]])+
-      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),
+      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),aspect.ratio = 1,
                      legend.title=ggplot2::element_text(size=5,face = "bold"),
                      legend.text=ggplot2::element_text(size=5),
                      legend.position.inside = c(1.1,0),legend.justification=c(1,0), legend.key.height = ggplot2::unit(c(0, 0, 0, 0), "cm"))+
@@ -233,7 +233,7 @@ genplot=function(row_data,title,nnodes,label,edgethickness, hot, cold,colorschem
     ggplot2::ggtitle(title)+
     ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
     ggplot2::expand_limits(x = param$margin[1:2], y = param$margin[3:4])+
-    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4))
+    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),aspect.ratio = 1)
 }
 ########################################################################################################
 ########################################################################################################
