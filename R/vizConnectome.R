@@ -20,6 +20,11 @@
 #' @param height height (in pixels) of each connectogram . Set to 1050 by default. Not used for single row data
 #' @param leg.height height (in pixels) of legend, in pixels. Set to 100 by default. Not used for single row data
 #' @param margins vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to `c(1.2,1.2,1,1.5)` by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend. Not used for single row data
+#' @param node.size size parameter for the dots representing the nodes. If not specified, an appropriate size will be set.
+#' @param node.text.size size parameter for the text labels on the nodes. Set to 1 by default.
+#' @param title.size size parameter for the title. Set to 1 by default.
+#' @param legend.title.size size parameter for the legend title. Set to 8 by default.
+#' @param legend.text.size size parameter for the legend text. Set to 6 by default.
 #' @returns outputs a .png image
 #'
 #' @examples
@@ -37,19 +42,24 @@
 
 ########################################################################################################
 ########################################################################################################
-  vizConnectogram=function(data,
-                           hot="#F8766D", 
-                           cold="#00BFC4",
-                           ncol,
-                           nrow, 
-                           edgethickness=0.8,
-                           filename="conn.png", 
-                           colorscheme, 
-                           title,
-                           width=1000,
-                           height=1050,
-                           leg.height=200,
-                           margins=c(1.2,1.2,1,1.5))
+vizConnectogram=function(data,
+                         hot="#F8766D", 
+                         cold="#00BFC4",
+                         ncol,
+                         nrow, 
+                         edgethickness=0.8,
+                         filename="conn.png", 
+                         colorscheme, 
+                         title,
+                         width=1000,
+                         height=1050,
+                         leg.height=200,
+                         margins=c(1.2,1.2,1,1.5),
+                         node.size,
+                         node.text.size=1,
+                         legend.text.size=7,
+                         legend.title.size=8,
+                         title.size=11)
 {
   ##selecting atlas
   edge_lengths=c(4005,7021,23871,30135)
@@ -60,9 +70,9 @@
       stop("The length of the input vector is not consisent with any of the recognized parcellation schemes. The input vector should contain 4005, 7021, 23871 or 30135 values")
     } else
     {
-    atlas=match(length(data),edge_lengths)
-    mode="vector"
-    data=matrix(data,nrow=1)
+      atlas=match(length(data),edge_lengths)
+      mode="vector"
+      data=matrix(data,nrow=1)
     }  
   } else if(is.na(match(NCOL(data),edge_lengths)))
   {
@@ -87,6 +97,7 @@
   label$regionlabel = factor(label$regionlabel,levels = param$nodelevels)
   if(missing("colorscheme")){colorscheme = param$nodecol[[atlas]]}
   if(missing("title")){title=rep(" ",NROW(data))}
+  if(missing("node.size")){node.size=param$nodesize[atlas]}
   param$xlim=list(c(-1.2, 1.2),
                   c(-1.1, 1.1),
                   c(-1.1, 1.1),
@@ -98,30 +109,30 @@
   nnodes=NROW(label)
   
   ##generate first plot
-    #reshaping FC vector to FC matrix
-    conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
-    conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = data[1,]
-    conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
-    
-    nodeorder=as.numeric(rep(NA,nnodes))
-    for (rowno in 1:nnodes) {nodeorder[rowno]=which(label$neworder==rowno)}
-    
-    colnames(conmat_NxN)=label$labels
-    rownames(conmat_NxN)=label$labels
-    reordered=conmat_NxN[nodeorder,nodeorder]
-    RegionsFC=as.factor(label$regionlabel)[nodeorder]
+  #reshaping FC vector to FC matrix
+  conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
+  conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = data[1,]
+  conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
   
-    ##graph object
+  nodeorder=as.numeric(rep(NA,nnodes))
+  for (rowno in 1:nnodes) {nodeorder[rowno]=which(label$neworder==rowno)}
   
-    graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
-    EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
-    posnegFC=EvalFC
-    posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
-    posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
-    
-    igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
-    igraph::edge_attr(graphobjFC, "posFC", index = igraph::E(graphobjFC))=posnegFC
-    
+  colnames(conmat_NxN)=label$labels
+  rownames(conmat_NxN)=label$labels
+  reordered=conmat_NxN[nodeorder,nodeorder]
+  RegionsFC=as.factor(label$regionlabel)[nodeorder]
+  
+  ##graph object
+  
+  graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+  EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
+  posnegFC=EvalFC
+  posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
+  posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
+  
+  igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
+  igraph::edge_attr(graphobjFC, "posFC", index = igraph::E(graphobjFC))=posnegFC
+  
   ##different steps depending on mode
   if(mode=="matrix")
   {
@@ -130,16 +141,16 @@
       ggraph::scale_edge_alpha_continuous(guide="none")+
       ggraph::scale_edge_color_manual(name="Edges", labels=c("Positive","Negative"),values=c(hot,cold))+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
-      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=param$nodesize[atlas]*1.5, shape=19,show.legend = T) +
+      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size*1.5, shape=19,show.legend = T) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
-                                          hjust = ifelse(x > 0, 0 ,1)), size=param$nodesize[atlas]) +
+                                          hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
       ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
       ggplot2::guides(edge_color = ggplot2::guide_legend(override.aes = list(shape = NA),nrow=2),
                       color= ggplot2::guide_legend(override.aes = list(edge_width = NA)))+
-      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),
-                     legend.title=ggplot2::element_text(size=8,face = "bold",hjust=0.5),
-                     legend.text=ggplot2::element_text(size=7),
+      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4), 
+                     legend.title=ggplot2::element_text(size=legend.title.size,face = "bold",hjust=0.5),
+                     legend.text=ggplot2::element_text(size=legend.text.size),
                      legend.position ="bottom", legend.title.position = "top",
                      legend.key.height = ggplot2::unit(c(0, 0, 0, 0), "cm"))
     
@@ -158,7 +169,10 @@
                                                      cold=cold,
                                                      colorscheme=colorscheme,
                                                      param=param,
-                                                     atlas=atlas))
+                                                     atlas=atlas,
+                                                     node.text.size=node.text.size,
+                                                     node.size=node.size,
+                                                     title.size=title.size))
     }
     
     main=gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol)
@@ -173,24 +187,26 @@
       ggraph::scale_edge_alpha_continuous(guide="none")+
       ggraph::scale_edge_color_manual(name="Edges", labels=c("Positive","Negative"),values=c(hot,cold))+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
-      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=param$nodesize[atlas], shape=19,show.legend = T) +
+      ggplot2::ggtitle(title[1])+
+      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = T) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
-                                          hjust = ifelse(x > 0, 0 ,1)), size=param$nodesize[atlas]) +
+                                          hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
+      ggplot2::coord_fixed()+
       ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
       ggplot2::expand_limits(x = param$xlim[[atlas]], y = param$ylim[[atlas]])+
-      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),
-                     legend.title=ggplot2::element_text(size=5,face = "bold"),
-                     legend.text=ggplot2::element_text(size=5),
+      ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),plot.title=ggplot2::element_text(size=title.size),
+                     legend.title=ggplot2::element_text(size=legend.title.size-2,face = "bold"),
+                     legend.text=ggplot2::element_text(size=legend.text.size-2),
                      legend.position.inside = c(1.1,0),legend.justification=c(1,0), legend.key.height = ggplot2::unit(c(0, 0, 0, 0), "cm"))+
       ggplot2::guides(edge_color = ggplot2::guide_legend(override.aes = list(shape = NA)),color= ggplot2::guide_legend(override.aes = list(edge_width = NA)))
     
-      png(filename=filename, width =1600, height = 1200, res=300)
-      suppressWarnings(
-        gridExtra::grid.arrange(FCplot, nrow=1, ncol=1,
-                                left=grid::textGrob("Left hemisphere",gp = grid::gpar(fontface=2,fontsize = 6),rot=90, hjust = 0.5,x = 0.5),
-                                right=grid::textGrob("Right hemisphere",gp = grid::gpar(fontface=2,fontsize = 6),rot=90, hjust = 0.5,x = -5))
-      )
+    png(filename=filename, width =1600, height = 1200, res=300)
+    suppressWarnings(
+      gridExtra::grid.arrange(FCplot, nrow=1, ncol=1,
+                              left=grid::textGrob("Left hemisphere",gp = grid::gpar(fontface=2,fontsize = 6),rot=90, hjust = 0.5,x = 0.5),
+                              right=grid::textGrob("Right hemisphere",gp = grid::gpar(fontface=2,fontsize = 6),rot=90, hjust = 0.5,x = -5))
+    )
     dev.off()
   }
 }
@@ -204,7 +220,10 @@ genplot=function(row_data,
                  cold,
                  colorscheme,
                  param, 
-                 atlas)
+                 atlas,
+                 node.text.size,
+                 node.size,
+                 title.size)
 {
   conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
   conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = row_data
@@ -235,14 +254,15 @@ genplot=function(row_data,
     ggraph::scale_edge_alpha_continuous(guide="none")+
     ggraph::scale_edge_color_manual(name="Edges", labels=c("Positive","Negative"),values=c(hot,cold))+
     ggplot2::scale_color_manual(values =colorscheme, name="Network")+
-    ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=param$nodesize[atlas], shape=19,show.legend = F) +
+    ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = F) +
     ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                         angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
-                                        hjust = ifelse(x > 0, 0 ,1)), size=param$nodesize[atlas]) +
+                                        hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
+    ggplot2::coord_fixed()+
     ggplot2::ggtitle(title)+
     ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
     ggplot2::expand_limits(x = param$margin[1:2], y = param$margin[3:4])+
-    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4))
+    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),plot.title=ggplot2::element_text(size=title.size))
 }
 ########################################################################################################
 ########################################################################################################
@@ -267,8 +287,8 @@ edgelist=function(data)
 {
   ##selecting atlas
   edge_lengths=c(4005,7021,23871,30135)
-
-
+  
+  
   if(is.na(match(length(data),edge_lengths)))
   {
     stop("The length of the input vector does not fit any of the recognized parcellation schemes. The input vector should contain 4005, 7021, 23871 or 30135 values")
@@ -276,31 +296,31 @@ edgelist=function(data)
   {
     atlas=match(length(data),edge_lengths)
   }
-
+  
   ##plot parameters
   label=labels_dat[[match(length(data),edge_lengths)]]
   label=label[order(label$oldorder),]
   label$labels=paste(label$hemi,"_",label$labels,sep="")
   nnodes=nrow(label)
-
+  
   ##rehaping data into connectivity matrix
-
+  
   conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
   conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = data
   conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
-
+  
   nodeorder=as.numeric(rep(NA,nnodes))
   for (rowno in 1:nnodes){
     nodeorder[rowno]=which(label$neworder==rowno)
   }
-
+  
   colnames(conmat_NxN)=label$labels
   rownames(conmat_NxN)=label$labels
   reordered=conmat_NxN[nodeorder,nodeorder]
   RegionsFC=as.factor(label$regionlabel)[nodeorder]
-
+  
   ##graph object
-
+  
   graphobj=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
   edgelist=data.frame(cbind(igraph::get.edgelist(graphobj) , igraph::E(graphobj)$weight))
   names(edgelist)=c("node_1","node_2","weight")
