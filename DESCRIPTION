@@ -29,5 +29,6 @@ Imports:
     parallel,
     ggplotify,
     psych,
-    stringr
+    stringr,
+    reshape2
     
