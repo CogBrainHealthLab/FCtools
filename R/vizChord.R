@@ -6,7 +6,7 @@
 #'
 #' @description Visualizing brain connectivity profiles with a chord diagram
 #'
-#' @details This function takes a vector of edges and visualizes the average network-to-network connectivity in a chord diagram.
+#' @details This function takes a matrix (NROW=number of edges in the connectome; NCOL=number of edges in the connectome) of edge values and visualizes the average network-to-network connectivity in a chord diagram.
 #'
 #' @param data a vector of edge values with a length of 78, 4005, 7021, 23871 or 30135.
 #' @param width width (in pixels) of each connectogram. Set to 1200 by default. 
