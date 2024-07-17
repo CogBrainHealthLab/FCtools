@@ -239,4 +239,4 @@ sub3=get("demomat")[3,]
 sub4=get("demomat")[4,]## load demo data
 vizHeatmap(data=rbind(sub1,sub2,sub3,sub4),title=c("sub1","sub2","sub3","sub4"), filename = "4xheatmap219.png", ncol=2, nrow=2)
 ```
-![](man/figures/heatmap219.png) 
+![](man/figures/4xheatmap219.png) 
