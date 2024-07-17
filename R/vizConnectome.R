@@ -5,7 +5,7 @@
 #'
 #' @description Visualizing brain connectivity profiles with multiple connectogram
 #'
-#' @details This function takes a matrix (NROW=number of connectogram; NCOL=number of edges in the connectogram) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
+#' @details This function takes a matrix (NROW=number of edges in the connectome; NCOL=number of edges in the connectome) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
 #'
 #' @param data a matrix of edge values with 4005, 7021, 23871 or 30135 columns
 #' @param ncol number of columns in the plot. Not used for single row data
