@@ -236,7 +236,7 @@ Multiple heatmaps can be generated in a similar manner
 sub1=get("demomat")[1,]
 sub2=get("demomat")[2,]
 sub3=get("demomat")[3,]
-sub4=get("demomat")[4,]## load demo data
+sub4=get("demomat")[4,]
 vizHeatmap(data=rbind(sub1,sub2,sub3,sub4),title=c("sub1","sub2","sub3","sub4"), filename = "4xheatmap219.png", ncol=2, nrow=2)
 ```
 ![](man/figures/4xheatmap219.png) 
