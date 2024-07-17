@@ -3,7 +3,7 @@
 ############################################################################################################################
 #' @title vizConnectogram
 #'
-#' @description Visualizing mbrain connectivity profiles with multiple connectogram
+#' @description Visualizing brain connectivity profiles with multiple connectogram
 #'
 #' @details This function takes a matrix (NROW=number of connectogram; NCOL=number of edges in the connectogram) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
 #'
