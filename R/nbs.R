@@ -140,6 +140,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   for (perm in 1:nperm)  {permseq[,perm]=sample(1:NROW(model))}
 
   #activate parallel processing
+  suppressWarnings(closeAllConnections())
   unregister_dopar = function() {
     env = foreach:::.foreachGlobals
     rm(list=ls(name=env), pos=env)
@@ -198,7 +199,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
     names(returnobj)=c("results","t.orig","tcrit","max.netstr")
     return(returnobj)
-    closeAllConnections()
+    suppressWarnings(closeAllConnections())
   }
 }
 ############################################################################################################################
