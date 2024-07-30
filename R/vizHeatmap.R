@@ -177,18 +177,15 @@ vizHeatmap=function(data,
                                 cowplot::get_plot_component(colbar, 'guide-box-bottom', return_all = TRUE), ncol=2, rel_widths = c(70,30))
       
       #combining legends with heatmaps
-      main=gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol)
+      #main=gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol)
     
       #output plot
       png(filename=filename,width=ncol*width, height=(nrow*height)+leg.size,res=300)
-      suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.size))))
+      suppressWarnings(print(cowplot::plot_grid(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol),legend,nrow=2, rel_heights = c((nrow*height),leg.size))))
       dev.off()
 
-      if(file.exists(filename))
-        {
-        img=png::readPNG(source =filename)
-        grid::grid.raster(img)
-        }
+      img=png::readPNG(source =filename)
+      grid::grid.raster(img)
   }
 }
   
