@@ -270,7 +270,7 @@ extract.edges=function(NBS.obj,network=1)
     #negative mask
     clust.neg.mask=clust.tstat
     clust.neg.mask[clust.neg.mask>0]=0
-    clust.neg.mask[clust.neg.mask<0]=1
+    clust.neg.mask[clust.neg.mask<0]=-1
 
   ##objects to return
   returnobj=list(as.numeric(clust.tstat),as.numeric(clust.pos.mask),as.numeric(clust.neg.mask))
