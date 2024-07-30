@@ -180,6 +180,8 @@ vizConnectogram=function(data,
     png(filename=filename,width=ncol*width, height=(nrow*height)+leg.height,res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
     dev.off()
+    img=png::readPNG(source =filename)
+    grid::grid.raster(img)
   } else if(mode=="vector")
   {
     FCplot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
@@ -208,6 +210,8 @@ vizConnectogram=function(data,
                               right=grid::textGrob("Right hemisphere",gp = grid::gpar(fontface=2,fontsize = 6),rot=90, hjust = 0.5,x = -5))
     )
     dev.off()
+    img=png::readPNG(source =filename)
+    grid::grid.raster(img)
   }
 }
 ##function to generate individual plots
