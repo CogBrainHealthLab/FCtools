@@ -137,6 +137,8 @@ vizConnectogram=function(data,
   ##different steps depending on mode
   if(mode=="matrix")
   {
+    if((nrow*ncol)<NROW(data))  {stop("Not enough columns or rows are specified to display the subplots")}
+    
     legend.plot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
       ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness*1.5, show.legend = T,) +
       ggraph::scale_edge_alpha_continuous(guide="none")+
