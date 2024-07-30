@@ -37,7 +37,7 @@
 ##Main function
 ########################################################################################################
 ########################################################################################################
-vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,filename="conn.png", colorscheme, title,leg.height=100, ncol,nrow)
+vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,filename="conn.png", colorscheme, title,leg.height=100, ncol=1,nrow=1)
 {
   edge_lengths=c(4005,7021,23871,30135,78)
   if(NCOL(data)==1 | NROW(data)==1)
@@ -49,13 +49,18 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
     {
       atlas=match(length(data),edge_lengths)
       data=matrix(data,nrow=1)
-      nrow=1
-      ncol=1
     }  
   } else if(is.na(match(NCOL(data),edge_lengths)))
   {
     stop("The number of columns in the matrix is not consistent any of the recognized parcellation schemes. The input matrix should contain 4005, 7021, 23871 or 30135 columns")
-  } else  {atlas=match(NCOL(data),edge_lengths)} 
+  } else  
+  {
+    atlas=match(NCOL(data),edge_lengths)
+    if((nrow*ncol)<NROW(data))
+      {
+       stop("Not enough columns or rows are specified to display the subplots")
+      }
+  } 
   
   if(missing("title")){title=rep(" ",NROW(data))}
   chordplots=list()
