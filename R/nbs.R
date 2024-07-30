@@ -210,7 +210,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 #'
 #' @details This function generates positive and negative masks (vectors of 1s and 0s), where 1s indicate a significant network-thresholded edge. These masks can then be used to perform a matrix multiplication with the vectorized FC matrices to object subject-level network strengths
 #' @param NBS.obj A list object generated from an earlier `NBS()` analysis
-#' @param network.no the cluster number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default
+#' @param network the network number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default
 #' @returns Returns a list object containing
 #' \itemize{
 #'  \item `clust.tstat` thresholded edge-wise t-statistics.Edges not belonging to this cluster will be zeroed.
@@ -219,12 +219,12 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 #'}
 #' @examples
 #' \dontrun{
-#' extract.edges(model1,=1)
+#' extract.edges(model1,network=1)
 #' }
 #' @importFrom igraph graph_from_adjacency_matrix components
 #' @export
 
-extract.edges=function(NBS.obj,=1)
+extract.edges=function(NBS.obj,network=1)
 {
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -length(NBS.obj$t.orig))) / (2 * 0.5)
   ##recode all p="<0.**" into 0 for subsequent thresholding
@@ -254,7 +254,7 @@ extract.edges=function(NBS.obj,=1)
 
   ##clustering
   com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='undirected', weighted=NULL))
-  idx=which(com$membership==which(com$csize>2)[])
+  idx=which(com$membership==which(com$csize>2)[network])
 
   ##masking out edges from other networks
   FC_mat.mask=matrix(0,nrow=nnodes,ncol=nnodes)
