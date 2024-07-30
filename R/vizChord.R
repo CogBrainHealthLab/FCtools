@@ -31,6 +31,8 @@
 #' @importFrom circlize colorRamp2 chordDiagram
 #' @importFrom cowplot get_plot_component plot_grid
 #' @importFrom ggplotify as.grob
+#' @importFrom png readPNG
+#' @importFrom grid grid.raster
 #' @export
 ##Main function
 ########################################################################################################
