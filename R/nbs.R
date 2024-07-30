@@ -140,7 +140,6 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   for (perm in 1:nperm)  {permseq[,perm]=sample(1:NROW(model))}
 
   #activate parallel processing
-  suppressWarnings(closeAllConnections())
   unregister_dopar = function() {
     env = foreach:::.foreachGlobals
     rm(list=ls(name=env), pos=env)
