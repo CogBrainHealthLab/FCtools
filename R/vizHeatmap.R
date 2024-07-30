@@ -148,6 +148,7 @@ vizHeatmap=function(data,
     
   } else if(mode=="matrix")
   {
+    if((nrow*ncol)<NROW(data))  {stop("Not enough columns or rows are specified to display the subplots")}
     #generate multiple plots
     ggplot.obj=list()
     for(row in 1:NROW(data))  {ggplot.obj[[row]]=genplot_heatmap(row_data=data[row,],title=title[row],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)}
