@@ -27,6 +27,7 @@ Imports:
     gridExtra,
     igraph,
     parallel,
+    png,
     ggplotify,
     psych,
     stringr,
