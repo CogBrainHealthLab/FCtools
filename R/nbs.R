@@ -192,7 +192,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     #formatting results table
     orig.clust[,c(3,4)][orig.clust[,c(3,4)]==0]=paste("<",1/nperm,sep="") #if p=0
     orig.clust=cbind(c(1:nrow(orig.clust)),orig.clust)
-    colnames(orig.clust)=c("network no.","strength.unweighted","strength.weighted","pFWE.unweighted","pFWE.weighted")
+    colnames(orig.clust)=c("network","strength.unweighted","strength.weighted","p.unweighted","p.weighted")
   
     #objects to return
     returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
