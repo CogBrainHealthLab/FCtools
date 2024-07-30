@@ -155,7 +155,7 @@ vizConnectogram=function(data,
                      legend.position ="bottom", legend.title.position = "top",
                      legend.key.height = ggplot2::unit(c(0, 0, 0, 0), "cm"))
     
-    legend = cowplot::get_plot_component(legend.plot, 'guide-box-bottom', return_all = TRUE)
+    legend = suppressWarnings(cowplot::get_plot_component(legend.plot, 'guide-box-bottom', return_all = TRUE))
     
     ##generating actual plots
     ggplot.obj=list()
@@ -176,10 +176,10 @@ vizConnectogram=function(data,
                                                      title.size=title.size))
     }
     
-    main=suppressWarnings(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol))
+    #main=suppressWarnings()
     
     png(filename=filename,width=ncol*width, height=(nrow*height)+leg.height,res=300)
-    suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
+    suppressWarnings(print(cowplot::plot_grid(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol),legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
     dev.off()
     img=png::readPNG(source =filename)
     grid::grid.raster(img)
