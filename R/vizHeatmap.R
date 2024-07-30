@@ -183,8 +183,12 @@ vizHeatmap=function(data,
       png(filename=filename,width=ncol*width, height=(nrow*height)+leg.size,res=300)
       suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.size))))
       dev.off()
-      img=png::readPNG(source =filename)
-      grid::grid.raster(img)
+
+      if(file.exists(filename))
+        {
+        img=png::readPNG(source =filename)
+        grid::grid.raster(img)
+        }
   }
 }
   
