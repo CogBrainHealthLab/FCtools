@@ -34,6 +34,8 @@
 #' @importFrom reshape2 melt
 #' @importFrom gridExtra grid.arrange
 #' @importFrom cowplot plot_grid get_plot_component
+#' @importFrom grid grid.raster
+#' @importFrom png readPNG
 #' @export
 ########################################################################################################
 ########################################################################################################
@@ -141,6 +143,8 @@ vizHeatmap=function(data,
     png(filename=filename,width=width+leg.size, height=height, res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,ncol=2, rel_widths = c(height,leg.size))))
     dev.off()
+    img=png::readPNG(source =filename)
+    grid::grid.raster(img)
     
   } else if(mode=="matrix")
   {
@@ -179,6 +183,8 @@ vizHeatmap=function(data,
       png(filename=filename,width=ncol*width, height=(nrow*height)+leg.size,res=300)
       suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.size))))
       dev.off()
+      img=png::readPNG(source =filename)
+      grid::grid.raster(img)
   }
 }
   
