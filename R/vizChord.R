@@ -91,6 +91,8 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
   png(filename=filename, width=ncol*width,height=nrow*height+leg.height,res=300)
     print(main)
   dev.off()
+  img=png::readPNG(source =filename)
+  grid::grid.raster(img)
 }
 ########################################################################################################
 ########################################################################################################
