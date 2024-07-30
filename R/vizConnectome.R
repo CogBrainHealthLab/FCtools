@@ -176,7 +176,7 @@ vizConnectogram=function(data,
                                                      title.size=title.size))
     }
     
-    suppressWarnings(main=gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol))
+    main=suppressWarnings(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol))
     
     png(filename=filename,width=ncol*width, height=(nrow*height)+leg.height,res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
