@@ -35,9 +35,10 @@
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text scale_color_manual expand_limits unit guide_legend coord_fixed
 #' @importFrom igraph graph_from_adjacency_matrix get.edgelist E edge_attr
 #' @importFrom gridExtra grid.arrange
-#' @importFrom grid textGrob gpar
+#' @importFrom grid textGrob gpar grid.raster
 #' @importFrom ggraph ggraph geom_edge_arc scale_edge_alpha_continuous scale_edge_color_manual geom_node_point geom_node_text theme_graph
 #' @importFrom cowplot plot_grid get_plot_component
+#' @importFrom png readPNG
 #' @export
 
 ########################################################################################################
