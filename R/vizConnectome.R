@@ -131,6 +131,13 @@ vizConnectogram=function(data,
   posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
   posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
   
+  edgelab=c("Positive","Negative")
+  if(length(which(posnegFC=="1_pos"))==0)
+  {
+    hot=cold
+    edgelab="Negative"
+  }
+  
   igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
   igraph::edge_attr(graphobjFC, "posFC", index = igraph::E(graphobjFC))=posnegFC
   
@@ -138,11 +145,39 @@ vizConnectogram=function(data,
   if(mode=="matrix")
   {
     if((nrow*ncol)<NROW(data))  {stop("Not enough columns or rows are specified to display the subplots")}
+    if(range(data)[1]<0 & range(data)[2]>0)
+    {
+      #generate dummy dat for legend
+      #reshaping FC vector to FC matrix
+      edgelab=c("Positive","Negative")
+      conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
+      conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = sample(c(-1,1),size=length(data[1,]),replace=T,prob = c(50,50))
+      conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
+      
+      nodeorder=as.numeric(rep(NA,nnodes))
+      for (rowno in 1:nnodes) {nodeorder[rowno]=which(label$neworder==rowno)}
+      
+      colnames(conmat_NxN)=label$labels
+      rownames(conmat_NxN)=label$labels
+      reordered=conmat_NxN[nodeorder,nodeorder]
+      RegionsFC=as.factor(label$regionlabel)[nodeorder]
+      
+      ##graph object
+      
+      graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+      EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
+      posnegFC=EvalFC
+      posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
+      posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
+      
+      igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
+      igraph::edge_attr(graphobjFC, "posFC", index = igraph::E(graphobjFC))=posnegFC
+    }
     
     legend.plot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
-      ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness*1.5, show.legend = T,) +
+      ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness*1.5, show.legend = TRUE) +
       ggraph::scale_edge_alpha_continuous(guide="none")+
-      ggraph::scale_edge_color_manual(name="Edges", labels=c("Positive","Negative"),values=c(hot,cold))+
+      ggraph::scale_edge_color_manual(name="Edges", labels= edgelab,values=c(hot,cold),drop = FALSE)+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
       ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size*1.5, shape=19,show.legend = T) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
@@ -190,7 +225,7 @@ vizConnectogram=function(data,
     FCplot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
       ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = T) +
       ggraph::scale_edge_alpha_continuous(guide="none")+
-      ggraph::scale_edge_color_manual(name="Edges", labels=c("Positive","Negative"),values=c(hot,cold))+
+      ggraph::scale_edge_color_manual(name="Edges", labels=edgelab,values=c(hot,cold))+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
       ggplot2::ggtitle(title[1])+
       ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = T) +
@@ -252,10 +287,16 @@ genplot=function(row_data,
   posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
   posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
   
+  if(length(which(posnegFC=="1_pos"))==0)
+  {
+    hot=cold
+  }
+   
   igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
   igraph::edge_attr(graphobjFC, "posFC", index = igraph::E(graphobjFC))=posnegFC
   
   #plot
+  
   ggplot.obj=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
     ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = F) +
     ggraph::scale_edge_alpha_continuous(guide="none")+
