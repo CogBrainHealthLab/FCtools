@@ -214,8 +214,10 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 #' @returns Returns a list object containing
 #' \itemize{
 #'  \item `clust.tstat` thresholded edge-wise t-statistics.Edges not belonging to this cluster will be zeroed.
-#'  \item `clust.pos.mask` A vector of 1s and 0s indicating the significant network-thresholded positive edges.
-#'  \item `clust.neg.mask` A vector of 1s and 0s indicating the significant network-thresholded negative edges.
+#'  \item `pos.edges` A vector of 1s and 0s indicating the significant network-thresholded positive edges.
+#'  \item `neg.edges` A vector of -1s and 0s indicating the significant network-thresholded negative edges.
+#'  \item `pos.mask` A vector of 1s and 0s indicating the significant network-thresholded positive edges.
+#'  \item `neg.mask` A vector of 1s and 0s indicating the significant network-thresholded negative edges.
 #'}
 #' @examples
 #' \dontrun{
@@ -273,8 +275,8 @@ extract.edges=function(NBS.obj,network=1)
     clust.neg.mask[clust.neg.mask<0]=-1
 
   ##objects to return
-  returnobj=list(as.numeric(clust.tstat),as.numeric(clust.pos.mask),as.numeric(clust.neg.mask))
-  names(returnobj)=c("clust.tstat","clust.pos.mask","clust.neg.mask")
+  returnobj=list(as.numeric(clust.tstat),as.numeric(clust.pos.mask),as.numeric(clust.neg.mask),as.numeric(clust.pos.mask),abs(as.numeric(clust.neg.mask)))
+  names(returnobj)=c("clust.tstat","pos.edges","neg.edges","pos.mask","neg.mask")
   return(returnobj)
 }
 ############################################################################################################################
