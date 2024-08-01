@@ -140,7 +140,7 @@ vizHeatmap=function(data,
     #combining both legends          
     legend=cowplot::plot_grid(cowplot::get_plot_component(colbar, 'guide-box-right', return_all = TRUE),
                             cowplot::get_plot_component(nodecol, 'guide-box-right', return_all = TRUE), nrow=2)
-    main=genplot_heatmap(row_data=data[1,],title=title[1],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
+    main=genplot_heatmap(row_data=data[1,],title=title[1],nnodes,label, hot, cold,mid,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
     #output plot
     png(filename=filename,width=width+leg.size, height=height, res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,ncol=2, rel_widths = c(height,leg.size))))
