@@ -153,7 +153,7 @@ vizHeatmap=function(data,
     if((nrow*ncol)<NROW(data))  {stop("Not enough columns or rows are specified to display the subplots")}
     #generate multiple plots
     ggplot.obj=list()
-    for(row in 1:NROW(data))  {ggplot.obj[[row]]=genplot_heatmap(row_data=data[row,],title=title[row],nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)}
+    for(row in 1:NROW(data))  {ggplot.obj[[row]]=genplot_heatmap(row_data=data[row,],title=title[row],nnodes,label, hot, cold,mid,colorscheme,atlas,title.size,limits,ends,line.color,line.width)}
     
     ##bottom legend plots
       #node legend
@@ -193,7 +193,7 @@ vizHeatmap=function(data,
 }
   
 ##function to generate individual plots
-genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
+genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,mid,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
 {
   ##generate first plot
   #reshaping FC vector to FC matrix
