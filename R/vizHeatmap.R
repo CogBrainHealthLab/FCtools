@@ -12,6 +12,7 @@
 #' @param nrow number of rows in the plot. Not used for single row data
 #' @param hot color for the positive connections. Set to `#F8766D` by default.
 #' @param cold color for the negative connections. Set to `#00BFC4` by default.
+#' @param mid color for the mid point of the color scale. Set to `white` by default.
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.
 #' @param filename output filename with a *.png file extension. Set to "heatmap.png" by default
 #' @param title a vector of strings to be used as title
@@ -42,6 +43,7 @@
 vizHeatmap=function(data,
                     hot="#F8766D", 
                     cold="#00BFC4",
+                    mid="white",
                     ncol,
                     nrow, 
                     filename="heatmap.png", 
@@ -128,7 +130,7 @@ vizHeatmap=function(data,
     #edge strength legend
     colbar=ggplot2::ggplot(data = dummy_dat, ggplot2::aes(x=Var1, y=Var2, fill=value)) + 
             ggplot2::geom_tile()+
-            ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid ="white",
+            ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid =mid,
                                     na.value = "black",breaks=round(c(limits[1],0,limits[2]),2))+
             ggplot2::theme(legend.position="right",legend.title.position = "top",
                            legend.text = ggplot2::element_text(size=legend.text.size-2.5),
@@ -166,7 +168,7 @@ vizHeatmap=function(data,
       #edge strength legend
       colbar=ggplot2::ggplot(data = dummy_dat, ggplot2::aes(x=Var1, y=Var2, fill=value)) + 
         ggplot2::geom_tile()+
-        ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid ="white",
+        ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid =mid,
                                       na.value = "black",breaks=round(c(limits[1],0,limits[2]),2))+
         ggplot2::theme(legend.position="bottom",legend.title.position = "top",
                        legend.text = ggplot2::element_text(size=legend.text.size),
@@ -210,7 +212,7 @@ genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,colorscheme,atla
     ggplot2::geom_vline(xintercept=ends, color=line.color,linewidth=line.width)+
     ggplot2::scale_y_continuous(name="",expand=c(0.005,0), breaks=1:nnodes,labels=label$labels)+
     ggplot2::scale_x_continuous(name="",expand=c(0.005,0), breaks=1:nnodes)+
-    ggplot2::scale_fill_gradient2(name="",limits=limits,low=cold,high=hot,mid ="white",
+    ggplot2::scale_fill_gradient2(name="",limits=limits,low=cold,high=hot,mid =mid,
                                   na.value = "black",breaks=c(limits[1],0,limits[2]),guide="none")+
     ggplot2::theme(axis.text=ggplot2::element_blank(),aspect.ratio = 1,
                    axis.ticks = ggplot2::element_line(color=colorscheme[label$region],linewidth = 1,lineend = "square"),
