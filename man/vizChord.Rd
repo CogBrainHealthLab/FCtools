@@ -14,8 +14,8 @@ vizChord(
   colorscheme,
   title,
   leg.height = 100,
-  ncol,
-  nrow
+  ncol = 1,
+  nrow = 1
 )
 }
 \arguments{

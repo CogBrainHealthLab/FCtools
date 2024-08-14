@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract.edges</span><span class="op">(</span><span class="va">NBS.obj</span>, clust.no <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract.edges</span><span class="op">(</span><span class="va">NBS.obj</span>, network <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -53,8 +53,8 @@
 <dd><p>A list object generated from an earlier <code><a href="NBS.html">NBS()</a></code> analysis</p></dd>
 
 
-<dt>clust.no</dt>
-<dd><p>the cluster number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default</p></dd>
+<dt>network</dt>
+<dd><p>the network number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default</p></dd>
 
 </dl></div>
     <div id="value">
@@ -62,8 +62,10 @@
     
 
 <p>Returns a list object containing</p><ul><li><p><code>clust.tstat</code> thresholded edge-wise t-statistics.Edges not belonging to this cluster will be zeroed.</p></li>
-<li><p><code>clust.pos.mask</code> A vector of 1s and 0s indicating the significant network-thresholded positive edges.</p></li>
-<li><p><code>clust.neg.mask</code> A vector of 1s and 0s indicating the significant network-thresholded negative edges.</p></li>
+<li><p><code>pos.edges</code> A vector of 1s and 0s indicating the significant network-thresholded positive edges.</p></li>
+<li><p><code>neg.edges</code> A vector of -1s and 0s indicating the significant network-thresholded negative edges.</p></li>
+<li><p><code>pos.mask</code> A vector of 1s and 0s indicating the significant network-thresholded positive edges.</p></li>
+<li><p><code>neg.mask</code> A vector of 1s and 0s indicating the significant network-thresholded negative edges.</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -73,7 +75,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="fu">extract.edges</span><span class="op">(</span><span class="va">model1</span>,clust.no<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">extract.edges</span><span class="op">(</span><span class="va">model1</span>,network<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

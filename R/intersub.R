@@ -18,6 +18,7 @@
 #'  \item `FC_difference_matrix` The FC difference matrix
 #'  \item `Outcome_difference_matrix` The outcome difference matrix
 #'  \item `permutation_data` The permuted correlation values
+#'  }
 #' @examples
 #'
 #' results=runif(7021, min = -1, max = 1)

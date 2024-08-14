@@ -8,6 +8,7 @@ vizHeatmap(
   data,
   hot = "#F8766D",
   cold = "#00BFC4",
+  mid = "white",
   ncol,
   nrow,
   filename = "heatmap.png",
@@ -30,6 +31,8 @@ vizHeatmap(
 \item{hot}{color for the positive connections. Set to \verb{#F8766D} by default.}
 
 \item{cold}{color for the negative connections. Set to \verb{#00BFC4} by default.}
+
+\item{mid}{color for the mid point of the color scale. Set to \code{white} by default.}
 
 \item{ncol}{number of columns in the plot. Not used for single row data}
 

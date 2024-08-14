@@ -4,19 +4,21 @@
 \alias{extract.edges}
 \title{extract.edges}
 \usage{
-extract.edges(NBS.obj, clust.no = 1)
+extract.edges(NBS.obj, network = 1)
 }
 \arguments{
 \item{NBS.obj}{A list object generated from an earlier \code{NBS()} analysis}
 
-\item{clust.no}{the cluster number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default}
+\item{network}{the network number (reported in the earlier NBS results) of the network to be masked. Set to 1 by default}
 }
 \value{
 Returns a list object containing
 \itemize{
 \item \code{clust.tstat} thresholded edge-wise t-statistics.Edges not belonging to this cluster will be zeroed.
-\item \code{clust.pos.mask} A vector of 1s and 0s indicating the significant network-thresholded positive edges.
-\item \code{clust.neg.mask} A vector of 1s and 0s indicating the significant network-thresholded negative edges.
+\item \code{pos.edges} A vector of 1s and 0s indicating the significant network-thresholded positive edges.
+\item \code{neg.edges} A vector of -1s and 0s indicating the significant network-thresholded negative edges.
+\item \code{pos.mask} A vector of 1s and 0s indicating the significant network-thresholded positive edges.
+\item \code{neg.mask} A vector of 1s and 0s indicating the significant network-thresholded negative edges.
 }
 }
 \description{
@@ -27,6 +29,6 @@ This function generates positive and negative masks (vectors of 1s and 0s), wher
 }
 \examples{
 \dontrun{
-extract.edges(model1,clust.no=1)
+extract.edges(model1,network=1)
 }
 }
