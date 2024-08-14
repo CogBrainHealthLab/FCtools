@@ -127,6 +127,6 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
   cat(paste0("\nCorrelation between FC and Outcome similarity matrice = ",round(rho,3)," ; p ",p))
   
   return.obj=list(FC.sim.mat,outcome.sim.mat,perm_dat)
-  names(return.obj)=c("FC_difference_matrix","Outcome_difference_matrix","permutation_data")
+  names(return.obj)=c("FC_similarity_matrix","Outcome_similarity_matrix","permutation_data")
   return(return.obj)
 }
