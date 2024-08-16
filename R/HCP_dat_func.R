@@ -92,7 +92,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 28/6/2024 5.45pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 16/8/2024 11.40am\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
@@ -242,6 +242,9 @@ extractFC=function(wb_path,
     }
   parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),brainstructures=c("left","right"))))
 
+  ## defining subcortical parcel indices for reordering ROIs subsequently
+  reorder.subcortical.idx=c(9,18,8,17,6,3,13,1,11,10,19,7,16,5,15,4,14,2,12)+atlas
+  
   ## loop thru subjects
   cat(paste("\nProcessing",length(sub.list), "valid subjects out of",N.orig,"listed subject directories...\n\n",sep=" "))
   for (sub in 1:NROW(sub.list))
@@ -388,9 +391,12 @@ extractFC=function(wb_path,
             data_p=timeseries.dat[brain_vec==p,]
             xii_pmean[,p]=colMeans(data_p,na.rm = T)
           }
+          #reorder parcel indices for visualization purpose
+          xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)]
+                              
           #output FC matrix
           headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
-          
+        
           write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
           write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
         
