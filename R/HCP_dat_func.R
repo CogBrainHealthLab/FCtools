@@ -62,6 +62,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param GSR If set to TRUE, global signal, its derivative and the squares of the global signal and its derivatives will be regressed out from the fMRI timeseries data.
 #' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
 #' @param output_dir The output directory where the FC matrices and headmotion parameters will be saved. A default `output_dir` directory will be created if it does not exist.
+#' @param output.timeseries When set to `TRUE`, the parcellated timeseries data will be output instead of the FC matrix.
 #' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
 #' @param dir.check check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to `TRUE` by default.
 #' @returns outputs M x M matrices in `output_dir\FCmat`, headmotion measurements in `output_dir\headmotion` and a summary headmotion measurements across all subjects `output_dir\report.csv`.
@@ -89,6 +90,7 @@ extractFC=function(wb_path,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_Regressors.txt",
                    output_dir="output_dir",
+                   output.timeseries=F,
                    overwrite=TRUE,
                    dir.check=TRUE)
 {
@@ -242,7 +244,7 @@ extractFC=function(wb_path,
                   destfile =paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),mode = "wb")
     
   }
-  parc=c(as.matrix(read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),brainstructures=c("left","right"))))
+  parc=c(as.matrix(ciftiTools::read_cifti(paste(system.file(package='FCtools'),"/data/Schaefer2018_",atlas,"Parcels_7Networks_order.dlabel.nii",sep=""),brainstructures=c("left","right"))))
   
   ## defining subcortical parcel indices for reordering ROIs subsequently
   reorder.subcortical.idx=c(9,18,8,17,6,3,13,1,11,10,19,7,16,5,15,4,14,2,12)+atlas
@@ -277,10 +279,7 @@ extractFC=function(wb_path,
           {movement.dat[[volume]]=NA}
           
           ##if its not the last volume 
-          if(volume!=length(movement.path))  
-          {
-            frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
-          }
+          if(volume!=length(movement.path))  {frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)}
           remove(mov.dat)
         }
         
@@ -295,9 +294,7 @@ extractFC=function(wb_path,
           frame.starts=c(frame.ends[[1]][2],unlist(frame.starts))
         }
         
-        if(NCOL(movement.dat[[1]])==1)
-        {
-          movement.dat=unlist(movement.dat)  
+        if(NCOL(movement.dat[[1]])==1)  {movement.dat=unlist(movement.dat)
         } else if (NCOL(movement.dat[[1]])>1)
         {
           movement.dat=do.call(rbind, movement.dat)
@@ -330,8 +327,8 @@ extractFC=function(wb_path,
         
         for(vol in 1:length(fmri.path))
         {
-          if(vol==1)  {xii.mat=as.matrix(xii.list[[1]])} 
-          else  {xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))}
+          if(vol==1)  {xii.mat=as.matrix(xii.list[[1]])
+          } else  {xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))}
         }
         remove(xii.list,vol)
       } else
@@ -361,8 +358,7 @@ extractFC=function(wb_path,
                 totest=match(frame.ends,(exc_framesOLD[frameno]:exc_framesOLD[frameno+1]))
                 totest=totest[-is.na(totest)]
                 if(length(totest)!=2)  {exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])}
-              } 
-              else  {exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])}
+              } else  {exc_frames=c(exc_frames,exc_framesOLD[frameno]:exc_framesOLD[frameno+1])}
             }
           }
           exc_frames=unique(exc_frames)
@@ -391,9 +387,9 @@ extractFC=function(wb_path,
           
           ##confounds regression
           ##selecting confounds for confounds regression
-          if(motion.reg==T & GSR==F)  {confounds=movement.reg.scrubbed} 
-          else if(motion.reg==T & GSR==T) {confounds=cbind(movement.reg.scrubbed,colMeans(xii.scrubbed))} 
-          else if(motion.reg==F & GSR==T) {confounds=colMeans(xii.scrubbed)}
+          if(motion.reg==T & GSR==F)  {confounds=movement.reg.scrubbed
+          } else if(motion.reg==T & GSR==T) {confounds=cbind(movement.reg.scrubbed,colMeans(xii.scrubbed))
+          } else if(motion.reg==F & GSR==T) {confounds=colMeans(xii.scrubbed)}
           
           if(GSR==T | motion.reg==T)
           {
@@ -435,8 +431,9 @@ extractFC=function(wb_path,
           
           #output FC matrix
           headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
+          if (output.timeseries==F)  {write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
+          }  else if(output.timeseries==T) {write.table(xii_pmean, file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)}
           
-          write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
           write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
           
           remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p, headmotion.row, headmotion.param)
