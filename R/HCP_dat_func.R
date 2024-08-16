@@ -96,7 +96,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 16/8/2024 3.10pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 16/8/2024 6.00pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
