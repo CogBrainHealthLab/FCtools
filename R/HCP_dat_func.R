@@ -266,6 +266,7 @@ extractFC=function(wb_path,
       {
         movement.dat=list()
         frame.ends=list()
+        frame.starts=list()
         
         for(volume in 1:length(movement.path))
         {
@@ -276,15 +277,24 @@ extractFC=function(wb_path,
           {movement.dat[[volume]]=NA}
           
           ##if its not the last volume 
-          if(volume!=length(movement.path))  {frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)}
+          if(volume!=length(movement.path))  
+          {
+            frame.ends[[volume]]=c(NROW(movement.dat[[volume]]),NROW(movement.dat[[volume]])+1)
+          }
           remove(mov.dat)
         }
         
         ##edit frame end indices only if there are more than 2 volumes; i.e. frame ends + number of frames in previous volumes
         if(length(movement.path)>2)  
         {
-          for(volume in 2:(length(movement.path)-1))  {frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]}
+          for(volume in 2:(length(movement.path)-1))  
+          {
+            frame.starts[[volume]]=frame.ends[[volume-1]][2]+frame.ends[[volume]][1]
+            frame.ends[[volume]]=frame.ends[[volume-1]][1]+frame.ends[[volume]]
+          }
+          frame.starts=c(frame.ends[[1]][2],unlist(frame.starts))
         }
+        
         if(NCOL(movement.dat[[1]])==1)
         {
           movement.dat=unlist(movement.dat)  
@@ -296,6 +306,8 @@ extractFC=function(wb_path,
         }
         
         frame.ends=unlist(frame.ends)
+        frame.start.dat=rep(0,NROW(movement.dat))
+        frame.start.dat[frame.starts]=1
         
       } else
       {
@@ -366,36 +378,41 @@ extractFC=function(wb_path,
           {
             cat(paste("Missing timepoints in one of the movement files.\nScrubbing will not be carried out for",sub.list[sub]))
             xii.scrubbed=xii.mat
+            movement.reg.scrubbed=movement.reg
             headmotion.param$no_frames_removed="Missing timepoints in one of the movement files., scrubbing cannot be carried out"
           } else
           {
             xii.scrubbed=xii.mat[,-exc_frames]
+            movement.reg.scrubbed=movement.reg[-exc_frames,]
+            frame.start.dat=frame.start.dat[-exc_frames]
             headmotion.param$no_frames_removed=length(exc_frames)
           }
           n_timepoints=NCOL(xii.scrubbed)
           
-        ##confounds regression
+          ##confounds regression
           ##selecting confounds for confounds regression
-          if(motion.reg==T & GSR==F)  {confounds=movement.reg} 
-          else if(motion.reg==T & GSR==T) {confounds=cbind(movement.reg,colMeans(xii.scrubbed))} 
+          if(motion.reg==T & GSR==F)  {confounds=movement.reg.scrubbed} 
+          else if(motion.reg==T & GSR==T) {confounds=cbind(movement.reg.scrubbed,colMeans(xii.scrubbed))} 
           else if(motion.reg==F & GSR==T) {confounds=colMeans(xii.scrubbed)}
           
-          if(GSR==T | motionreg==T)
+          if(GSR==T | motion.reg==T)
           {
             #computing derivatives and squares of confounds
             nconfound=NROW(confounds)
+            confounds=data.matrix(confounds)
             confounds.derivative=confounds
             confounds.derivative[2:nconfound,]=confounds[2:nconfound,]-confounds[1:(nconfound-1),]
             confounds.derivative[1,]=0
+            if(exists("frame.start.dat")){confounds.derivative[which(frame.start.dat==1),]=0}
             all.confounds=cbind(confounds, confounds^2,confounds.derivative,confounds.derivative^2)
-    
+            
             #regressing out confounds
             dmat=xii.scrubbed
             dmat=fMRItools::nuisance_regression(dmat, cbind(1, all.confounds))
             xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
             xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
-            remove(dmat,xii.base,xii.scrubbed,xii.regressed,gsig)
-          } else if(GSR==F)
+            remove(dmat,xii.base,xii.scrubbed,xii.regressed,confounds,confounds.derivative,nconfound)
+          } else
           {
             xii.final=ciftiTools::newdata_xifti(xii.base, xii.scrubbed)
             xii.final=ciftiTools::move_from_mwall(xii.final, NA)
