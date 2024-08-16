@@ -60,7 +60,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param motion.thresh the threshold used for scrubbing frames. Set to 0.25 by default.
 #' @param motion.reg When set to `TRUE`, the 6 motion parameters (3 translation and 3 rotation), their derivatives and the squares of these parameters and their derivatives will be regressed out of the fMRI timeseries data. This motion regression procedure will only work if each subject folder contains a `Movement_Regressors.txt` file.
 #' @param GSR If set to TRUE, global signal, its derivative and the squares of the global signal and its derivatives will be regressed out from the fMRI timeseries data.
-#' @param scrub If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
+#' @param scrub If set to TRUE, remove frames with excessive head motion (FD > 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
 #' @param output_dir The output directory where the FC matrices and headmotion parameters will be saved. A default `output_dir` directory will be created if it does not exist.
 #' @param output.timeseries When set to `TRUE`, the parcellated timeseries data will be output instead of the FC matrix.
 #' @param overwrite If set to `FALSE`, subjects that already have their FC matrices in `output_dir` will be skipped. Set to `TRUE` by default.
@@ -385,8 +385,8 @@ extractFC=function(wb_path,
           }
           n_timepoints=NCOL(xii.scrubbed)
           
-          ##confounds regression
-          ##selecting confounds for confounds regression
+        ##confounds regression
+          #selecting confounds for confounds regression
           if(motion.reg==T & GSR==F)  {confounds=movement.reg.scrubbed
           } else if(motion.reg==T & GSR==T) {confounds=cbind(movement.reg.scrubbed,colMeans(xii.scrubbed))
           } else if(motion.reg==F & GSR==T) {confounds=colMeans(xii.scrubbed)}
@@ -407,6 +407,7 @@ extractFC=function(wb_path,
             dmat=fMRItools::nuisance_regression(dmat, cbind(1, all.confounds))
             xii.regressed=ciftiTools::newdata_xifti(xii.base, dmat)
             xii.final=ciftiTools::move_from_mwall(xii.regressed, NA)
+            
             remove(dmat,xii.base,xii.scrubbed,xii.regressed,confounds,confounds.derivative,nconfound)
           } else
           {
@@ -429,12 +430,13 @@ extractFC=function(wb_path,
           #reorder parcel indices for visualization purpose
           xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)]
           
-          #output FC matrix
+          #output headmotion stats
           headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
+          write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
+
+          #output FC matrix/timeseries
           if (output.timeseries==F)  {write.table(cor(xii_pmean), file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)
           }  else if(output.timeseries==T) {write.table(xii_pmean, file=paste(output_dir,"/FCmat/",sub.list[sub],".csv",sep=""), row.names = F, col.names = F, sep=",",quote=F)}
-          
-          write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
           
           remove(xii.final, sub_keys,brain_vec,xii_pmean,data_p, headmotion.row, headmotion.param)
           end=Sys.time()
