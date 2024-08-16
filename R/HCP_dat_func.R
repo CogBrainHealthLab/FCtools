@@ -451,11 +451,11 @@ extractFC=function(wb_path,
   if(scrub==T)  
   {
     report.all=data.frame(matrix(NA,nrow=NROW(headmotion.output.filelist),ncol=4))
-    colnames(report.all)=c("subject","mean FD/RMS", "total frames","no.frames_removed")
+    colnames(report.all)=c("subject","mean FD", "total frames","no.frames_removed")
   } else
   {
     report.all=data.frame(matrix(NA,nrow=NROW(headmotion.output.filelist),ncol=3))
-    colnames(report.all)=c("subject","mean FD/RMS", "total frames")
+    colnames(report.all)=c("subject","mean FD", "total frames")
   }
   
   for (sub in 1:length(headmotion.output.filelist))
