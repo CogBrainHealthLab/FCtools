@@ -60,6 +60,8 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' @param motion.thresh the threshold used for scrubbing frames. Set to 0.25 by default.
 #' @param motion.reg When set to `TRUE`, the 6 motion parameters (3 translation and 3 rotation), their derivatives and the squares of these parameters and their derivatives will be regressed out of the fMRI timeseries data. This motion regression procedure will only work if each subject folder contains a `Movement_Regressors.txt` file.
 #' @param GSR If set to TRUE, global signal, its derivative and the squares of the global signal and its derivatives will be regressed out from the fMRI timeseries data.
+#' @param bandpass Lower and upper limits of band pass filter. Signals below the lower limit and above the upper limit of the band pass filter will be eliminated. set to `c(0.01,0.1)` by default. Can turned off by setting to `NA`.
+#' @param TR Temporal resolution of the fMRI data. Only used if bandpass is not `NA`.
 #' @param scrub If set to TRUE, remove frames with excessive head motion (FD > 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.
 #' @param output_dir The output directory where the FC matrices and headmotion parameters will be saved. A default `output_dir` directory will be created if it does not exist.
 #' @param output.timeseries When set to `TRUE`, the parcellated timeseries data will be output instead of the FC matrix.
@@ -86,6 +88,8 @@ extractFC=function(wb_path,
                    scrub=F,
                    motion.reg=T,
                    GSR=F,
+                   bandpass=c(0.01,0.1),
+                   TR,
                    task,
                    extension="_Atlas_MSMAll_hp0_clean.dtseries.nii",
                    movement.extension="Movement_Regressors.txt",
@@ -96,12 +100,16 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 16/8/2024 6.00pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 7/9/2024 6.00pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
   if(length(sub.list)==0) {stop("no subject folders were found. Please check if the 'base_dir' is correctly specified")}
   sub.list=sub.list[order(sub.list)]
+  
+  ##check bandpass filter
+  if(!is.na(bandpass) & length(bandpass)!=2)  {stop("Band pass filter requires lower and upper limits of the frequency band to be specified")} 
+  if(length(bandpass)==2 & missing(TR)) {stop("TR needs to be specified in order to apply band pass filtering")} 
   
   ##create output_dir and headmotion_dir if they dont exist
   dir.create(file.path(output_dir), showWarnings = FALSE)
@@ -430,6 +438,9 @@ extractFC=function(wb_path,
           #reorder parcel indices for visualization purpose
           xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)]
           
+          #band pass filter
+          if(length(bandpass)==2) {xii_pmean=data.matrix(sapply(data.frame(xii_pmean), bandpassfilter, band=bandpass,TR=TR))}
+          
           #output headmotion stats
           headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
           write.table(headmotion.row, file=paste(output_dir,"/headmotion/",sub.list[sub],".txt",sep=""), row.names = F, col.names = F, sep=",",quote=F)
@@ -484,4 +495,21 @@ extractFD=function(mot_dat)
   }
   mot_datdiff <- apply(mot_dat, 2, diff, lag = 1)
   return(c(rep(0, 1), rowSums(abs(mot_datdiff))))
+}
+########################################################################################################
+########################################################################################################
+##band pass filter function
+
+bandpassfilter=function(data,TR,band)
+{
+  nframes = length(data)
+  t = seq(0, nframes, by = TR)
+  
+  fft_data <- fft(data)
+  freq <- (0:(nframes-1)) / (nframes * TR)
+  
+  fft_data[abs(freq) > band[2]] <- 0
+  fft_data[abs(freq) < band[1]] <- 0
+  
+  return(Re(fft(fft_data, inverse = TRUE)) / nframes)
 }
