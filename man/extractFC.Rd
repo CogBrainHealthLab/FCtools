@@ -11,11 +11,15 @@ extractFC(
   subjects,
   motion.thresh = 0.25,
   scrub = F,
+  motion.reg = T,
   GSR = F,
+  bandpass = c(0.01, 0.1),
+  TR,
   task,
   extension = "_Atlas_MSMAll_hp0_clean.dtseries.nii",
-  movement.extension = "Movement_RelativeRMS.txt",
+  movement.extension = "Movement_Regressors.txt",
   output_dir = "output_dir",
+  output.timeseries = F,
   overwrite = TRUE,
   dir.check = TRUE
 )
@@ -29,17 +33,25 @@ extractFC(
 
 \item{motion.thresh}{the threshold used for scrubbing frames. Set to 0.25 by default.}
 
-\item{scrub}{If set to TRUE, remove frames with excessive head motion (relative RMS displacement> 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.}
+\item{scrub}{If set to TRUE, remove frames with excessive head motion (FD > 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)}{Power et. al (2014)}. This is not recommended for task-based fMRI volumes.}
 
-\item{GSR}{If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.}
+\item{motion.reg}{When set to \code{TRUE}, the 6 motion parameters (3 translation and 3 rotation), their derivatives and the squares of these parameters and their derivatives will be regressed out of the fMRI timeseries data. This motion regression procedure will only work if each subject folder contains a \code{Movement_Regressors.txt} file.}
+
+\item{GSR}{If set to TRUE, global signal, its derivative and the squares of the global signal and its derivatives will be regressed out from the fMRI timeseries data.}
+
+\item{bandpass}{Lower and upper limits of band pass filter. Signals below the lower limit and above the upper limit of the band pass filter will be eliminated. set to \code{c(0.01,0.1)} by default. Can turned off by setting to \code{NA}.}
+
+\item{TR}{Temporal resolution of the fMRI data. Only used if bandpass is not \code{NA}.}
 
 \item{task}{The name of the task (case-sensitive), without any numbers or acquisition direction labels}
 
 \item{extension}{The filename extension of the fMRI volumes. Set to \verb{_Atlas_MSMAll_hp0_clean.dtseries.nii} by default}
 
-\item{movement.extension}{The filename extension of the head motion files. Set to \code{Movement_RelativeRMS.txt} by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.}
+\item{movement.extension}{The filename extension of the head motion files. Set to \code{Movement_Regressors.txt} by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.}
 
 \item{output_dir}{The output directory where the FC matrices and headmotion parameters will be saved. A default \code{output_dir} directory will be created if it does not exist.}
+
+\item{output.timeseries}{When set to \code{TRUE}, the parcellated timeseries data will be output instead of the FC matrix.}
 
 \item{overwrite}{If set to \code{FALSE}, subjects that already have their FC matrices in \code{output_dir} will be skipped. Set to \code{TRUE} by default.}
 

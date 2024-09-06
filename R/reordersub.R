@@ -2,7 +2,7 @@
 
 ############################################################################################################################
 ############################################################################################################################
-#' @title reorder.subcortical
+#' @title reorder_subcortical
 #'
 #' @description to reorder subcortical nodes for visualization
 #'
@@ -13,19 +13,19 @@
 #' @returns a vector of edge values with the correct subcortical nodes ordering
 #'
 #' @examples
-#'
+#' 
 #' FC.vector=runif(23871, min = -1, max = 1)
-#' reorder.subcortical(FC.vector)
+#' FC.vector.reordered=reorder_subcortical(FC.vector)
 #'
 #' @export
 ##Main function
 ########################################################################################################
 ########################################################################################################
-reorder.subcortical=function(data)
+reorder_subcortical=function(data)
 {
 data=data.matrix(data)  
-if (NCOL(data)==23871)  {n_nodes=219
-} else if (NCOL(data)==7021)  {n_nodes=119}
+if (length(data)==23871)  {n_nodes=219
+} else if (length(data)==7021)  {n_nodes=119}
 
 cort.nodes=n_nodes-19
 reorder.subcortical.idx=c(1:cort.nodes,c(9,18,8,17,6,3,13,1,11,10,19,7,16,5,15,4,14,2,12)+cort.nodes)

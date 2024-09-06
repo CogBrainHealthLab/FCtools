@@ -51,11 +51,15 @@
 <span>  <span class="va">subjects</span>,</span>
 <span>  motion.thresh <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  scrub <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  motion.reg <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  GSR <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  bandpass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  <span class="va">TR</span>,</span>
 <span>  <span class="va">task</span>,</span>
 <span>  extension <span class="op">=</span> <span class="st">"_Atlas_MSMAll_hp0_clean.dtseries.nii"</span>,</span>
-<span>  movement.extension <span class="op">=</span> <span class="st">"Movement_RelativeRMS.txt"</span>,</span>
+<span>  movement.extension <span class="op">=</span> <span class="st">"Movement_Regressors.txt"</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="st">"output_dir"</span>,</span>
+<span>  output.timeseries <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  dir.check <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -80,11 +84,23 @@
 
 
 <dt>scrub</dt>
-<dd><p>If set to TRUE, remove frames with excessive head motion (relative RMS displacement&gt; 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in <a href="https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)" class="external-link">Power et. al (2014)</a>. This is not recommended for task-based fMRI volumes.</p></dd>
+<dd><p>If set to TRUE, remove frames with excessive head motion (FD &gt; 0.25) and also remove segments in between two time-points if the segment has less than 5 frames. This is the ‘full scrubbing; method described in <a href="https://www.sciencedirect.com/science/article/abs/pii/S1053811913009117)" class="external-link">Power et. al (2014)</a>. This is not recommended for task-based fMRI volumes.</p></dd>
+
+
+<dt>motion.reg</dt>
+<dd><p>When set to <code>TRUE</code>, the 6 motion parameters (3 translation and 3 rotation), their derivatives and the squares of these parameters and their derivatives will be regressed out of the fMRI timeseries data. This motion regression procedure will only work if each subject folder contains a <code>Movement_Regressors.txt</code> file.</p></dd>
 
 
 <dt>GSR</dt>
-<dd><p>If set to TRUE, global signal and its square-term will be regressed out from the fMRI timeseries data.</p></dd>
+<dd><p>If set to TRUE, global signal, its derivative and the squares of the global signal and its derivatives will be regressed out from the fMRI timeseries data.</p></dd>
+
+
+<dt>bandpass</dt>
+<dd><p>Lower and upper limits of band pass filter. Signals below the lower limit and above the upper limit of the band pass filter will be eliminated. set to <code>c(0.01,0.1)</code> by default. Can turned off by setting to <code>NA</code>.</p></dd>
+
+
+<dt>TR</dt>
+<dd><p>Temporal resolution of the fMRI data. Only used if bandpass is not <code>NA</code>.</p></dd>
 
 
 <dt>task</dt>
@@ -96,11 +112,15 @@
 
 
 <dt>movement.extension</dt>
-<dd><p>The filename extension of the head motion files. Set to <code>Movement_RelativeRMS.txt</code> by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.</p></dd>
+<dd><p>The filename extension of the head motion files. Set to <code>Movement_Regressors.txt</code> by default. Note the head motion file should be a text file containing either a single column of numbers (RMS measurements), or at least 6 columns (3 displacement + 3 rotational vectors). If there are more than 6 columns, only the first 6 columns will be used to compute framewise displacement.</p></dd>
 
 
 <dt>output_dir</dt>
 <dd><p>The output directory where the FC matrices and headmotion parameters will be saved. A default <code>output_dir</code> directory will be created if it does not exist.</p></dd>
+
+
+<dt>output.timeseries</dt>
+<dd><p>When set to <code>TRUE</code>, the parcellated timeseries data will be output instead of the FC matrix.</p></dd>
 
 
 <dt>overwrite</dt>
