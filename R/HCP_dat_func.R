@@ -346,8 +346,10 @@ extractFC=function(wb_path,
       }
       headmotion.param$total_frames=NCOL(xii.mat)
       
-      ##scrubbing
+      ##band pass filter
+      if(length(bandpass)==2) { xii.mat=t(data.matrix(sapply(data.frame(t(xii.mat)), bandpassfilter, band=bandpass,TR=TR)))}
       
+      ##scrubbing
       if((scrub==T & length(which(movement.dat>motion.thresh))!=0)) #if there are no frames less then the motion threshold, no scrubbing is needed
       {
         #identify frames for scrubbing
@@ -437,9 +439,6 @@ extractFC=function(wb_path,
           }
           #reorder parcel indices for visualization purpose
           xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)]
-          
-          #band pass filter
-          if(length(bandpass)==2) {xii_pmean=data.matrix(sapply(data.frame(xii_pmean), bandpassfilter, band=bandpass,TR=TR))}
           
           #output headmotion stats
           headmotion.row=matrix(c(headmotion.param$subject,headmotion.param$mean,headmotion.param$total_frames,headmotion.param$no_frames_removed),nrow=1)
