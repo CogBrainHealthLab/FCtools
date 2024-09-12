@@ -128,6 +128,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
   tcrit=qt(p/2, NROW(model)-NCOL(model)-1, lower=FALSE)
   orig.clust=cluster.stat(t.orig,nnodes,tcrit)
+  orig.clust[is.nan(orig.clust)]=0
 
   remove(mod)
 
@@ -165,6 +166,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
       mod.permuted=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
       t.perm=extract.t(mod.permuted,colno+1)
       netstr=cluster.stat(t.perm,nnodes,tcrit)
+      netstr[is.nan(netstr)]=0
 
       remove(t.perm,mod.permuted)
 
