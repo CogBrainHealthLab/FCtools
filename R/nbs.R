@@ -128,8 +128,8 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
   tcrit=qt(p/2, NROW(model)-NCOL(model)-1, lower=FALSE)
   orig.clust=cluster.stat(t.orig,nnodes,tcrit)
-  orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]
-
+  
+  if(any(is.nan(orig.clust)){orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
   remove(mod)
 
   if(sum(orig.clust==0))  {cat(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
@@ -166,7 +166,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
       mod.permuted=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
       t.perm=extract.t(mod.permuted,colno+1)
       netstr=cluster.stat(t.perm,nnodes,tcrit)
-      netstr=netstr[-which(is.nan(netstr[,1])),]
+      if(any(is.nan(netstr)){netstr=netstr[-which(is.nan(netstr[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
 
       remove(t.perm,mod.permuted)
 
