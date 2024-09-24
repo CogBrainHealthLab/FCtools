@@ -18,6 +18,7 @@
 #' @param hot color for the positive connections.Set to `#F8766D` by default.
 #' @param cold color for the negative connections.Set to `#00BFC4` by default.
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.
+#' @param colorbar_title title for the colorbar legend
 #' @param filename output filename with a *.png file extension. Set to `conn.png` by default
 #'
 #' @returns outputs a .png image
@@ -37,7 +38,7 @@
 ##Main function
 ########################################################################################################
 ########################################################################################################
-vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,filename="conn.png", colorscheme, title,leg.height=100, ncol=1,nrow=1)
+vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,filename="conn.png", colorscheme, title,leg.height=100, ncol=1,nrow=1, colorbar_title="Connectivity Strength")
 {
   edge_lengths=c(4005,7021,23871,30135,78)
   if(NCOL(data)==1 | NROW(data)==1)
@@ -82,7 +83,7 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
   ##make colorbar legend
   leg.dat=data.frame(v1=-100:100)
   legend.plot=ggplot2::ggplot(leg.dat, ggplot2::aes(color=v1, x=v1, y=v1))+
-              ggplot2::scale_colour_gradient2(name="Connectivity strength",low=cold,mid="white",high=hot,
+              ggplot2::scale_colour_gradient2(name=colorbar_title,low=cold,mid="white",high=hot,
                                       guide = "colourbar", limits=c(-1,1), breaks=c(-1,1),
                                       labels=c("Strong negative","Strong positive"))+
               ggplot2::geom_point()+
