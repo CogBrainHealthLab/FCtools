@@ -24,6 +24,7 @@
 #' @param legend.text.size size parameter for the legend text. Set to 8 by default.
 #' @param line.width line thickness parameter for grid lines dividing the connectome in to networks. Set to 0.3 by default.
 #' @param line.color color parameter for grid lines dividing the connectome in to networks. Set to `"black"` by default.
+#' @param colorbar_title title for the colorbar legend
 #' @returns outputs a .png image
 #'
 #' @examples
@@ -57,7 +58,8 @@ vizHeatmap=function(data,
                     line.width=0.3,
                     width=1000,
                     height=1000,
-                    leg.size=200)
+                    leg.size=200,
+                    colorbar_title="Edge Strengt")
 {
   edge_lengths=c(4005,7021,23871,30135)
   if(NCOL(data)==1 | NROW(data)==1)
@@ -130,7 +132,7 @@ vizHeatmap=function(data,
     #edge strength legend
     colbar=ggplot2::ggplot(data = dummy_dat, ggplot2::aes(x=Var1, y=Var2, fill=value)) + 
             ggplot2::geom_tile()+
-            ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid =mid,
+            ggplot2::scale_fill_gradient2(name=colorbar_title,limits=round(limits,2),low=cold,high=hot,mid =mid,
                                     na.value = "black",breaks=round(c(limits[1],0,limits[2]),2))+
             ggplot2::theme(legend.position="right",legend.title.position = "top",
                            legend.text = ggplot2::element_text(size=legend.text.size-2.5),
@@ -168,7 +170,7 @@ vizHeatmap=function(data,
       #edge strength legend
       colbar=ggplot2::ggplot(data = dummy_dat, ggplot2::aes(x=Var1, y=Var2, fill=value)) + 
         ggplot2::geom_tile()+
-        ggplot2::scale_fill_gradient2(name="Edge strength",limits=round(limits,2),low=cold,high=hot,mid =mid,
+        ggplot2::scale_fill_gradient2(name=colorbar_title,limits=round(limits,2),low=cold,high=hot,mid =mid,
                                       na.value = "black",breaks=round(c(limits[1],0,limits[2]),2))+
         ggplot2::theme(legend.position="bottom",legend.title.position = "top",
                        legend.text = ggplot2::element_text(size=legend.text.size),
