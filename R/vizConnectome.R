@@ -26,6 +26,7 @@
 #' @param legend.title.size size parameter for the legend title. Set to 8 by default.
 #' @param legend.text.size size parameter for the legend text. Set to 6 by default.
 #' @param colorbar_title title for the colorbar legend
+#' @param edge_labels Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").
 #' @returns outputs a .png image
 #'
 #' @examples
@@ -62,7 +63,8 @@ vizConnectogram=function(data,
                          legend.text.size=7,
                          legend.title.size=8,
                          title.size=11,
-                         colorbar_title="Edge Strength")
+                         colorbar_title="Edge Strength",
+                         edge_labels=c("Positive","Negative"))
 {
   ##selecting atlas
   edge_lengths=c(4005,7021,23871,30135)
@@ -133,11 +135,11 @@ vizConnectogram=function(data,
   posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
   posnegFC=replace(posnegFC, which(posnegFC!="2_neg"), "1_pos")
   
-  edgelab=c("Positive","Negative")
+  edgelab=edge_labels
   if(length(which(posnegFC=="1_pos"))==0)
   {
     hot=cold
-    edgelab="Negative"
+    edgelab=edge_labels[2]
   }
   
   igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))=abs(EvalFC)
@@ -151,7 +153,7 @@ vizConnectogram=function(data,
     {
       #generate dummy dat for legend
       #reshaping FC vector to FC matrix
-      edgelab=c("Positive","Negative")
+      edgelab=edge_labels
       conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
       conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = sample(c(-1,1),size=length(data[1,]),replace=T,prob = c(50,50))
       conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
@@ -213,8 +215,11 @@ vizConnectogram=function(data,
                                                      node.text.size=node.text.size,
                                                      node.size=node.size,
                                                      title.size=title.size,
-                                                     colorbar_title=colorbar_title))
-    }
+                                                     colorbar_title=colorbar_title,
+                                                     edge_labels=edge_labels
+                                                     ))
+                                                     
+      }
     
     #main=suppressWarnings()
     
@@ -269,7 +274,8 @@ genplot=function(row_data,
                  node.text.size,
                  node.size,
                  title.size,
-                 colorbar_title)
+                 colorbar_title,
+                 edge_labels)
 {
   conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
   conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = row_data
@@ -304,7 +310,7 @@ genplot=function(row_data,
   ggplot.obj=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
     ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = F) +
     ggraph::scale_edge_alpha_continuous(guide="none")+
-    ggraph::scale_edge_color_manual(name=colorbar_title, labels=c("Positive","Negative"),values=c(hot,cold))+
+    ggraph::scale_edge_color_manual(name=colorbar_title, labels=edge_labels,values=c(hot,cold))+
     ggplot2::scale_color_manual(values =colorscheme, name="Network")+
     ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = F) +
     ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
