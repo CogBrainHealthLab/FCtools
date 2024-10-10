@@ -319,6 +319,7 @@ cpm.lesion=function(train.data,test.data,train.outcome, test.outcome,p=0.05)
   }
 
   ##preparing atlas labels for removing networks of edges
+  labels_dat=get('labels_dat')
   label=labels_dat[[match(NCOL(train.data),edge_lengths)]]
   nnode=NROW(label)
   networks.list=data.frame(unique(cbind(as.numeric(label$region),label$regionlabel)))

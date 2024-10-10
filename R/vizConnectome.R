@@ -95,6 +95,7 @@ vizConnectogram=function(data,
   param$nodecol[3:4]=param$nodecol[2]
   param$nodesize=c(1.4,1.3,1,1)
   param$margins=c(-margins[1], margins[2],margins[3],-margins[4])
+  labels_dat=get('labels_dat')
   label=labels_dat[[atlas]]
   label=label[order(label$oldorder),]
   label.neworder=label[order(label$neworder),]

@@ -87,7 +87,7 @@ vizHeatmap=function(data,
   nodecol=list(c("#D53E4F","#FC8D59","#FEE08B","#FFFFBF","#E6F598","#99D594","#3288BD"),
                      c("#D53E4F","#F46D43","#FDAE61","#FEE08B","#E6F598","#ABDDA4","#66C2A5","#3288BD"))
   nodecol[3:4]=nodecol[2]
-
+  labels_dat=get('labels_dat')
   label=labels_dat[[atlas]]
   nodelevels=unique(label$regionlabel)
   label=label[order(label$oldorder),]

@@ -168,7 +168,7 @@ genChord=function(data,hot,cold, colorscheme)
   localenv <- new.env()
   
   edge_lengths=c(4005,7021,23871,30135)
-  
+  labels_dat=get('labels_dat')
   label=labels_dat[[match(length(data),edge_lengths)]]
   label=label[order(label$region),]
   labelnameFC=unique(label$regionlabel)
