@@ -22,7 +22,8 @@ vizHeatmap(
   line.width = 0.3,
   width = 1000,
   height = 1000,
-  leg.size = 200
+  leg.size = 200,
+  colorbar_title = "Edge Strengt"
 )
 }
 \arguments{
@@ -59,6 +60,8 @@ vizHeatmap(
 \item{height}{height (in pixels) of each heatmap . Set to 1000 by default. Not used for single row data}
 
 \item{leg.size}{height/width (in pixels) of legend, in pixels. Set to 200 by default.}
+
+\item{colorbar_title}{title for the colorbar legend}
 }
 \value{
 outputs a .png image

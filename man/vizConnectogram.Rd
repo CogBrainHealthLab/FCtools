@@ -22,7 +22,9 @@ vizConnectogram(
   node.text.size = 1,
   legend.text.size = 7,
   legend.title.size = 8,
-  title.size = 11
+  title.size = 11,
+  colorbar_title = "Edge Strength",
+  edge_labels = c("Positive", "Negative")
 )
 }
 \arguments{
@@ -61,6 +63,10 @@ vizConnectogram(
 \item{legend.title.size}{size parameter for the legend title. Set to 8 by default.}
 
 \item{title.size}{size parameter for the title. Set to 1 by default.}
+
+\item{colorbar_title}{title for the colorbar legend}
+
+\item{edge_labels}{Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").}
 }
 \value{
 outputs a .png image

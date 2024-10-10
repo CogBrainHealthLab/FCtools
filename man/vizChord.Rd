@@ -15,7 +15,8 @@ vizChord(
   title,
   leg.height = 100,
   ncol = 1,
-  nrow = 1
+  nrow = 1,
+  colorbar_title = "Connectivity Strength"
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ vizChord(
 \item{ncol}{number of columns in the plot. Not used for single row data}
 
 \item{nrow}{number of rows in the plot. Not used for single row data}
+
+\item{colorbar_title}{title for the colorbar legend}
 }
 \value{
 outputs a .png image
