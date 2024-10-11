@@ -7,6 +7,7 @@
 #' @details This function extracts head motion measurements from an fMRIprep output directory, and outputs these measurements in a .csv file
 #'
 #' @param filename the desired filename, with a *.csv extension, of the output.Set to 'motiondat.csv' by default
+#' @param start calculate motion parameters from this frame index. set to 1 by default
 #'
 #' @returns outputs a .csv file containing columns of
 #' \itemize{
@@ -24,7 +25,7 @@
 #' @export
 ########################################################################################################
 ########################################################################################################
-extract_headmotion=function(filename="motiondat.csv")
+extract_headmotion=function(filename="motiondat.csv",start=1)
 {
   filelist = list.files(pattern = "_desc-confounds_timeseries.tsv",recursive = T)
   sub_task_list=gsub(pattern="_desc-confounds_timeseries.tsv",replacement = "",filelist)
@@ -34,6 +35,7 @@ extract_headmotion=function(filename="motiondat.csv")
   for (fileno in 1:NROW(filelist)) {
     cat(paste0(filelist[fileno],"\n"))
     confounds = read.table(file = filelist[fileno],sep = "\t", header = TRUE)
+    if(start !=1){confounds=confounds[-c(1:(start-1)),]}
     confounds[confounds == "n/a"] = NA
     motiondat$RMSD[fileno] = mean(as.numeric(confounds$rmsd),na.rm = T)
     motiondat$no.frames = NROW(confounds)
