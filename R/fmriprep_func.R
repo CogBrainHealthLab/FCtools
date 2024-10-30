@@ -57,6 +57,7 @@ extract_headmotion=function(filename="motiondat.csv",start=1)
 #'
 #' @param FC_dir the directory containing the M x M matrices (saved as .csv files)
 #' @param filename the output format of the concatenated group level matrix. Only filenames with the *.csv or *.rds extensions are accepted. The .rds format uses less disk space. Set to 'FCmat.rds' by default
+#' @param task A string to select the .csv files with a specific taskname.
 #' @param fisherz `TRUE` or `FALSE` option specifying if the edge values should undergo a fisher-Z transformation. This would be applicable in cases and functional connectivity is calculated as a pearson's correlation coefficient. Set to `TRUE` by default.
 #' @param timeseries `TRUE` or `FALSE` option specifying if the parcellated timeseries are used as inputs. Set to `FALSE` by default.
 #' @returns Depending on whether a filename with a .csv or .rds file extension is specified, outputs a .csv file containing the  N x ((M x M)-M)/2 matrix or a .rds file containing a list object: 1)N x ((M x M)-M)/2 matrix, 2) a vector of subject IDs.
@@ -72,15 +73,15 @@ extract_headmotion=function(filename="motiondat.csv",start=1)
 #'
 ########################################################################################################
 ########################################################################################################
-vectorizeFC=function(FC_dir, filename="FCmat.rds", fisherz=TRUE, timeseries=FALSE)
+vectorizeFC=function(FC_dir, filename="FCmat.rds", task, fisherz=TRUE, timeseries=FALSE)
 {
   ##check filename extension
   if(stringr::str_detect(string=filename, pattern=".csv")==F & stringr::str_detect(string=filename, pattern=".rds")==F)
   {
     stop("invalid filename extension")
   }
-
-  subjlist=list.files(path=FC_dir)
+  if(missing("task"))  {subjlist=list.files(path=FC_dir)}
+  else {subjlist=list.files(path=FC_dir,pattern=task)}
 
   if(timeseries==F)
   {
