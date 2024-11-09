@@ -44,7 +44,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vectorizeFC</span><span class="op">(</span><span class="va">FC_dir</span>, filename <span class="op">=</span> <span class="st">"FCmat.rds"</span>, fisherz <span class="op">=</span> <span class="cn">TRUE</span>, timeseries <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vectorizeFC</span><span class="op">(</span></span>
+<span>  <span class="va">FC_dir</span>,</span>
+<span>  filename <span class="op">=</span> <span class="st">"FCmat.rds"</span>,</span>
+<span>  <span class="va">task</span>,</span>
+<span>  fisherz <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  timeseries <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -55,6 +61,10 @@
 
 <dt>filename</dt>
 <dd><p>the output format of the concatenated group level matrix. Only filenames with the *.csv or *.rds extensions are accepted. The .rds format uses less disk space. Set to 'FCmat.rds' by default</p></dd>
+
+
+<dt>task</dt>
+<dd><p>A string to select the .csv files with a specific taskname.</p></dd>
 
 
 <dt>fisherz</dt>

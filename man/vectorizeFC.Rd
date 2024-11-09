@@ -4,12 +4,20 @@
 \alias{vectorizeFC}
 \title{vectorizeFC}
 \usage{
-vectorizeFC(FC_dir, filename = "FCmat.rds", fisherz = TRUE, timeseries = FALSE)
+vectorizeFC(
+  FC_dir,
+  filename = "FCmat.rds",
+  task,
+  fisherz = TRUE,
+  timeseries = FALSE
+)
 }
 \arguments{
 \item{FC_dir}{the directory containing the M x M matrices (saved as .csv files)}
 
 \item{filename}{the output format of the concatenated group level matrix. Only filenames with the *.csv or *.rds extensions are accepted. The .rds format uses less disk space. Set to 'FCmat.rds' by default}
+
+\item{task}{A string to select the .csv files with a specific taskname.}
 
 \item{fisherz}{\code{TRUE} or \code{FALSE} option specifying if the edge values should undergo a fisher-Z transformation. This would be applicable in cases and functional connectivity is calculated as a pearson's correlation coefficient. Set to \code{TRUE} by default.}
 

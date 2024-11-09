@@ -15,9 +15,9 @@ different atlas parcellation schemes, as a result, the lengths of the
 input vectors (N x N FC/SC matrix stringed out into a single vector) are
 contingent upon the atlas parcellation schemes used.
 
-### **2. Connectogram**
 
-**a. Install packages**
+### **1. Glassbrain (New!)**
+**A. Install packages**
 
 If you have not previously installed this package:
 
@@ -25,10 +25,21 @@ If you have not previously installed this package:
 install.packages("devtool")
 devtools::install_github("CogBrainHealthLab/FCtools")
 ```
+**B. Plotting the glassbrain**
 
 ``` r
 library(FCtools)
+
+mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
+data=runif(7021,min = -1,max=1)*mask
+
+vizGlassbrain(data,orientation_labels = T)
 ```
+![](man/figures/plotly.png) 
+
+
+### **2. Connectogram**
+
 
 **A. Plotting the connectogram**
 
@@ -221,7 +232,7 @@ vizChord(data=rbind(network1,network2,network3,network4),
 ```
 ![](man/figures/4xFCchord_119.png) 
 
-### **3. Heatmap**
+### **4. Heatmap**
 
 The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used
 
@@ -240,3 +251,4 @@ sub4=get("demomat")[4,]
 vizHeatmap(data=rbind(sub1,sub2,sub3,sub4),title=c("sub1","sub2","sub3","sub4"), filename = "4xheatmap219.png", ncol=2, nrow=2)
 ```
 ![](man/figures/4xheatmap219.png) 
+

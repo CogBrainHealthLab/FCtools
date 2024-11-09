@@ -66,16 +66,28 @@
 <p>The FCtools package contains a collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data (see <a href="https://cogbrainhealthlab.github.io/FCtools/reference/index.html" class="external-link">here</a> for the full list of functions). This readme will show you how to generate connectograms and chord diagrams to illustrate your brain connectivity-related results, both SC and FC. Currently, in our neuroimaging database, we have connectivity data that are derived from different atlas parcellation schemes, as a result, the lengths of the input vectors (N x N FC/SC matrix stringed out into a single vector) are contingent upon the atlas parcellation schemes used.</p>
 </div>
 <div class="section level3">
-<h3 id="id_2-connectogram">
-<strong>2. Connectogram</strong><a class="anchor" aria-label="anchor" href="#id_2-connectogram"></a>
+<h3 id="id_1-glassbrain-new">
+<strong>1. Glassbrain (New!)</strong><a class="anchor" aria-label="anchor" href="#id_1-glassbrain-new"></a>
 </h3>
-<p><strong>a. Install packages</strong></p>
+<p><strong>A. Install packages</strong></p>
 <p>If you have not previously installed this package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtool"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"CogBrainHealthLab/FCtools"</span><span class="op">)</span></span></code></pre></div>
+<p><strong>B. Plotting the glassbrain</strong></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FCtools</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FCtools</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mask</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.999</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">7021</span>,min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,max<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">mask</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/vizGlassbrain.html">vizGlassbrain</a></span><span class="op">(</span><span class="va">data</span>,orientation_labels <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/plotly.png"></p>
+</div>
+<div class="section level3">
+<h3 id="id_2-connectogram">
+<strong>2. Connectogram</strong><a class="anchor" aria-label="anchor" href="#id_2-connectogram"></a>
+</h3>
 <p><strong>A. Plotting the connectogram</strong></p>
 <p>The <code><a href="reference/vizConnectogram.html">vizConnectogram()</a></code> function can take input vectors of the following lengths:</p>
 <ul>
@@ -175,8 +187,8 @@
 <p><img src="reference/figures/4xFCchord_119.png"></p>
 </div>
 <div class="section level3">
-<h3 id="id_3-heatmap">
-<strong>3. Heatmap</strong><a class="anchor" aria-label="anchor" href="#id_3-heatmap"></a>
+<h3 id="id_4-heatmap">
+<strong>4. Heatmap</strong><a class="anchor" aria-label="anchor" href="#id_4-heatmap"></a>
 </h3>
 <p>The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

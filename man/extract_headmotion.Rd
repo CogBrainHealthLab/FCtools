@@ -4,10 +4,12 @@
 \alias{extract_headmotion}
 \title{extract_headmotion}
 \usage{
-extract_headmotion(filename = "motiondat.csv")
+extract_headmotion(filename = "motiondat.csv", start = 1)
 }
 \arguments{
 \item{filename}{the desired filename, with a *.csv extension, of the output.Set to 'motiondat.csv' by default}
+
+\item{start}{calculate motion parameters from this frame index. set to 1 by default}
 }
 \value{
 outputs a .csv file containing columns of

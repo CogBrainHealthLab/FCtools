@@ -30,7 +30,7 @@ Imports:
     parallel,
     png,
     ggplotify,
+    plotly,
     psych,
     stringr,
     reshape2
-    
