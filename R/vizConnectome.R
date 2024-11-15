@@ -219,7 +219,7 @@ vizConnectogram=function(data,
                                                      node.size=node.size,
                                                      title.size=title.size,
                                                      colorbar_title=colorbar_title,
-                                                     edge_labels=edge_labels
+                                                     edge_labels=edge_labels,
                                                      limits=limits
                                                      ))
                                                      
