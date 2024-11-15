@@ -25,6 +25,7 @@
 #' @param title.size size parameter for the title. Set to 1 by default.
 #' @param legend.title.size size parameter for the legend title. Set to 8 by default.
 #' @param legend.text.size size parameter for the legend text. Set to 6 by default.
+#' @param limits a pair of values that governs the limits of the edge strengths displayed. If missing `limits=range(abs(data),na.rm=T)`
 #' @param colorbar_title title for the colorbar legend
 #' @param edge_labels Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").
 #' @returns outputs a .png image
@@ -183,9 +184,9 @@ vizConnectogram=function(data,
     
     legend.plot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
       ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness*1.5, show.legend = TRUE) +
-      ggraph::scale_edge_alpha_continuous(guide="none")+
+      ggraph::scale_edge_alpha_continuous(guide="none", limits=limits)+
       ggraph::scale_edge_color_manual(name=colorbar_title, labels= edgelab,values=c(hot,cold),drop = FALSE)+
-      ggplot2::scale_color_manual(values =colorscheme, name="Network", limits=limits)+
+      ggplot2::scale_color_manual(values =colorscheme, name="Network")+
       ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size*1.5, shape=19,show.legend = T) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
@@ -236,9 +237,9 @@ vizConnectogram=function(data,
   {
     FCplot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
       ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = T) +
-      ggraph::scale_edge_alpha_continuous(guide="none")+
+      ggraph::scale_edge_alpha_continuous(guide="none", limits=limits)+
       ggraph::scale_edge_color_manual(name=colorbar_title, labels=edgelab,values=c(hot,cold))+
-      ggplot2::scale_color_manual(values =colorscheme, name="Network", limits=limits)+
+      ggplot2::scale_color_manual(values =colorscheme, name="Network")+
       ggplot2::ggtitle(title[1])+
       ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = T) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
@@ -314,8 +315,8 @@ genplot=function(row_data,
   
   ggplot.obj=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
     ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = F) +
-    ggraph::scale_edge_alpha_continuous(guide="none")+
-    ggraph::scale_edge_color_manual(name=colorbar_title, labels=edge_labels,values=c(hot,cold),limits=limits)+
+    ggraph::scale_edge_alpha_continuous(guide="none",limits=limits)+
+    ggraph::scale_edge_color_manual(name=colorbar_title, labels=edge_labels,values=c(hot,cold))+
     ggplot2::scale_color_manual(values =colorscheme, name="Network")+
     ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = F) +
     ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
