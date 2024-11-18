@@ -10,7 +10,7 @@
 #' @param data a vector of edge values with 4005, 7021, 23871 or 30135 columns
 #' @param surf_color  color of the cortical surface. Set to `'grey'` by default
 #' @param node_color  color of the nodes. Set to `'#00BA38'` by default
-#' @param surf_color  alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to `0.2` by default
+#' @param surf_alpha  alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to `0.2` by default
 #' @param cmap A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. If none are specified, appropriate colors will be automatically selected according to `range(surf_data)`
 #' @param node_size size parameter for the dots representing the nodes. Set to `8` by default.
 #' @param edgethickness a value to adjust the thickness of the edges. Set to `8` by default.
