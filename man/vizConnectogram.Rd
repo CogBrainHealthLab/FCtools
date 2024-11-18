@@ -22,6 +22,7 @@ vizConnectogram(
   node.text.size = 1,
   legend.text.size = 7,
   legend.title.size = 8,
+  limits,
   title.size = 11,
   colorbar_title = "Edge Strength",
   edge_labels = c("Positive", "Negative")
@@ -61,6 +62,8 @@ vizConnectogram(
 \item{legend.text.size}{size parameter for the legend text. Set to 6 by default.}
 
 \item{legend.title.size}{size parameter for the legend title. Set to 8 by default.}
+
+\item{limits}{a pair of values that governs the limits of the edge strengths displayed. If missing \code{limits=range(abs(data),na.rm=T)}}
 
 \item{title.size}{size parameter for the title. Set to 1 by default.}
 
