@@ -22,7 +22,7 @@ contingent upon the atlas parcellation schemes used.
 If you have not previously installed this package:
 
 ``` r
-install.packages("devtool")
+install.packages("devtools")
 devtools::install_github("CogBrainHealthLab/FCtools")
 ```
 **B. Plotting the glassbrain**
