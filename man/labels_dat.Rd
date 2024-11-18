@@ -22,4 +22,4 @@ labels_dat
 \description{
 A list containing four data frames, listing atlas labels, index numbers, hemispheres and lobes they correspond to, for each available atlas (1=AAL-90 atlas, 2=Schaefer-100 atlas + 19 subcortical regions, 3=Schaefer-200 atlas + 19 subcortical regions, 4=Brainnetome atlas).
 }
-\keyword{datasets}
+\keyword{internal}
