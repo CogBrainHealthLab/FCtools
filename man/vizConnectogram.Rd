@@ -25,7 +25,8 @@ vizConnectogram(
   limits,
   title.size = 11,
   colorbar_title = "Edge Strength",
-  edge_labels = c("Positive", "Negative")
+  edge_labels = c("Positive", "Negative"),
+  row_title
 )
 }
 \arguments{
@@ -65,11 +66,13 @@ vizConnectogram(
 
 \item{limits}{a pair of values that governs the limits of the edge strengths displayed. If missing \code{limits=range(abs(data),na.rm=T)}}
 
-\item{title.size}{size parameter for the title. Set to 1 by default.}
+\item{title.size}{size parameter for the title. Set to 11 by default.}
 
 \item{colorbar_title}{title for the colorbar legend}
 
 \item{edge_labels}{Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").}
+
+\item{row_title}{a vector of strings to be used as left vertical titles for each row of plots when there are many}
 }
 \value{
 outputs a .png image

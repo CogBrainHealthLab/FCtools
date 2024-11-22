@@ -21,9 +21,11 @@ vizGlassbrain(
 \arguments{
 \item{data}{a vector of edge values with 4005, 7021, 23871 or 30135 columns}
 
-\item{surf_color}{alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to \code{0.2} by default}
+\item{surf_color}{color of the cortical surface. Set to \code{'grey'} by default}
 
 \item{node_color}{color of the nodes. Set to \code{'#00BA38'} by default}
+
+\item{surf_alpha}{alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to \code{0.2} by default}
 
 \item{cmap}{A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. If none are specified, appropriate colors will be automatically selected according to \code{range(surf_data)}}
 
