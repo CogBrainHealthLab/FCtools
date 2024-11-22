@@ -22,12 +22,13 @@
 #' @param margins vector of 4 values specifying the amount of empty space on the left, right, top and bottom for each connectogram. Set to `c(1.2,1.2,1,1.5)` by default. You might want to adjust these values if the text labels get cut off by a neighbouring connectogram or the legend. Not used for single row data
 #' @param node.size size parameter for the dots representing the nodes. If not specified, an appropriate size will be set.
 #' @param node.text.size size parameter for the text labels on the nodes. Set to 1 by default.
-#' @param title.size size parameter for the title. Set to 1 by default.
+#' @param title.size size parameter for the title. Set to 11 by default.
 #' @param legend.title.size size parameter for the legend title. Set to 8 by default.
 #' @param legend.text.size size parameter for the legend text. Set to 6 by default.
 #' @param limits a pair of values that governs the limits of the edge strengths displayed. If missing `limits=range(abs(data),na.rm=T)`
 #' @param colorbar_title title for the colorbar legend
 #' @param edge_labels Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").
+#' @param row_title a vector of strings to be used as left vertical titles for each row of plots when there are many
 #' @returns outputs a .png image
 #'
 #' @examples
@@ -38,7 +39,7 @@
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text scale_color_manual expand_limits unit guide_legend coord_fixed
 #' @importFrom igraph graph_from_adjacency_matrix get.edgelist E edge_attr
 #' @importFrom gridExtra grid.arrange
-#' @importFrom grid textGrob gpar grid.raster
+#' @importFrom grid textGrob gpar grid.raster nullGrob textGrob
 #' @importFrom ggraph ggraph geom_edge_arc scale_edge_alpha_continuous scale_edge_color_manual geom_node_point geom_node_text theme_graph
 #' @importFrom cowplot plot_grid get_plot_component
 #' @importFrom png readPNG
@@ -66,7 +67,8 @@ vizConnectogram=function(data,
                          limits,
                          title.size=11,
                          colorbar_title="Edge Strength",
-                         edge_labels=c("Positive","Negative"))
+                         edge_labels=c("Positive","Negative"),
+                         row_title)
 {
   ##selecting atlas
   edge_lengths=c(4005,7021,23871,30135)
@@ -228,8 +230,47 @@ vizConnectogram=function(data,
     
     #main=suppressWarnings()
     
-    png(filename=filename,width=ncol*width, height=(nrow*height)+leg.height,res=300)
-    suppressWarnings(print(cowplot::plot_grid(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol),legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
+    #If row titles specified:
+    if (!missing(row_title)) 
+    {
+      row_titles=list()
+      #Create rotated side title for each row title provided
+      for (rowt in row_title) 
+      {row_titles <- append(row_titles, 
+          list(grid::textGrob(rowt, rot = 90,
+                              gp = grid::gpar(fontsize = title.size))))
+      }
+
+      #keep only as many titles as there are rows
+      grobs <- list()
+      for (i in 1:nrow) 
+      {if (i <= length(row_titles))
+        {grobs <- c(grobs, list(row_titles[[i]]))} 
+      else 
+        {grobs <- c(grobs, list(grid::textGrob("")))} #if not as many
+      
+          #depending on how many plots per row (user-chosen ncol), 
+          #add title and then plots for each row
+          for (j in 1:ncol) { 
+            index <- (i - 1) * ncol + j;
+            if (index <= length(ggplot.obj)) 
+            {grobs <- c(grobs, list(ggplot.obj[[index]]))} 
+            #if missing plot
+            else {grobs <- c(grobs, list(grid::nullGrob()))} 
+            }
+      }
+      ncol=ncol+1 #first column will be dedicated to title
+      width=(ncol-1)*width
+      widths = c(0.2, rep(5, ncol-1))
+      ggplot.obj=grobs
+    }
+    else { 
+      #Default width if no row title
+      width=ncol*width
+      widths=rep(1,ncol)}
+    
+    png(filename=filename,width=width, height=(nrow*height)+leg.height,res=300)
+    suppressWarnings(print(cowplot::plot_grid(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol, widths = widths),legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
     dev.off()
     img=png::readPNG(source =filename)
     grid::grid.raster(img)
