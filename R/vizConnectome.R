@@ -23,6 +23,7 @@
 #' @param node.size size parameter for the dots representing the nodes. If not specified, an appropriate size will be set.
 #' @param node.text.size size parameter for the text labels on the nodes. Set to 1 by default.
 #' @param title.size size parameter for the title. Set to 11 by default.
+#' @param title.alignment string object specifying title's alignment relatively to its plot options are 'left', 'center' (default), 'right'.
 #' @param legend.title.size size parameter for the legend title. Set to 8 by default.
 #' @param legend.text.size size parameter for the legend text. Set to 6 by default.
 #' @param limits a pair of values that governs the limits of the edge strengths displayed. If missing `limits=range(abs(data),na.rm=T)`
@@ -66,6 +67,7 @@ vizConnectogram=function(data,
                          legend.title.size=8,
                          limits,
                          title.size=11,
+                         title.alignment='center',
                          colorbar_title="Edge Strength",
                          edge_labels=c("Positive","Negative"),
                          row_title)
@@ -221,6 +223,7 @@ vizConnectogram=function(data,
                                                      node.text.size=node.text.size,
                                                      node.size=node.size,
                                                      title.size=title.size,
+                                                     title.alignment=title.alignment,
                                                      colorbar_title=colorbar_title,
                                                      edge_labels=edge_labels,
                                                      limits=limits
@@ -320,6 +323,7 @@ genplot=function(row_data,
                  node.text.size,
                  node.size,
                  title.size,
+                 title.alignment,
                  colorbar_title,
                  edge_labels,
                  limits)
@@ -354,6 +358,12 @@ genplot=function(row_data,
   
   #plot
   
+  #alignment value
+  if (title.alignment=='center') {talign=0.5}
+  else if (title.alignment=='left') {talign=0}
+  else if (title.alignment=='right') {talign=1}
+  else {talign=0.5}
+  
   ggplot.obj=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
     ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = F) +
     ggraph::scale_edge_alpha_continuous(guide="none",limits=limits)+
@@ -367,7 +377,9 @@ genplot=function(row_data,
     ggplot2::ggtitle(title)+
     ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
     ggplot2::expand_limits(x = param$margin[1:2], y = param$margin[3:4])+
-    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),plot.title=ggplot2::element_text(size=title.size))
+    ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),
+                   plot.title=ggplot2::element_text(size=title.size,
+                                                    hjust=talign))
 }
 ########################################################################################################
 ########################################################################################################

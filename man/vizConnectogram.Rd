@@ -24,6 +24,7 @@ vizConnectogram(
   legend.title.size = 8,
   limits,
   title.size = 11,
+  title.alignment = "center",
   colorbar_title = "Edge Strength",
   edge_labels = c("Positive", "Negative"),
   row_title
@@ -67,6 +68,8 @@ vizConnectogram(
 \item{limits}{a pair of values that governs the limits of the edge strengths displayed. If missing \code{limits=range(abs(data),na.rm=T)}}
 
 \item{title.size}{size parameter for the title. Set to 11 by default.}
+
+\item{title.alignment}{string object specifying title's alignment relatively to its plot options are 'left', 'center' (default), 'right'.}
 
 \item{colorbar_title}{title for the colorbar legend}
 
