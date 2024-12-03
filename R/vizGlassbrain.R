@@ -13,6 +13,9 @@
 #' @param surf_alpha  alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to `0.2` by default
 #' @param cmap A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. See `RColorBrewer::display.brewer.all()` for all possible cmap options. If none are specified, appropriate colors will be automatically selected according to `range(surf_data)`
 #' @param node_size size parameter for the dots representing the nodes. Set to `8` by default.
+#' @param node_label option to show node labels. Set to `TRUE` by default.
+#' @param node_label_size font size of the node labels. Set to `10` by default.
+#' @param node_label_color font color of the node labels. Set to `black` by default.
 #' @param edgethickness a value to adjust the thickness of the edges. Set to `8` by default.
 #' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(surf_dat),max(abs(surf_dat)))` will be used. 
 #' @param colorbar_title title for the colorbar legend. Set to `'Connectivity strength` by default
@@ -38,6 +41,9 @@ vizGlassbrain=function(data,
                        surf_alpha=0.2,
                        cmap,
                        node_size=8,
+                       node_label=TRUE,
+                       node_label_size=10,
+                       node_label_color="black",
                        edgethickness=8,
                        limits, 
                        colorbar_title="Connectivity strength",
@@ -118,6 +124,7 @@ vizGlassbrain=function(data,
                         j = fs5brain[[2]][, 2] - 1,
                         k = fs5brain[[2]][, 3] - 1,facecolor=rep(surf_color,NROW(fs5brain[[2]])),opacity=surf_alpha)
   }
+  ##add nodes and edges  
   fig=plotly::add_trace(fig,data = MNIdat, x = ~X, y = ~Y, z = ~Z, type = 'scatter3d', mode = 'lines+markers', split = ~edge,
                         line = list(width = edgethickness, 
                                color = ~strength, 
@@ -129,6 +136,13 @@ vizGlassbrain=function(data,
                                                title = list(text=colorbar_title,side="right"))),
                         text=labs,hoverinfo = 'text',
                         marker = list(size = node_size, color = node_color),showlegend = F)
+
+  ##add node labels
+  if(node_label==T)
+  {
+  fig=plotly::add_text(fig,data = MNIdat, x = ~X, y = ~Y, z = ~Z, text = labs, textfont=list(size=node_label_size, color=node_label_color))
+  }
+  ##turn off grid, tick labels, and axes labels
   fig=plotly::layout(fig,hoverlabel = list(align = "left"),
                      scene = list(camera=list(eye = list(x = 0, y = 1.5, z = 1.5)),
                                   xaxis = list(showgrid = F,showticklabels=F,showspikes=F,zeroline=F, title=""),
