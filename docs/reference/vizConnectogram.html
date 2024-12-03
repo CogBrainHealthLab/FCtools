@@ -62,9 +62,12 @@
 <span>  node.text.size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  legend.text.size <span class="op">=</span> <span class="fl">7</span>,</span>
 <span>  legend.title.size <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  <span class="va">limits</span>,</span>
 <span>  title.size <span class="op">=</span> <span class="fl">11</span>,</span>
+<span>  title.alignment <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>  colorbar_title <span class="op">=</span> <span class="st">"Edge Strength"</span>,</span>
-<span>  edge_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Positive"</span>, <span class="st">"Negative"</span><span class="op">)</span></span>
+<span>  edge_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Positive"</span>, <span class="st">"Negative"</span><span class="op">)</span>,</span>
+<span>  <span class="va">row_title</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -138,8 +141,16 @@
 <dd><p>size parameter for the legend title. Set to 8 by default.</p></dd>
 
 
+<dt>limits</dt>
+<dd><p>a pair of values that governs the limits of the edge strengths displayed. If missing <code>limits=range(abs(data),na.rm=T)</code></p></dd>
+
+
 <dt>title.size</dt>
-<dd><p>size parameter for the title. Set to 1 by default.</p></dd>
+<dd><p>size parameter for the title. Set to 11 by default.</p></dd>
+
+
+<dt>title.alignment</dt>
+<dd><p>string object specifying title's alignment relatively to its plot options are 'left', 'center' (default), 'right'.</p></dd>
 
 
 <dt>colorbar_title</dt>
@@ -148,6 +159,10 @@
 
 <dt>edge_labels</dt>
 <dd><p>Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").</p></dd>
+
+
+<dt>row_title</dt>
+<dd><p>a vector of strings to be used as left vertical titles for each row of plots when there are many</p></dd>
 
 </dl></div>
     <div id="value">

@@ -11,6 +11,9 @@ vizGlassbrain(
   surf_alpha = 0.2,
   cmap,
   node_size = 8,
+  node_label = TRUE,
+  node_label_size = 10,
+  node_label_color = "black",
   edgethickness = 8,
   limits,
   colorbar_title = "Connectivity strength",
@@ -27,9 +30,15 @@ vizGlassbrain(
 
 \item{surf_alpha}{alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to \code{0.2} by default}
 
-\item{cmap}{A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. If none are specified, appropriate colors will be automatically selected according to \code{range(surf_data)}}
+\item{cmap}{A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. See \code{RColorBrewer::display.brewer.all()} for all possible cmap options. If none are specified, appropriate colors will be automatically selected according to \code{range(surf_data)}}
 
 \item{node_size}{size parameter for the dots representing the nodes. Set to \code{8} by default.}
+
+\item{node_label}{option to show node labels. Set to \code{TRUE} by default.}
+
+\item{node_label_size}{font size of the node labels. Set to \code{10} by default.}
+
+\item{node_label_color}{font color of the node labels. Set to \code{black} by default.}
 
 \item{edgethickness}{a value to adjust the thickness of the edges. Set to \code{8} by default.}
 
