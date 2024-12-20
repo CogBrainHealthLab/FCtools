@@ -2,7 +2,7 @@
 ############################################################################################################################
 #' @title editJSON_IntendedFor
 #'
-#' @description A tool to edit .JSON files' IntendedFor entry so that the fmap files can be correctly identified processed by fMRIprep. This currently does not work with BIDS directories that contain multiple sessions of data
+#' @description A tool to edit .JSON files' IntendedFor entry so that the fmap files can be correctly identified and processed by fMRIprep. This currently does not work with BIDS directories that contain multiple sessions of data
 #'
 #' @details This function searches for .JSON files at the root of fMRIprep BIDS directory, edits their IntendedFor entry before overwriting the original JSON file
 #'
