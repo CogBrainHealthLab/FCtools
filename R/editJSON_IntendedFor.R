@@ -25,10 +25,10 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects)
   #if only a single json file is specified
   if(length(json_files==1)) 
   {
-    filelist=list.files(recursive = T,pattern = file.extension.all[file.extension])
+    filelist=list.files(recursive = T,pattern = json_files)
     if(length(filelist)==0) {stop(paste0("No *",json_files[json_file]," files are found"))}
     
-    sublist=gsub(pattern =file.extension.all[file.extension],"",basename(filelist))
+    sublist=gsub(pattern =json_files,"",basename(filelist))
     sub.list.idx=list()
     
     #if subjects is specified, filter out excluded subjects
@@ -60,7 +60,7 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects)
       filelist=list.files(recursive = T,pattern = json_files[json_file])
       if(length(filelist)==0) {stop(paste0("No *",json_files[json_file]," files are found"))}
       
-      sublist=gsub(pattern =file.extension.all[file.extension],"",basename(filelist))
+      sublist=gsub(pattern =json_files[json_file],"",basename(filelist))
       sub.list.idx=list()
       
       #if subjects is specified, filter out excluded subjects
