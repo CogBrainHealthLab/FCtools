@@ -52,7 +52,7 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects)
   } 
   
   #if multiple json files are specified
-  if(length(json_files>1)) 
+  if(length(json_files)>1) 
   {
     for (json_file in 1:length(json_files))
     {
