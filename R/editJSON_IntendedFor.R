@@ -23,7 +23,7 @@
 editJSON_IntendedFor=function(json_files,nii_files,subjects)
 {
   #if only a single json file is specified
-  if(length(json_files==1)) 
+  if(length(json_files)==1) 
   {
     filelist=list.files(recursive = T,pattern = json_files)
     if(length(filelist)==0) {stop(paste0("No *",json_files[json_file]," files are found"))}
