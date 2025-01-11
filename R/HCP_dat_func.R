@@ -39,6 +39,8 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
   #output filelist as a text file
   write.table(manifest$associated_file[unique(unlist(idx.list))],file=filename, quote = F, row.names = F, col.names = F)
 }
+
+##currently this script concatenates the timeseries across multiple runs before denoising. Denoising should be carried out for each time series before concatenating
 ########################################################################################################
 ########################################################################################################
 
