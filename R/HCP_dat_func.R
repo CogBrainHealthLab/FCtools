@@ -40,7 +40,7 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
   write.table(manifest$associated_file[unique(unlist(idx.list))],file=filename, quote = F, row.names = F, col.names = F)
 }
 
-##currently this script concatenates the timeseries across multiple runs before denoising. Denoising should be carried out for each time series before concatenating
+##currently this script concatenates the timeseries across multiple runs before denoising. 
 ########################################################################################################
 ########################################################################################################
 
@@ -102,7 +102,7 @@ extractFC=function(wb_path,
 {
   ##check base_dir and sub.list
   
-  cat("ExtractFC tool: last updated 9/9/2024 6.00pm\n checking directory structure...\n\n")
+  cat("ExtractFC tool: last updated 15 Jan 2025 6.00pm\n checking directory structure...\n\n")
   if(!dir.exists(base_dir))  {stop(paste("The base directory '",base_dir,"' does not exist. Please check if you are at the correct working directory",sep=""))}
   sub.list=list.dirs(base_dir,recursive=F,full.names=F)
   N.orig=length(sub.list)
