@@ -337,14 +337,14 @@ extractFC=function(wb_path,
         
         for(vol in 1:length(fmri.path))
         {
-          if(vol==1)  {xii.mat=as.matrix(xii.list[[1]])
-          } else  {xii.mat=cbind(xii.mat,as.matrix(xii.list[[vol]]))}
+          if(vol==1)  {xii.mat=scale(as.matrix(xii.list[[1]]))
+          } else  {xii.mat=cbind(xii.mat,scale(as.matrix(xii.list[[vol]])))}
         }
         remove(xii.list,vol)
       } else
       {
         xii.base=ciftiTools::read_xifti(fmri.path, brainstructures="all")
-        xii.mat=as.matrix(xii.base)
+        xii.mat=scale(as.matrix(xii.base))
       }
       headmotion.param$total_frames=NCOL(xii.mat)
       
