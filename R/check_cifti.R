@@ -60,6 +60,6 @@ check_cifti=function(filename="check_cifti.csv", wb_path)
   }
   check=data.frame(check)
   colnames(check)=c("filename","Non-zero_values")
-  write.table(check,filename="check_cifti.csv",row.names = 0, sep=",")
+  write.table(check,file=filename,row.names = F, sep=",")
 }
 
