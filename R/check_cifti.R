@@ -24,15 +24,37 @@ check_cifti=function(filename="check_cifti.csv", wb_path)
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
 
   cat("Searching for *_space-fsLR_den-91k_bold.dtseries.nii files...\n")
-  fmri.filelist=list.files(pattern = "*_space-fsLR_den-91k_bold.dtseries.nii",recursive = T,full.names=T,)
+  dirs=list.dirs(recursive = F)
+  dirs=grep("sub-*", dirs, value = TRUE)
+  dirs=gsub(pattern = "./", replacement="", x=dirs)
+
+  for(sub in 1:length(dirs))
+  {
+    fmri.filelist.sub=list.files(path = dirs[sub],pattern = "*_space-fsLR_den-91k_bold.dtseries.nii",recursive = T,full.names=T)
+    if(length(fmri.filelist.sub)>=1)
+    {
+      if(sub==1)    
+      {
+        fmri.filelist=fmri.filelist.sub
+      } else
+      {
+        fmri.filelist=c(fmri.filelist,fmri.filelist.sub)
+      }
+    } else
+    {
+      warning(paste0(dirs[sub], "does not contain any *_space-fsLR_den-91k_bold.dtseries.nii files \n"))
+    }
+  }
+
   cat("Search completed\n")
   check=matrix(NA, ncol=2,nrow=length(fmri.filelist))
   for(file in 1:length(fmri.filelist))
   {
     xii=ciftiTools::read_xifti(fmri.filelist[1], brainstructures="all")  
     xii.combined=rbind(xii$data$cortex_left,xii$data$cortex_right,xii$data$subcort)
-    check[file,1]=fmri.filelist[file]
-    check[file,2]=length(which(rowSums(xii.combined)==0))
+    check[file,1]=basename(fmri.filelist[file])
+    rowsum=rowSums(xii.combined)
+    check[file,2]=91282-length(which(abs(rowsum)>0))
     cat(paste0(fmri.filelist[file]," ",check[file,2], " Non-zero values\n"))
     remove(xii, xii.combined)
   }
@@ -40,3 +62,4 @@ check_cifti=function(filename="check_cifti.csv", wb_path)
   colnames(check)=c("filename","Non-zero_values")
   write.table(check,filename="check_cifti.csv",row.names = 0, sep=",")
 }
+
