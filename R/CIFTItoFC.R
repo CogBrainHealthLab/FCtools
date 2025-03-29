@@ -98,8 +98,6 @@ CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoise
          all_FC[sub,]=psych::fisherz(FCmat[upper.tri(FCmat,diag=F)])
     remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
+  cat(paste0("Saving ", filename))
   saveRDS(list(basename(sublist),all_FC),file=filename)
 }
-
-
-CIFTItoFC(wb_path="bin_windows64/",dtseries="_ses-0._task-rest_acq-.._run-0._space-fsLR_den-91k_desc-denoised_bold.dtseries.nii",atlas = 200,filename="test.RDS")
