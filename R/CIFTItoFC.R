@@ -96,6 +96,7 @@ CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoise
          xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)] 
          FCmat=cor(xii_pmean)
          all_FC[sub,]=psych::fisherz(FCmat[upper.tri(FCmat,diag=F)])
+    remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
   saveRDS(list(basename(sublist),all_FC),file=filename)
 }
