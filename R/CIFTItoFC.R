@@ -98,6 +98,6 @@ CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoise
          all_FC[sub,]=psych::fisherz(FCmat[upper.tri(FCmat,diag=F)])
     remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
-  cat(paste0("Saving ", filename))
+  cat(paste0("Saving ", filename," ..."))
   saveRDS(list(basename(sublist),all_FC),file=filename)
 }
