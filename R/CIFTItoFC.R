@@ -51,7 +51,7 @@ CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoise
   all_FC=matrix(NA,nrow=length(sublist),ncol=(((atlas+19)^2)-(atlas+19))/2)
   for (sub in 1:length(sublist))
   {
-    cat(paste0("processing ",sublist[sub]," (",sub,length(sublist),")...\n"))
+    cat(paste0("processing ",sublist[sub]," (",sub," / ",length(sublist),")...\n"))
     filelist.sub=filelist[stringr::str_detect(pattern=sublist[sub],string=filelist)]
     for (scan in 1:length(filelist.sub))
     {
