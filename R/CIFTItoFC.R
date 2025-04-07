@@ -80,6 +80,7 @@ CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoise
       timeseries.dat=as.matrix(ciftiTools::move_from_mwall(xii.final, NA))
     } else
     {
+      xii.final=xii0
       timeseries.dat=as.matrix(ciftiTools::move_from_mwall(xii0, NA))
     }
 
