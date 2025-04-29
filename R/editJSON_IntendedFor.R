@@ -24,6 +24,7 @@
 editJSON_IntendedFor=function(json_files,nii_files,subjects,base_dir="func/")
 {
   #if only a single json file is specified
+  cat("\nSearching for .json files...")
   if(length(json_files)==1) 
   {
     filelist=list.files(recursive = T,pattern = json_files)
@@ -41,7 +42,7 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects,base_dir="func/")
       filelist=filelist[sub.list.idx]
       sublist=sublist[sub.list.idx]
     }
-    
+    cat("\nEditing .json files...")
     #loop across subjets to edit JSON files
     for (sub in 1:length(sublist))
     {
@@ -84,4 +85,5 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects,base_dir="func/")
       }  
     } 
   }
+    cat("\nDone")
 }
