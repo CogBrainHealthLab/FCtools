@@ -9,6 +9,7 @@
 #' @param json_files filename suffix for one (e.g., `"_phasediff.json"`) or multiple JSON files (e.g., `c("_phasediff.json", "magnitude1.json", "magnitude2.json")`)
 #' @param nii_files one or more filename suffix of the nii or nii.gz files (e.g., `"_task-rest_bold.nii.gz"`) to be added to the IntendedFor entry of the specified JSON files. 
 #' @param subjects If specified, will only processed the selected subjects
+#' @param base_dir base directory of the *bold.nii.gz files. set to "func/" by default.
 #'
 #' @examples
 #' \dontrun{
@@ -20,7 +21,7 @@
 ########################################################################################################
 ########################################################################################################
 
-editJSON_IntendedFor=function(json_files,nii_files,subjects)
+editJSON_IntendedFor=function(json_files,nii_files,subjects,base_dir="func/")
 {
   #if only a single json file is specified
   if(length(json_files)==1) 
@@ -45,7 +46,7 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects)
     for (sub in 1:length(sublist))
     {
       json.obj=rjson::fromJSON(file=filelist[sub])
-      json.obj$IntendedFor=paste0("func/",sublist[sub],nii_files)
+      json.obj$IntendedFor=paste0(base_dir,sublist[sub],nii_files)
       
       write(rjson::toJSON(json.obj,2),file=filelist[sub])
     }  
@@ -77,7 +78,7 @@ editJSON_IntendedFor=function(json_files,nii_files,subjects)
       for (sub in 1:length(sublist))
       {
         json.obj=rjson::fromJSON(file=filelist[sub])
-        json.obj$IntendedFor=paste0("func/",sublist[sub],nii_files)
+        json.obj$IntendedFor=paste0(base_dir,sublist[sub],nii_files)
         
         write(rjson::toJSON(json.obj,2),file=filelist[sub])
       }  
