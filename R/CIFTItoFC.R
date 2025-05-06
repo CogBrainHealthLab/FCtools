@@ -7,7 +7,7 @@
 #'
 #' @details This function extracts FC matrices from CIFTI volumes postprocessed with XCP_d
 #'
-#' @param wb_path The filepath to the workbench folder that you have previously downloaded and unzipped
+#' @param wb_path The filepath to the workbench folder that you have previously downloaded and unzipped. Set to `/home/junhong.yu/workbench/bin_rh_linux64` by default
 #' @param path The filepath to directory containing the subject folders. Set to `./.` by default.
 #' @param atlas The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. set to `200` by default. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.
 #' @param dtseries The filename extension of the fMRI volumes. Set to `_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii` by default
@@ -24,7 +24,7 @@
 
 ########################################################################################################
 ########################################################################################################
-CIFTItoFC=function(path="./",wb_path, dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", atlas=200,filename="FC.rds")
+CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", atlas=200,filename="FC.rds")
 {
   filelist=list.files(path=path,pattern=dtseries,recursive = T)
   sublist=unique(gsub(pattern ="/ses-0./func",replacement = "",dirname(filelist)))
