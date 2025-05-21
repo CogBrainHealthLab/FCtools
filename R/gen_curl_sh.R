@@ -58,7 +58,13 @@ if(!missing(subjects))
 {
   for(sub in 1:length(subjects))
     {
-      sel_curl_cmd=c(sel_curl_cmd,filtered_curl_cmd[stringr::str_detect(string=filtered_curl_cmd,pattern =subjects[sub])])
+      if(sub==1)
+      {
+        sel_curl_cmd=filtered_curl_cmd[stringr::str_detect(string=filtered_curl_cmd,pattern =subjects[sub])]
+      } else
+      {
+        sel_curl_cmd=c(sel_curl_cmd,filtered_curl_cmd[stringr::str_detect(string=filtered_curl_cmd,pattern =subjects[sub])])  
+      }
     }
 } else
 {
