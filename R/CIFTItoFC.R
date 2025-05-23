@@ -100,5 +100,5 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
     remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
   cat(paste0("Saving ", filename," ..."))
-  saveRDS(list(basename(sublist),psych::fisherz(all_FC)),file=filename)
+  saveRDS(list(dirname(sublist),psych::fisherz(all_FC)),file=filename)
 }
