@@ -30,7 +30,7 @@ check_cifti=function(filename="check_cifti.csv", wb_path="/home/junhong.yu/workb
 
   for(sub in 1:length(dirs))
   {
-    fmri.filelist.sub=list.files(path = dirs[sub],pattern = "*_space-fsLR_den-91k_bold.dtseries.nii",recursive = T,full.names=T)
+    fmri.filelist.sub=list.files(path = dirs[sub],pattern = "fsLR_den-91k_desc-denoised_bold.dtseries.nii",recursive = T,full.names=T)
     if(length(fmri.filelist.sub)>=1)
     {
       if(sub==1)    
