@@ -11,6 +11,7 @@
 #' @param path The filepath to directory containing the subject folders. Set to `./.` by default.
 #' @param atlas The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. set to `200` by default. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.
 #' @param dtseries The filename extension of the fMRI volumes. Set to `_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii` by default
+#' @param concat_subj When set to `TRUE` (default), timeseries data from multiple runs/sessions of the same subject is first Z-scaled and then concatenated into a single larger timeseries data frame before computing the FC.
 #' @param filename Filename of the concatenated FC vector file. Set to `FC.rds` by default
 #' @returns outputs N (number of subjects) x E (number of unique) matrices as a .rds file 
 #'
@@ -24,7 +25,7 @@
 
 ########################################################################################################
 ########################################################################################################
-CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", atlas=200,filename="FC.rds")
+CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", concat_subj=TRUE, atlas=200,filename="FC.rds")
 {
   filelist=list.files(path=path,pattern=dtseries,recursive = T)
   sublist=unique(gsub(pattern ="/ses-0./func",replacement = "",dirname(filelist)))
@@ -46,7 +47,8 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
   
   ## defining subcortical parcel indices for reordering ROIs subsequently
   reorder.subcortical.idx=c(9,18,8,17,6,3,13,1,11,10,19,7,16,5,15,4,14,2,12)+atlas
-
+  
+  if(concat_subj==F)  {sublist=filelist}
   
   all_FC=matrix(NA,nrow=length(sublist),ncol=(((atlas+19)^2)-(atlas+19))/2)
   for (sub in 1:length(sublist))
@@ -100,5 +102,12 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
     remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
   cat(paste0("Saving ", filename," ..."))
-  saveRDS(list(dirname(sublist),psych::fisherz(all_FC)),file=filename)
+  if(concat_subj==T)
+  {
+    saveRDS(list(dirname(sublist),psych::fisherz(all_FC)),file=filename)  
+  } else if (concat_subj==F)
+  {
+    saveRDS(list(basename(sublist),psych::fisherz(all_FC)),file=filename)  
+  }
 }
+
