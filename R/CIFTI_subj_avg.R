@@ -30,11 +30,11 @@ CIFTI_subj_avg=function(rds, filename)
   
   for(sub in 1:length(sublist))
   {
-    idx=which(sublist.repeated==sublist[1])
+    idx=which(sublist.repeated==sublist[sub])
     if(length(idx)>1)
     {
       output.mat[sub,]=colMeans(dat[[2]][idx,])
-    } else if(idx==1)
+    } else if(length(idx==1))
     {
       output.mat[sub,]=dat[[2]][idx,]
     }
