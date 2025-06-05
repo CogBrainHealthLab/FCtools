@@ -42,7 +42,7 @@ vizGlassbrain(
 
 \item{edgethickness}{a value to adjust the thickness of the edges. Set to \code{8} by default.}
 
-\item{limits}{A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits \verb{c(-max(abs(surf_dat),max(abs(surf_dat)))} will be used.}
+\item{limits}{A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits \verb{c(-max(abs(data),max(abs(data)))} will be used.}
 
 \item{colorbar_title}{title for the colorbar legend. Set to \verb{'Connectivity strength} by default}
 
