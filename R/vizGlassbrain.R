@@ -17,7 +17,7 @@
 #' @param node_label_size font size of the node labels. Set to `10` by default.
 #' @param node_label_color font color of the node labels. Set to `black` by default.
 #' @param edgethickness a value to adjust the thickness of the edges. Set to `8` by default.
-#' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(surf_dat),max(abs(surf_dat)))` will be used. 
+#' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(data),max(abs(data)))` will be used. 
 #' @param colorbar_title title for the colorbar legend. Set to `'Connectivity strength` by default
 #' @param orientation_labels A boolean object specifying if orientation labels are to be displayed. Set to `TRUE` by default
 #' @param remove_brain A boolean object specifying cortical surface should be removed. Set to `FALSE` by default
