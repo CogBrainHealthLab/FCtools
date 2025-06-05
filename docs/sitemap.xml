@@ -1,78 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cpm.lesion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cpm.predict.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cpm.train.cv.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cpm.train.html</loc>
-  </url>
-  <url>
-    <loc>/reference/edgelist.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract.edges.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extractFC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extractFS.ROI.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract_headmotion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract_links.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/intersubject_similarity.html</loc>
-  </url>
-  <url>
-    <loc>/reference/labels_dat.html</loc>
-  </url>
-  <url>
-    <loc>/reference/NBS.html</loc>
-  </url>
-  <url>
-    <loc>/reference/reorder.subcortical.html</loc>
-  </url>
-  <url>
-    <loc>/reference/reorder_subcortical.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vectorizeFC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vizChord.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vizConnectogram.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vizConnectogram.multi.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vizGlassbrain.html</loc>
-  </url>
-  <url>
-    <loc>/reference/vizHeatmap.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/check_cifti.html</loc></url>
+<url><loc>/reference/CIFTItoFC.html</loc></url>
+<url><loc>/reference/CIFTI_subj_avg.html</loc></url>
+<url><loc>/reference/cpm.lesion.html</loc></url>
+<url><loc>/reference/cpm.predict.html</loc></url>
+<url><loc>/reference/cpm.train.cv.html</loc></url>
+<url><loc>/reference/cpm.train.html</loc></url>
+<url><loc>/reference/edgelist.html</loc></url>
+<url><loc>/reference/editJSON_IntendedFor.html</loc></url>
+<url><loc>/reference/extract.edges.html</loc></url>
+<url><loc>/reference/extractFC.html</loc></url>
+<url><loc>/reference/extractFS.ROI.html</loc></url>
+<url><loc>/reference/extract_headmotion.html</loc></url>
+<url><loc>/reference/extract_links.html</loc></url>
+<url><loc>/reference/gen_curl_sh.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/intersubject_similarity.html</loc></url>
+<url><loc>/reference/labels_dat.html</loc></url>
+<url><loc>/reference/NBS.html</loc></url>
+<url><loc>/reference/reorder_subcortical.html</loc></url>
+<url><loc>/reference/vectorizeFC.html</loc></url>
+<url><loc>/reference/vizChord.html</loc></url>
+<url><loc>/reference/vizConnectogram.html</loc></url>
+<url><loc>/reference/vizGlassbrain.html</loc></url>
+<url><loc>/reference/vizHeatmap.html</loc></url>
 </urlset>
+

@@ -3,7 +3,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -29,13 +29,13 @@
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>cpm.train.cv</h1>
-    
+
     <div class="hidden name"><code>cpm.train.cv.Rd</code></div>
     </div>
 
@@ -49,27 +49,27 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>data</dt>
+
+
+<dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges</p></dd>
 
 
-<dt>outcome</dt>
+<dt id="arg-outcome">outcome<a class="anchor" aria-label="anchor" href="#arg-outcome"></a></dt>
 <dd><p>The outcome variable to predict</p></dd>
 
 
-<dt>p</dt>
+<dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>a vector of p-values to tested. If <code>p</code> is not specified, an automatically determined geometric sequence of p-values will be tested</p></dd>
 
 
-<dt>nfolds</dt>
+<dt id="arg-nfolds">nfolds<a class="anchor" aria-label="anchor" href="#arg-nfolds"></a></dt>
 <dd><p>number of cross-validation folds. Set to 5 by default</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>Returns a list object containing</p><ul><li><p><code>opt.pvals</code> A vector containing the 2 optimal p-values, one each for the positive and negative network models</p></li>
+    <p>Returns a list object containing</p><ul><li><p><code>opt.pvals</code> A vector containing the 2 optimal p-values, one each for the positive and negative network models</p></li>
 <li><p><code>results</code> A P(number of p-values tested) x 2(positive and negative network models) matrix containing the predicted-actual correlations for each of the p-value selection thresholds in each network model.</p></li>
 <li><p><code>pvals</code> A vector of the p-value threshold tested</p></li>
 </ul></div>
@@ -80,9 +80,9 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">model1.cv</span><span class="op">=</span><span class="fu">cpm.train.cv</span><span class="op">(</span>data<span class="op">=</span><span class="va">FC_data</span>,outcome<span class="op">=</span><span class="va">dat_beh</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -97,15 +97,15 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
