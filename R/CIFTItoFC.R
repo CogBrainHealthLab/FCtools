@@ -99,6 +99,8 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
          xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)] 
          FCmat=cor(xii_pmean)
          all_FC[sub,]=FCmat[upper.tri(FCmat,diag=F)]
+##clean temp dir
+unlink(tempdir(), recursive = TRUE)
     remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
   }
   cat(paste0("Saving ", filename," ..."))
