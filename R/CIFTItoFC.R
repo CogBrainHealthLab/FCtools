@@ -53,6 +53,7 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
   all_FC=matrix(NA,nrow=length(sublist),ncol=(((atlas+19)^2)-(atlas+19))/2)
   for (sub in 1:length(sublist))
   {
+    start=Sys.time()
     cat(paste0("processing ",sublist[sub]," (",sub," / ",length(sublist),")...\n"))
     filelist.sub=filelist[stringr::str_detect(pattern=sublist[sub],string=filelist)]
     for (scan in 1:length(filelist.sub))
@@ -101,8 +102,12 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
          all_FC[sub,]=FCmat[upper.tri(FCmat,diag=F)]
     
   ##clean temp dir
-  unlink(tempdir(), recursive = TRUE)
-  remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub)
+  files_to_remove=list.files(tempdir(), full.names = TRUE)
+  removedfiles=file.remove(files_to_remove)
+    
+  end=Sys.time()
+  cat(paste0(" Completed in", round(as.numeric(end-start),1),"s"))
+  remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub, start,end,removedfiles)
   }
   cat(paste0("Saving ", filename," ..."))
   if(concat_subj==T)
