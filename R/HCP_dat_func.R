@@ -1,5 +1,83 @@
 ############################################################################################################################
 ############################################################################################################################
+#' @title extract_linksXCP
+#'
+#' @description Extracting links of XCP-d minimal inputs from data manifests
+#'
+#' @details This function extracts links of XCP-d minimal inputs files from NDA formatted data manifest files
+#'
+#' @param manifest the filepath of the manifest file. Set to `datastructure_manifest.txt` by default.
+#' @param task name (case-sensitive) of the task, without numbers or directional labels. Set to `REST` by default
+#' @param filename The desired filename, with a *.txt extension, of the text file containing the links. Set to `download_list.txt` by default
+#' @param subjects If specified the only download links from these subjects will be included
+#' @returns outputs a .txt file containing the links filtered from the data manifest file
+#'
+#' @examples
+#' \dontrun{
+#' extract_linksXCP()
+#' }
+#' @importFrom stringr str_detect
+#' @export
+########################################################################################################
+########################################################################################################
+
+extract_linksXCP=function(manifest="datastructure_manifest.txt",task="REST",filename="downloadlist.txt", subjects)
+{
+  files=c("Atlas_MSMAll.dtseries.nii",
+          "brainmask_fs.2.nii.gz",
+          "_SBRef.nii.gz",
+          "Movement_Regressors.txt",
+          "Movement_AbsoluteRMS.txt",
+          "MNINonLinear/T1w.nii.gz",
+          "MNINonLinear/ribbon.nii.gz",
+          "MNINonLinear/aparc\\+aseg",
+          "MNINonLinear/T1w.nii.gz",
+          "MNINonLinear/brainmask_fs.nii.gz",
+          paste0("_",task,"._...nii.gz"))
+  #read manifest and remove first row; the first row contains description of the column, hence not used.
+  manifest=read.table(manifest,header = T)[-1,]
+  
+  #identify indices of the associated file
+  idx.list=list()
+  for(file in 1:NROW(files))
+  {
+    idx.list[[file]]=which(stringr::str_detect(pattern = files[file],string = manifest$associated_file)==T)
+  }
+  
+  filelist=manifest$associated_file[unique(unlist(idx.list))]
+  
+  #select subjects
+  if(!missing(subjects))
+  {
+    for(sub in 1:length(subjects))
+    {
+      if(sub==1)
+      {
+        filelist.sel=filelist[stringr::str_detect(string=filelist,pattern =subjects[sub])]
+      } else
+      {
+        filelist.sel=c(filelist.sel,filelist[stringr::str_detect(string=filelist,pattern =subjects[sub])])  
+      }
+    }
+  } else
+  {
+    filelist.sel=filelist
+  }
+  
+  #remove MNINonLinear/brainmask_fs.2.nii.gz
+  filelist.sel=filelist.sel[-stringr::str_detect(string=filelist.sel,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]  
+  
+  #check if files were found
+  if(length(filelist.sel)==0)
+  {
+    stop("No files were found, check your task name")
+  }
+  #output filelist as a text file
+  write.table(filelist.sel,file=filename, quote = F, row.names = F, col.names = F)
+}
+
+############################################################################################################################
+############################################################################################################################
 #' @title extract_links
 #'
 #' @description Extracting links from data manifests
