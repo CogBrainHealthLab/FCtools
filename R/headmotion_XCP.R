@@ -43,7 +43,7 @@ headmotion.XCP=function(filename="FD.csv", threshold=0.25)
   if(length(idx.del)>1)
   {
     del.sh=c(del.sh,paste0("rm -rf ",names(freq.del)[idx.del],"*"))
-    cat(del.sh,sep = "\n") 
+    #cat(del.sh,sep = "\n") 
     write.table(del.sh,row.names=F, col.names=F,quote=F, file="del.sh")
   }
   FD.all$fMRI_run=gsub(pattern="_motion.tsv",replacement="",x=FD.all$fMRI_run)
