@@ -43,9 +43,10 @@ headmotion.XCP=function(filename="FD.csv", threshold=0.25)
   if(length(idx.del)>1)
   {
     del.sh=c(del.sh,paste0("rm -rf ",names(freq.del)[idx.del],"*"))
-    #cat(del.sh,sep = "\n") 
+    cat(paste0(legnth(files.del), " fMRI runs had mean FD values >", threshold)) 
     write.table(del.sh,row.names=F, col.names=F,quote=F, file="del.sh")
-  }
+  } else
+  { cat(paste0("None of the fMRI runs had mean FD values >",threshold)) }
   FD.all$fMRI_run=gsub(pattern="_motion.tsv",replacement="",x=FD.all$fMRI_run)
   write.table(FD.all, row.names=F, quote=F, sep=",", file=filename)
 }
