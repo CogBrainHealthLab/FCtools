@@ -2,38 +2,62 @@
 ############################################################################################################################
 #' @title extract_linksXCP
 #'
-#' @description Extracting links of XCP-d minimal inputs from data manifests
+#' @description Extracting links of XCP-d minimal inputs and FreeSurfer surface data from data manifests
 #'
-#' @details This function extracts links of XCP-d minimal inputs files from NDA formatted data manifest files
+#' @details This function extracts links of XCP-d minimal inputs files and FreeSurfer surface data from NDA formatted data manifest files
 #'
 #' @param manifest the filepath of the manifest file. Set to `datastructure_manifest.txt` by default.
-#' @param task name (case-sensitive) of the task, without numbers or directional labels. Set to `REST` by default
+#' @param task name (case-sensitive) of the task, without numbers or directional labels. E.g., `REST`
+#' @param surf name (case-sensitive) of the FreeSurfer surface data. E.g., `thickness`
 #' @param filename The desired filename, with a *.txt extension, of the text file containing the links. Set to `download_list.txt` by default
 #' @param subjects If specified the only download links from these subjects will be included
 #' @returns outputs a .txt file containing the links filtered from the data manifest file
 #'
 #' @examples
 #' \dontrun{
-#' extract_linksXCP()
+#' extract_linksXCP(manifest = "datastructure_manifest.txt", task="REST",freesurfer = "thickness",subjects = c("0891566","0571649"))
 #' }
 #' @importFrom stringr str_detect
 #' @export
 ########################################################################################################
 ########################################################################################################
 
-extract_linksXCP=function(manifest="datastructure_manifest.txt",task="REST",filename="downloadlist.txt", subjects)
+extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filename="downloadlist.txt", subjects)
 {
-  files=c("Atlas_MSMAll.dtseries.nii",
-          "brainmask_fs.2.nii.gz",
-          "_SBRef.nii.gz",
-          "Movement_Regressors.txt",
-          "Movement_AbsoluteRMS.txt",
-          "MNINonLinear/T1w.nii.gz",
-          "MNINonLinear/ribbon.nii.gz",
-          "MNINonLinear/aparc\\+aseg",
-          "MNINonLinear/T1w.nii.gz",
-          "MNINonLinear/brainmask_fs.nii.gz",
-          paste0("_",task,"._...nii.gz"))
+  files=list()
+  if(!missing(task))
+  {
+    files=c("Atlas_MSMAll.dtseries.nii",
+            "brainmask_fs.2.nii.gz",
+            "_SBRef.nii.gz",
+            "Movement_Regressors.txt",
+            "Movement_AbsoluteRMS.txt",
+            "MNINonLinear/T1w.nii.gz",
+            "MNINonLinear/ribbon.nii.gz",
+            "MNINonLinear/aparc\\+aseg",
+            "MNINonLinear/T1w.nii.gz",
+            "MNINonLinear/brainmask_fs.nii.gz",
+            paste0("_",task,"._...nii.gz"))
+  }
+  if(!missing(surf) & !missing(task))
+  {
+    files=c(files,"lh.cortex.label",
+            "rh.cortex.label",
+            "lh.sphere.reg",
+            "rh.sphere.reg",
+            paste0("lh.",surf),
+            paste0("rh.",surf),
+            "aseg.stats")
+  } else if(!missing(surf) & missing(task))
+  {
+    files=c("lh.cortex.label",
+            "rh.cortex.label",
+            "lh.sphere.reg",
+            "rh.sphere.reg",
+            paste0("lh.",surf),
+            paste0("rh.",surf),
+            "aseg.stats")
+  }
   #read manifest and remove first row; the first row contains description of the column, hence not used.
   manifest=read.table(manifest,header = T)[-1,]
   
@@ -65,7 +89,10 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task="REST",file
   }
   
   #remove MNINonLinear/brainmask_fs.2.nii.gz
-  filelist.sel=filelist.sel[-stringr::str_detect(string=filelist.sel,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]  
+  if(!missing(task))
+  {
+    filelist.sel=filelist.sel[-stringr::str_detect(string=filelist.sel,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]    
+  }
   
   #check if files were found
   if(length(filelist.sel)==0)
