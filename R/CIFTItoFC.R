@@ -1,3 +1,4 @@
+
 ########################################################################################################
 ########################################################################################################
 
@@ -11,6 +12,7 @@
 #' @param path The filepath to directory containing the subject folders. Set to `./.` by default.
 #' @param atlas The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. set to `200` by default. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.
 #' @param dtseries The filename extension of the fMRI volumes. Set to `_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii` by default
+#' @param timeseries If set to `TRUE`, FC matrices will not be computed, instead the parcellated timeseries will be return in a list format, where each subject's parcellated timeseries data is contained within a list element. Set to `FALSE` by default.
 #' @param concat_subj When set to `TRUE` (default), timeseries data from multiple runs/sessions of the same subject is first Z-scaled and then concatenated into a single larger timeseries data frame before computing the FC.
 #' @param filename Filename of the concatenated FC vector file. Set to `FC.rds` by default
 #' @returns outputs N (number of subjects) x E (number of unique) matrices as a .rds file 
@@ -25,11 +27,11 @@
 
 ########################################################################################################
 ########################################################################################################
-CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", concat_subj=TRUE, atlas=200,filename="FC.rds")
+CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", timeseries=F, concat_subj=TRUE, atlas=200,filename="FC.rds")
 {
   filelist=list.files(path=path,pattern=dtseries,recursive = T)
   sublist=unique(gsub(pattern ="/ses-0./func",replacement = "",dirname(filelist)))
-
+  
   ##load and configure ciftitools
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
   
@@ -50,7 +52,15 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
   
   if(concat_subj==F)  {sublist=filelist}
   
-  all_FC=matrix(NA,nrow=length(sublist),ncol=(((atlas+19)^2)-(atlas+19))/2)
+  if(timeseries==F)
+  {
+    all_FC=matrix(NA,nrow=length(sublist),ncol=(((atlas+19)^2)-(atlas+19))/2)  
+  } else if(timeseries==T)
+  {
+    all_TS=list()
+  }
+  
+  
   for (sub in 1:length(sublist))
   {
     start=Sys.time()
@@ -59,25 +69,25 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
     for (scan in 1:length(filelist.sub))
     {
       if(scan==1) 
+      {
+        xii0=ciftiTools::read_xifti(paste0(path,"/",filelist.sub[scan]), brainstructures="all")
+        xii=scale(as.matrix(xii0))
+        if(sum(colSums(xii)==0)!=0)
         {
-          xii0=ciftiTools::read_xifti(paste0(path,"/",filelist.sub[scan]), brainstructures="all")
-          xii=scale(as.matrix(xii0))
-          if(sum(colSums(xii)==0)!=0)
-            {
-            cat(paste0("WARNING: ",filelist.sub[scan]," contains column(s) with entirely 0 values\n"))
-            }
+          cat(paste0("WARNING: ",filelist.sub[scan]," contains column(s) with entirely 0 values\n"))
+        }
       }
       else
+      {
+        xii=cbind(scale(as.matrix(ciftiTools::read_xifti(paste0(path,"/",filelist.sub[scan]), brainstructures="all"))),xii)
+        if(sum(colSums(xii)==0)!=0)
         {
-          xii=cbind(scale(as.matrix(ciftiTools::read_xifti(paste0(path,"/",filelist.sub[scan]), brainstructures="all"))),xii)
-          if(sum(colSums(xii)==0)!=0)
-            {
-            cat(paste0("WARNING: ",filelist.sub[scan]," contains column(s) with entirely 0 values\n"))
-            }
+          cat(paste0("WARNING: ",filelist.sub[scan]," contains column(s) with entirely 0 values\n"))
+        }
       }
     }
-
-  if(length(filelist.sub)>1)
+    
+    if(length(filelist.sub)>1)
     {
       xii.final=ciftiTools::newdata_xifti(xii0, xii)
       timeseries.dat=as.matrix(ciftiTools::move_from_mwall(xii.final, NA))
@@ -86,36 +96,57 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
       xii.final=xii0
       timeseries.dat=as.matrix(ciftiTools::move_from_mwall(xii0, NA))
     }
-
-  ##generate parcellated timeseries
-  sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
-  brain_vec=c(parc, sub_keys)
-  xii_pmean=matrix(ncol=atlas+19,nrow=ncol(xii))
-         
-         for (p in 1:(atlas+19))
-         {
-           xii_pmean[,p]=colMeans(timeseries.dat[which(brain_vec==p),],na.rm = T)
-         }
-         #reorder parcel indices for visualization purpose
-         xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)] 
-         FCmat=cor(xii_pmean)
-         all_FC[sub,]=FCmat[upper.tri(FCmat,diag=F)]
     
-  ##clean temp dir
-  files_to_remove=list.files(tempdir(), full.names = TRUE)
-  removedfiles=file.remove(files_to_remove)
+    ##generate parcellated timeseries
+    sub_keys=as.numeric(xii.final$meta$subcort$labels) - 2 +atlas
+    brain_vec=c(parc, sub_keys)
+    xii_pmean=matrix(ncol=atlas+19,nrow=ncol(xii))
     
-  end=Sys.time()
-  cat(paste0(" Completed in ", round(difftime(end,start, units="secs"),1),"s\n"))
-  remove(xii, xii0, xii.final, xii_pmean, FCmat,timeseries.dat,filelist.sub, start,end,removedfiles)
+    for (p in 1:(atlas+19))
+    {
+      xii_pmean[,p]=colMeans(timeseries.dat[which(brain_vec==p),],na.rm = T)
+    }
+    #reorder parcel indices for visualization purpose
+    xii_pmean=xii_pmean[,c(1:atlas,reorder.subcortical.idx)] 
+    
+    if(timeseries==F)
+    {
+      FCmat=cor(xii_pmean)
+      all_FC[sub,]=FCmat[upper.tri(FCmat,diag=F)]
+      remove(FCmat)
+    } else if(timeseries==T)
+    {
+      all_TS[[sub]]=xii_pmean
+    }
+  
+    
+    ##clean temp dir
+    files_to_remove=list.files(tempdir(), full.names = TRUE)
+    removedfiles=file.remove(files_to_remove)
+    
+    end=Sys.time()
+    cat(paste0(" Completed in ", round(difftime(end,start, units="secs"),1),"s\n"))
+    remove(xii, xii0, xii.final, xii_pmean, timeseries.dat,filelist.sub, start,end,removedfiles)
   }
   cat(paste0("Saving ", filename," ..."))
-  if(concat_subj==T)
+  
+  if(timeseries==F)
   {
-    saveRDS(list(dirname(sublist),psych::fisherz(all_FC)),file=filename)  
-  } else if (concat_subj==F)
+    if(concat_subj==T)
+    {
+      saveRDS(list(dirname(sublist),psych::fisherz(all_FC)),file=filename)  
+    } else if (concat_subj==F)
+    {
+      saveRDS(list(basename(sublist),psych::fisherz(all_FC)),file=filename)  
+    }
+  } else if(timeseries==T)
   {
-    saveRDS(list(basename(sublist),psych::fisherz(all_FC)),file=filename)  
+    if(concat_subj==T)
+    {
+      saveRDS(list(dirname(sublist),all_TS),file=filename)  
+    } else if (concat_subj==F)
+    {
+      saveRDS(list(basename(sublist),all_TS),file=filename)  
+    }
   }
 }
-
