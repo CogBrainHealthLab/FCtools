@@ -32,7 +32,7 @@ headmotion.XCP=function(filename="FD.csv", threshold=0.25)
   files.del=FD.all[which(FD.all$FD>threshold),1]
   del.sh=paste0("rm -rf ",gsub("_motion.tsv","*",files.del))
 
-  if(length(idx.del)>1)
+  if(length(files.del))>1)
   {
     cat(paste0(length(files.del), " fMRI runs had mean FD values >", threshold)) 
     write.table(del.sh,row.names=F, col.names=F,quote=F, file="del.sh")
