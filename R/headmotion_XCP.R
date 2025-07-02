@@ -31,19 +31,10 @@ headmotion.XCP=function(filename="FD.csv", threshold=0.25)
   
   files.del=FD.all[which(FD.all$FD>threshold),1]
   del.sh=paste0("rm -rf ",gsub("_motion.tsv","*",files.del))
-  
-  freq=table(dirname(dirname(filelist)))
-  freq=paste0(names(freq),"-",as.numeric(freq))
-  
-  freq.del=table(dirname(dirname(files.del)))
-  freq.del.rm=paste0(names(freq.del),"-",as.numeric(freq.del))
-  
-  idx.match=match(c(freq.del),freq)
-  idx.del=which(!is.na(idx.match))
+
   if(length(idx.del)>1)
   {
-    del.sh=c(del.sh,paste0("rm -rf ",names(freq.del)[idx.del],"*"))
-    cat(paste0(legnth(files.del), " fMRI runs had mean FD values >", threshold)) 
+    cat(paste0(length(files.del), " fMRI runs had mean FD values >", threshold)) 
     write.table(del.sh,row.names=F, col.names=F,quote=F, file="del.sh")
   } else
   { cat(paste0("None of the fMRI runs had mean FD values >",threshold)) }
