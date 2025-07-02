@@ -16,60 +16,53 @@
 #'
 #' @importFrom stringr str_detect
 #' @export
-
 ########################################################################################################
 ########################################################################################################
 gen_curl_sh=function(sh,include_and,include_or,exclude, subjects,filename="curl_cmd.sh")
 {
   curl_cmd=read.table(sh,sep = "\n")$V1
-  
   dataset=curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern="dataset_description.json"))]
   curl_cmd=curl_cmd[-which(stringr::str_detect(string=curl_cmd,pattern="dataset_description.json"))]
-
-if(!missing(include_and))
-{
-  for(keyword in include_and) 
+  if(!missing(include_and))
+  {
+    for(keyword in include_and)
     {
-      filtered_curl_cmd=curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=keyword))]
-    }  
-}
-  
-if(!missing(include_or))
+    curl_cmd=curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=keyword))]
+    }
+  }
+  if(!missing(include_or))
   {
     for(keyword in 1:length(include_or))
-      {
+    {
       if(keyword==1)
       {
-        filtered_curl_cmd=curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=include_or[keyword]))]
+      curl_cmd=curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=include_or[keyword]))]
       } else
       {
-        filtered_curl_cmd=c(filtered_curl_cmd,curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=include_or[keyword]))])
-      } 
-    }  
+      curl_cmd=c(curl_cmd,curl_cmd[which(stringr::str_detect(string=curl_cmd,pattern=include_or[keyword]))])
+      }
+    }
   }
-if(!missing(exclude))
-{
-  for(keyword in exclude) 
+  if(!missing(exclude))
+  {
+    for(keyword in exclude)
     {
-      filtered_curl_cmd=curl_cmd[-which(stringr::str_detect(string=curl_cmd,pattern=keyword))]
-    }  
-}
-if(!missing(subjects))
-{
-  for(sub in 1:length(subjects))
+    curl_cmd=curl_cmd[-which(stringr::str_detect(string=curl_cmd,pattern=keyword))]
+    }
+  }
+  if(!missing(subjects))
+  {
+    for(sub in 1:length(subjects))
     {
       if(sub==1)
       {
-        sel_curl_cmd=filtered_curl_cmd[stringr::str_detect(string=filtered_curl_cmd,pattern =subjects[sub])]
+      curl_cmd=curl_cmd[stringr::str_detect(string=curl_cmd,pattern =subjects[sub])]
       } else
       {
-        sel_curl_cmd=c(sel_curl_cmd,filtered_curl_cmd[stringr::str_detect(string=filtered_curl_cmd,pattern =subjects[sub])])  
+      curl_cmd=c(curl_cmd,curl_cmd[stringr::str_detect(string=curl_cmd,pattern =subjects[sub])])
       }
     }
-} else
-{
-  sel_curl_cmd=filtered_curl_cmd
-}
-  write.table(c(dataset,sel_curl_cmd),file=filename,quote = F, row.names = F, col.names = F)
-  return(c(dataset,sel_curl_cmd))
+  }
+  write.table(c(dataset,curl_cmd),file=filename,quote = F, row.names = F, col.names = F)
+  return(c(dataset,curl_cmd))
 }
