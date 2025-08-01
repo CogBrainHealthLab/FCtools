@@ -8,6 +8,7 @@ CIFTItoFC(
   path = "./",
   wb_path = "/home/junhong.yu/workbench/bin_rh_linux64",
   dtseries = "_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii",
+  timeseries = F,
   concat_subj = TRUE,
   atlas = 200,
   filename = "FC.rds"
@@ -19,6 +20,8 @@ CIFTItoFC(
 \item{wb_path}{The filepath to the workbench folder that you have previously downloaded and unzipped. Set to \verb{/home/junhong.yu/workbench/bin_rh_linux64} by default}
 
 \item{dtseries}{The filename extension of the fMRI volumes. Set to \verb{_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii} by default}
+
+\item{timeseries}{If set to \code{TRUE}, FC matrices will not be computed, instead the parcellated timeseries will be return in a list format, where each subject's parcellated timeseries data is contained within a list element. Set to \code{FALSE} by default.}
 
 \item{concat_subj}{When set to \code{TRUE} (default), timeseries data from multiple runs/sessions of the same subject is first Z-scaled and then concatenated into a single larger timeseries data frame before computing the FC.}
 

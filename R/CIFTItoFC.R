@@ -23,6 +23,7 @@
 #' }
 #' @importFrom stringr str_detect
 #' @importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall
+#' @importFrom psych fisherz
 #' @export
 
 ########################################################################################################

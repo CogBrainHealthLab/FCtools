@@ -24,6 +24,7 @@
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
+#' @importFrom igraph components graph_from_adjacency_matrix
 #' @export
 ############################################################################################################################
 ############################################################################################################################
