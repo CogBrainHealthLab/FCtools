@@ -19,18 +19,18 @@
 
 ########################################################################################################
 ########################################################################################################
-check_cifti=function(filename="check_cifti.csv", wb_path="/home/junhong.yu/workbench/bin_rh_linux64")
+check_cifti=function(report_filename="check_cifti.csv", dtseries="fsLR_den-91k_bold.dtseries.nii", wb_path="/home/junhong.yu/workbench/bin_rh_linux64")
 {
   ciftiTools::ciftiTools.setOption('wb_path', wb_path)
 
-  cat("Searching for *_space-fsLR_den-91k_bold.dtseries.nii files...\n")
+  cat(paste0("Searching for *",dtseries," files...\n"))
   dirs=list.dirs(recursive = F)
   dirs=grep("sub-*", dirs, value = TRUE)
   dirs=gsub(pattern = "./", replacement="", x=dirs)
 
   for(sub in 1:length(dirs))
   {
-    fmri.filelist.sub=list.files(path = dirs[sub],pattern = "fsLR_den-91k_desc-denoised_bold.dtseries.nii",recursive = T,full.names=T)
+    fmri.filelist.sub=list.files(path = dirs[sub],pattern = dtseries,recursive = T,full.names=T)
     if(length(fmri.filelist.sub)>=1)
     {
       if(sub==1)    
@@ -50,16 +50,16 @@ check_cifti=function(filename="check_cifti.csv", wb_path="/home/junhong.yu/workb
   check=matrix(NA, ncol=2,nrow=length(fmri.filelist))
   for(file in 1:length(fmri.filelist))
   {
-    xii=ciftiTools::read_xifti(fmri.filelist[1], brainstructures="all")  
+    xii=ciftiTools::read_xifti(fmri.filelist[file], brainstructures="all")  
     xii.combined=rbind(xii$data$cortex_left,xii$data$cortex_right,xii$data$subcort)
     check[file,1]=basename(fmri.filelist[file])
     rowsum=rowSums(xii.combined)
-    check[file,2]=91282-length(which(abs(rowsum)>0))
-    cat(paste0(fmri.filelist[file]," ",check[file,2], " Non-zero values\n"))
+    check[file,2]=length(which(rowsum==0))
+    cat(paste0(fmri.filelist[file]," contains ",check[file,2], " zero columns\n"))
     remove(xii, xii.combined)
   }
   check=data.frame(check)
   colnames(check)=c("filename","Non-zero_values")
-  write.table(check,file=filename,row.names = F, sep=",")
+  write.table(check,file=report_filename,row.names = F, sep=",")
 }
 
