@@ -1,16 +1,16 @@
 #' @title headmotion.fmriprep
 #'
-#' @description Calculating mean FD from XCP outputs and generating bash script to remove fMRI runs with excessive headmotion
+#' @description Calculating mean FD from fmriprep outputs and generating bash script to remove fMRI runs with excessive headmotion
 #'
-#' @details This function calculating mean FD from XCP outputs and generating bash script to remove fMRI runs with excessive headmotion. This is used mainly on the XCP-d post-processed HCP fMRI data.
+#' @details This function calculating mean RMSD from fmriprep outputs and generating bash script to remove fMRI runs with excessive headmotion. 
 #'
-#' @param threshold mean FD threshold for identifying fMRI runs for deletion due to excessive headmotion. Set to `0.25` by default
+#' @param threshold mean RMSD threshold for identifying fMRI runs for deletion due to excessive headmotion. Set to `0.25` by default
 #' @param filename Filename of the output.csv file. Set to `FD.csv` by default
 #' @returns outputs a .csv file containing the columns of fMRI runs and FD, and a bash script `del.sh`
 #'
 #' @examples
 #' \dontrun{
-#' headmotion.XCP()
+#' headmotion.fmriprep()
 #' }
 #' @export
 
