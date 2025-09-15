@@ -5,19 +5,19 @@
 #'
 #' @description Visualizing brain connectivity with a glass brain plot
 #'
-#' @details This function takes a vector (`length(data)`=number of edges in the connectome) of edge values and visualizes the edge-to-edge connectivity with a glass brain plot
+#' @details This function takes a vector of edge values and visualizes the edge-to-edge connectivity with a glass brain plot
 #'
-#' @param data a vector of edge values with 4005, 7021, 23871 or 30135 columns
+#' @param data a vector of edge values with a length of 4005, 7021, 23871 or 30135
 #' @param surf_color  color of the cortical surface. Set to `'grey'` by default
 #' @param node_color  color of the nodes. Set to `'#00BA38'` by default
 #' @param surf_alpha  alpha value of the cortical surface, where 0 will cause the cortical surface to disappear and 1 will cause the cortical surface to be completely opaque. Set to `0.2` by default
-#' @param cmap A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. See `RColorBrewer::display.brewer.all()` for all possible cmap options. If none are specified, appropriate colors will be automatically selected according to `range(surf_data)`
+#' @param cmap A string vector containing 2 to 3 color names/codes specifying the colors to be used for the color scale. See `RColorBrewer::display.brewer.all()` for all possible cmap options. If none are specified, appropriate colors will be automatically selected according to `range(data)`
 #' @param node_size size parameter for the dots representing the nodes. Set to `8` by default.
 #' @param node_label option to show node labels. Set to `TRUE` by default.
 #' @param node_label_size font size of the node labels. Set to `10` by default.
 #' @param node_label_color font color of the node labels. Set to `black` by default.
 #' @param edgethickness a value to adjust the thickness of the edges. Set to `8` by default.
-#' @param limits A combined pair of numeric vector composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(data),max(abs(data)))` will be used. 
+#' @param limits A combined pair of numeric values composed of the lower and upper color scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(data),max(abs(data)))` will be used. 
 #' @param colorbar_title title for the colorbar legend. Set to `'Connectivity strength` by default
 #' @param orientation_labels A boolean object specifying if orientation labels are to be displayed. Set to `TRUE` by default
 #' @param remove_brain A boolean object specifying cortical surface should be removed. Set to `FALSE` by default

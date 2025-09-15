@@ -5,14 +5,15 @@
 \title{check_cifti}
 \usage{
 check_cifti(
-  filename = "check_cifti.csv",
+  report_filename = "check_cifti.csv",
+  dtseries = "fsLR_den-91k_bold.dtseries.nii",
   wb_path = "/home/junhong.yu/workbench/bin_rh_linux64"
 )
 }
 \arguments{
-\item{filename}{check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to \code{TRUE} by default.}
-
 \item{wb_path}{The filepath to the workbench folder that you have previously downloaded and unzipped. Set to \verb{/home/junhong.yu/workbench/bin_rh_linux64} by default}
+
+\item{filename}{check the directory structure to ensure that each fMRI directory should only contain one fMRI file and at least one movement file. Set to \code{TRUE} by default.}
 }
 \value{
 outputs a .csv file with a N x 2 data.frame, with the columns of \code{filename} and `Non-zero_values``
