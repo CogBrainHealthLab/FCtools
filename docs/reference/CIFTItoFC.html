@@ -48,6 +48,7 @@
 <span>  path <span class="op">=</span> <span class="st">"./"</span>,</span>
 <span>  wb_path <span class="op">=</span> <span class="st">"/home/junhong.yu/workbench/bin_rh_linux64"</span>,</span>
 <span>  dtseries <span class="op">=</span> <span class="st">"_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii"</span>,</span>
+<span>  timeseries <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  concat_subj <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  atlas <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  filename <span class="op">=</span> <span class="st">"FC.rds"</span></span>
@@ -68,6 +69,10 @@
 
 <dt id="arg-dtseries">dtseries<a class="anchor" aria-label="anchor" href="#arg-dtseries"></a></dt>
 <dd><p>The filename extension of the fMRI volumes. Set to <code>_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii</code> by default</p></dd>
+
+
+<dt id="arg-timeseries">timeseries<a class="anchor" aria-label="anchor" href="#arg-timeseries"></a></dt>
+<dd><p>If set to <code>TRUE</code>, FC matrices will not be computed, instead the parcellated timeseries will be return in a list format, where each subject's parcellated timeseries data is contained within a list element. Set to <code>FALSE</code> by default.</p></dd>
 
 
 <dt id="arg-concat-subj">concat_subj<a class="anchor" aria-label="anchor" href="#arg-concat-subj"></a></dt>
