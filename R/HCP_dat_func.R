@@ -37,7 +37,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
             "MNINonLinear/aparc\\+aseg",
             "MNINonLinear/T1w.nii.gz",
             "MNINonLinear/brainmask_fs.nii.gz",
-            paste0("_",task,"._...nii.gz"))
+            paste0("_",task,"?_...nii.gz"))
   }
   if(!missing(surf) & !missing(task))
   {
