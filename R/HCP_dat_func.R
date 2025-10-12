@@ -22,6 +22,7 @@
 ########################################################################################################
 ########################################################################################################
 
+
 extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filename="downloadlist.txt", subjects)
 {
   files=list()
@@ -85,15 +86,25 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
     }
   } else
   {
-    filelist.sel=filelist
+    filelist.sel.alltasks=filelist
   }
   
   #remove MNINonLinear/brainmask_fs.2.nii.gz
   if(!missing(task))
   {
-    filelist.sel=filelist.sel[-stringr::str_detect(string=filelist.sel,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]    
+    filelist.sel.alltasks=filelist.sel.alltasks[-stringr::str_detect(string=filelist.sel.alltasks,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]    
+    #filter tasks
+    for (t in 1:length(task))
+    {
+    if(t==1)
+      {
+        filelist.sel=filelist.sel.alltasks[stringr::str_detect(string=filelist.sel.alltasks,pattern =task[1])]      
+      } else
+      {
+        filelist.sel=c(filelist.sel,filelist.sel.alltasks[stringr::str_detect(string=filelist.sel.alltasks,pattern =task[t])])      
+      }
+    }
   }
-  
   #check if files were found
   if(length(filelist.sel)==0)
   {
@@ -102,6 +113,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
   #output filelist as a text file
   write.table(filelist.sel,file=filename, quote = F, row.names = F, col.names = F)
 }
+
 
 ############################################################################################################################
 ############################################################################################################################
