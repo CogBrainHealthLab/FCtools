@@ -22,7 +22,6 @@
 ########################################################################################################
 ########################################################################################################
 
-
 extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filename="downloadlist.txt", subjects)
 {
   #read manifest and remove first row; the first row contains description of the column, hence not used.
@@ -49,12 +48,15 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
   if(!missing(task))
   {
     #select required task-related files
-    files=c("Atlas_MSMAll.dtseries.nii",
+
+    files=c(paste0("_",task,"_.._Atlas_MSMAll.dtseries.nii"),
+            paste0("_",task,"._.._Atlas_MSMAll.dtseries.nii"),
             "brainmask_fs.2.nii.gz",
             "_SBRef.nii.gz",
             "Movement_Regressors.txt",
             "Movement_AbsoluteRMS.txt",
-            paste0("_",task,"?_...nii.gz"))
+            paste0("_",task,"._...nii.gz"),
+            paste0("_",task,"_...nii.gz"))
     
     idx.list=list()
     for(file in 1:NROW(files))
@@ -119,9 +121,8 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
     stop("No files were found, check your task name")
   }
   #output filelist as a text file
-  write.table(filelist.sel.tasks[order(filelist.sel.tasks)],file=filename, quote = F, row.names = F, col.names = F)
+  write.table(filelist.sel.tasks.MNI[order(filelist.sel.tasks.MNI)],file=filename, quote = F, row.names = F, col.names = F)
 }
-
 
 ############################################################################################################################
 ############################################################################################################################
