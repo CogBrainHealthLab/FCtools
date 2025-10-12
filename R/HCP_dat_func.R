@@ -71,7 +71,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
     task.idx.list=list()
     for(t in 1:length(task))
     {
-      task.idx.list[[file]]=which(stringr::str_detect(pattern = task[t],string = filelist.alltasks)==T)
+      task.idx.list[[t]]=which(stringr::str_detect(pattern = task[t],string = filelist.alltasks)==T)
     }
     filelist.sel.tasks=filelist.alltasks[unique(unlist(task.idx.list))]
     
