@@ -65,8 +65,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
     }
     
     filelist.alltasks=filelist.incsub[unique(unlist(idx.list))]
-    filelist.alltasks=filelist.alltasks[-stringr::str_detect(string=filelist.alltasks,pattern ="MNINonLinear/brainmask_fs.2.nii.gz")]    
-    
+
     #filter tasks
     task.idx.list=list()
     for(t in 1:length(task))
@@ -80,7 +79,8 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
                "MNINonLinear/ribbon.nii.gz",
                "MNINonLinear/aparc\\+aseg",
                "MNINonLinear/T1w.nii.gz",
-               "MNINonLinear/brainmask_fs.nii.gz")
+               "MNINonLinear/brainmask_fs.nii.gz",
+               "MNINonLinear/brainmask_fs.2.nii.gz")
     MNI.idx.list=list()
     for(file in 1:length(MNIfiles))
     {
