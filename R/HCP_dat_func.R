@@ -22,6 +22,7 @@
 ########################################################################################################
 ########################################################################################################
 
+
 extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filename="downloadlist.txt", subjects)
 {
   #read manifest and remove first row; the first row contains description of the column, hence not used.
@@ -30,16 +31,13 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
   #select subjects
   if(!missing(subjects))
   {
+    sub.list=list()
     for(sub in 1:length(subjects))
     {
-      if(sub==1)
-      {
-        filelist.incsub=manifest$associated_file[stringr::str_detect(string=manifest$associated_file,pattern =subjects[sub])]
-      } else
-      {
-        filelist.incsub=c(filelist.incsub,manifest[stringr::str_detect(string=manifest$associated_file,pattern =subjects[sub])])  
-      }
+      sub.list[[sub]]=which(stringr::str_detect(string=manifest$associated_file,pattern =subjects[sub]))
     }
+  filelist.incsub=manifest$associated_file[unique(unlist(sub.list))]
+  
   } else
   {
     filelist.incsub=manifest$associated_file
@@ -51,10 +49,12 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
 
     files=c(paste0("_",task,"_.._Atlas_MSMAll.dtseries.nii"),
             paste0("_",task,"._.._Atlas_MSMAll.dtseries.nii"),
+            paste0("_",task,".._.._Atlas_MSMAll.dtseries.nii"),
             "brainmask_fs.2.nii.gz",
             "_SBRef.nii.gz",
             "Movement_Regressors.txt",
             "Movement_AbsoluteRMS.txt",
+            paste0("_",task,".._...nii.gz"),
             paste0("_",task,"._...nii.gz"),
             paste0("_",task,"_...nii.gz"))
     
@@ -123,6 +123,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
   #output filelist as a text file
   write.table(filelist.sel.tasks.MNI[order(filelist.sel.tasks.MNI)],file=filename, quote = F, row.names = F, col.names = F)
 }
+
 
 ############################################################################################################################
 ############################################################################################################################
