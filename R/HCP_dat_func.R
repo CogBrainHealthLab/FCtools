@@ -99,8 +99,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
             paste0("lh.",surf),
             paste0("rh.",surf),
             "aseg.stats")
-    surf.idx.list=list()
-    for(file in 1:NROW(files))
+    for(file in 1:NROW(surf.files))
     {
       surf.idx.list[[file]]=which(stringr::str_detect(pattern = surf_files[file],string = filelist.incsub)==T)
     }
