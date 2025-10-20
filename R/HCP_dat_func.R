@@ -116,7 +116,7 @@ extract_linksXCP=function(manifest="datastructure_manifest.txt",task,surf,filena
       }
   }
   #check if files were found
-  if(length(filelist.sel.tasks)==0)
+  if(length(filelist.sel.tasks.MNI)==0)
   {
     stop("No files were found, check your task name")
   }
