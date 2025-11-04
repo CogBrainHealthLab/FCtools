@@ -17,8 +17,9 @@
 #' \dontrun{
 #' extract_linksXCP(manifest = "datastructure_manifest.txt", task="REST",freesurfer = "thickness",subjects = c("0891566","0571649"))
 #' }
-#' @importFrom stringr str_detect
-#' @export
+
+#@importFrom stringr str_detect fMRItools
+#@export
 ########################################################################################################
 ########################################################################################################
 
@@ -203,9 +204,9 @@ extract_links=function(manifest="datastructure_manifest.txt",files,filename="dow
 #' extractFC(wb_path = "/home/junhong.yu/workbench/",task="REST",atlas=100,GSR=TRUE,scrub=TRUE,output_dir = "FCmat")
 #' }
 #' @importFrom stringr str_detect
-#' @importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall
-#' @importFrom fMRItools nuisance_regression dct_bases
-#' @export
+
+#@importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall fMRItools nuisance_regression dct_bases
+#@export
 
 ########################################################################################################
 ########################################################################################################

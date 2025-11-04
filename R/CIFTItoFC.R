@@ -22,9 +22,9 @@
 #' CIFTItoFC(wb_path="bin_windows64/",dtseries="_ses-0._task-rest_acq-.._run-0._space-fsLR_den-91k_desc-denoised_bold.dtseries.nii",atlas = 200,filename="test.RDS")
 #' }
 #' @importFrom stringr str_detect
-#' @importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall
-#' @importFrom psych fisherz
-#' @export
+
+#@importFrom ciftiTools ciftiTools.setOption read_cifti read_xifti newdata_xifti move_from_mwall psych fisherz
+#@export
 
 ########################################################################################################
 ########################################################################################################
