@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 .FCtools.Rproj
+FCtools.Rproj
+.gitignore
