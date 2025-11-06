@@ -19,12 +19,10 @@ Depends:
     R (>= 4.1.0)
 Imports:
     caret,
-    ciftiTools,
     circlize,
     cowplot,
     doParallel,
     doSNOW,
-    fMRItools,
     foreach,
     ggplot2,
     ggplotify,
