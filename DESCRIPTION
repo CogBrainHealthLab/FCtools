@@ -38,4 +38,5 @@ Imports:
     psych,
     stringr,
     reshape2,
+    Rfast,
     rjson

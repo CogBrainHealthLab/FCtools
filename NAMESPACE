@@ -2,6 +2,7 @@
 
 export(CIFTI_subj_avg)
 export(CIFTItoFC)
+export(CIFTItoFC_concat_ses)
 export(NBS)
 export(NBS_lme)
 export(check_cifti)
