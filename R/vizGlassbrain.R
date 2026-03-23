@@ -81,7 +81,7 @@ vizGlassbrain=function(data,
   atlasno=match(length(data),lengths)
   atlas=labels_dat[[atlasno]]
   
-  FCmat=matrix(NA,nodes[atlasno],nodes[atlasno])
+  FCmat=matrix(0,nodes[atlasno],nodes[atlasno])
   FCmat[upper.tri(FCmat)]=data
   FCmat[lower.tri(FCmat)] <- t(FCmat)[lower.tri(FCmat)]
   
