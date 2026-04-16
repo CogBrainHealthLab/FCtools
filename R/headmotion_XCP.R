@@ -19,7 +19,7 @@
 
 headmotion.XCP=function(filename="FD.csv", threshold=0.25)
 {
-  filelist=list.files(pattern="_motion.tsv", recursive=T)
+  filelist=list.files(path = Sys.glob("sub-*"), pattern="_motion.tsv", recursive=T)
   FD.all=data.frame(matrix(NA,nrow=length(filelist),ncol=2))
   colnames(FD.all)=c("fMRI_run","FD")
   
