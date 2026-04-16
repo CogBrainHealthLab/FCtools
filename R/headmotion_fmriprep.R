@@ -17,7 +17,7 @@
 ########################################################################################################
 ########################################################################################################
 
-headmotion.fmriprep=function(filename="rmsd.csv", threshold=0.25)
+headmotion.fmriprep=function(path = Sys.glob("sub-*"), filename="rmsd.csv", threshold=0.25)
 {
   filelist=list.files(pattern="_desc-confounds_timeseries.tsv", recursive=T)
   FD.all=data.frame(matrix(NA,nrow=length(filelist),ncol=2))
