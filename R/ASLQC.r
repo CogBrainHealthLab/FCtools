@@ -19,6 +19,7 @@
 asl.QC=function(filename="ASLPREP_QC.csv")
 {
   filelist=list.files(path = Sys.glob("sub-*"),pattern = "_desc-qualitycontrol_cbf.tsv", recursive = T,full.names = T)
+  subses=basename(gsub(pattern = "_desc-qualitycontrol_cbf.tsv","",filelist))  
     for(sub in 1:length(filelist))
     {
       if(sub==1)
@@ -29,5 +30,6 @@ asl.QC=function(filename="ASLPREP_QC.csv")
         dat=rbind(dat,read.table(filelist[sub],header = T) )
       }
     }
-  write.table(dat, file=filename=, row.names = F, sep=",")
+  dat$subses=subses
+  write.table(dat, file=filename, row.names = F, sep=",")
 }
