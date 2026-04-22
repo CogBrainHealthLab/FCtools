@@ -14,6 +14,7 @@
 #' @param dtseries The filename extension of the fMRI volumes. Set to `_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii` by default
 #' @param timeseries If set to `TRUE`, FC matrices will not be computed, instead the parcellated timeseries will be return in a list format, where each subject's parcellated timeseries data is contained within a list element. Set to `FALSE` by default.
 #' @param concat_subj When set to `TRUE` (default), timeseries data from multiple runs/sessions of the same subject is first Z-scaled and then concatenated into a single larger timeseries data frame before computing the FC.
+#' @param round Number of decimal places to round the data to. Fewer decimal places require less disk space
 #' @param filename Filename of the concatenated FC vector file. Set to `FC.rds` by default
 #' @returns outputs N (number of subjects) x E (number of unique) matrices as a .rds file 
 #'
@@ -28,7 +29,7 @@
 
 ########################################################################################################
 ########################################################################################################
-CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", timeseries=F, concat_subj=TRUE, atlas=200,filename="FC.rds")
+CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64", dtseries="_space-fsLR_den-91k_desc-denoised_bold.dtseries.nii", timeseries=F, concat_subj=TRUE, atlas=200, round,filename="FC.rds")
 {
   filelist=list.files(path=path,pattern=dtseries,recursive = T)
   sublist=unique(gsub(pattern ="/ses-.*/func",replacement = "",dirname(filelist)))
@@ -135,19 +136,25 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
   {
     if(concat_subj==T)
     {
-      saveRDS(list(sublist,psych::fisherz(all_FC)),file=filename)  
+      if(missing(round)){saveRDS(list(sublist,psych::fisherz(all_FC)),file=filename)}
+      else {saveRDS(list(sublist,round(psych::fisherz(all_FC),round)),file=filename)}
+      
     } else if (concat_subj==F)
     {
-      saveRDS(list(basename(sublist),psych::fisherz(all_FC)),file=filename)  
+      if(missing(round)){saveRDS(list(list(basename(sublist),psych::fisherz(all_FC)),file=filename)}
+      else {saveRDS(list(list(basename(sublist),round(psych::fisherz(all_FC),round)),file=filename)}
     }
   } else if(timeseries==T)
   {
     if(concat_subj==T)
     {
-      saveRDS(list(sublist,all_TS),file=filename)  
+      if(missing(round)){saveRDS(list(sublist,all_TS),file=filename)}
+      else {saveRDS(list(sublist,round(all_TS,round)),file=filename)}
     } else if (concat_subj==F)
     {
-      saveRDS(list(basename(sublist),all_TS),file=filename)  
+      
+      if(missing(round)){saveRDS(list(basename(sublist),all_TS),file=filename)}
+      else {saveRDS(list(basename(sublist),round(all_TS,round)),file=filename)}
     }
   }
 }
