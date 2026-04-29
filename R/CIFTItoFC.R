@@ -141,8 +141,8 @@ CIFTItoFC=function(path="./",wb_path="/home/junhong.yu/workbench/bin_rh_linux64"
       
     } else if (concat_subj==F)
     {
-      if(missing(round)){saveRDS(list(list(basename(sublist),psych::fisherz(all_FC)),file=filename)}
-      else {saveRDS(list(list(basename(sublist),round(psych::fisherz(all_FC),round)),file=filename)}
+      if(missing(round)){saveRDS(list(list(basename(sublist),psych::fisherz(all_FC)),file=filename))}
+      else {saveRDS(list(list(basename(sublist),round(psych::fisherz(all_FC),round)),file=filename))}
     }
   } else if(timeseries==T)
   {
