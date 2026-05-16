@@ -4,7 +4,11 @@
 \alias{headmotion.fmriprep}
 \title{headmotion.fmriprep}
 \usage{
-headmotion.fmriprep(filename = "rmsd.csv", threshold = 0.25)
+headmotion.fmriprep(
+  path = Sys.glob("sub-*"),
+  filename = "rmsd.csv",
+  threshold = 0.25
+)
 }
 \arguments{
 \item{filename}{Filename of the output.csv file. Set to \code{FD.csv} by default}

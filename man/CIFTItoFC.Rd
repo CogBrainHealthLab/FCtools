@@ -11,6 +11,7 @@ CIFTItoFC(
   timeseries = F,
   concat_subj = TRUE,
   atlas = 200,
+  round,
   filename = "FC.rds"
 )
 }
@@ -26,6 +27,8 @@ CIFTItoFC(
 \item{concat_subj}{When set to \code{TRUE} (default), timeseries data from multiple runs/sessions of the same subject is first Z-scaled and then concatenated into a single larger timeseries data frame before computing the FC.}
 
 \item{atlas}{The version (number of parcels) of the Schaefer atlas; it has to be in multiples of 100, from 100 to 1000. set to \code{200} by default. The specified atlas template will be automatically downloaded from here if it does not exist in the current directory.}
+
+\item{round}{Number of decimal places to round the data to. Fewer decimal places require less disk space}
 
 \item{filename}{Filename of the concatenated FC vector file. Set to \code{FC.rds} by default}
 }

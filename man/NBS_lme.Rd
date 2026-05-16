@@ -49,6 +49,6 @@ This function implements the NBS analysis described in \href{https://www.science
 }
 \examples{
 \dontrun{
-model1=NBS(model,contrast, FC_data, nperm=1000, nthread=8, p=0.001)
+model1=NBS_lme(model,contrast, random, FC_data, nperm=1000, nthread=8, p=0.001)
 }
 }
