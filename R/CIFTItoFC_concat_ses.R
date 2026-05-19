@@ -158,7 +158,7 @@ CIFTItoFC_concat_ses=function(path="./",wb_path="/home/junhong.yu/workbench/bin_
   
     if(timeseries==F)
     {      
-      saveRDS(list(sublist,psych::fisherz(all_FC)),file=filename)  
+      saveRDS(list(sub.sess,psych::fisherz(all_FC)),file=filename)  
     } else if(timeseries==T)
     {
         saveRDS(list(sub.sess,all_TS),file=filename)  
