@@ -1,7 +1,7 @@
 Package: FCtools
 Type: Package
 Title: Post-processing, analyzing and visualizng brain connectivity data
-Version: 1.0.0
+Version: 2.0.0
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),
@@ -9,7 +9,7 @@ Authors@R: c(
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
 Maintainer: Junhong Yu <junhong.yu@ntu.edu.sg>
-Description: A collection of in-house R functions for post-processing, analyzing and visualizing brain connectivity data
+Description: A collection of in-house R functions for analyzing and visualizing brain connectivity data
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -18,8 +18,8 @@ RoxygenNote: 7.3.3
 Depends: 
     R (>= 4.1.0)
 Imports:
+    Rfast,
     caret,
-    ciftiTools,
     circlize,
     cowplot,
     doParallel,
@@ -32,11 +32,6 @@ Imports:
     gridExtra,
     igraph,
     parallel,
-    png,
-    ggplotify,
     plotly,
-    psych,
-    stringr,
-    reshape2,
-    Rfast,
-    rjson
+    png,
+    reshape2
