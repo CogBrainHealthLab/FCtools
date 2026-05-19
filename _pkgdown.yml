@@ -1,4 +1,19 @@
-url: ~
+url: https://cogbrainhealthlab.github.io/FCtools/
+
 template:
   bootstrap: 5
+  light-switch: true
 
+navbar:
+  bg: light
+  structure:
+    left: [intro, reference, news]
+    right: [search, github, lightswitch]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/CogBrainHealthLab/FCtools
+      aria-label: GitHub
+
+home:
+  title: FCtools
