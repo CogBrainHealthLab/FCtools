@@ -19,7 +19,6 @@ Depends:
     R (>= 4.1.0)
 Imports:
     Rfast,
-    caret,
     circlize,
     cowplot,
     doParallel,
