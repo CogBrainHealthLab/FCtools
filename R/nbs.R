@@ -30,8 +30,6 @@
 ############################################################################################################################
 NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 {
-  model=data.matrix(model)
-  FC_data=data.matrix(FC_data)
   ##checks
 
   #check if nrow is consistent for model and FC_data
@@ -108,7 +106,10 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
       } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
     }
   }
-
+  
+  model=data.matrix(model)
+  FC_data=data.matrix(FC_data)
+  
   #collinearity check
   if(NCOL(model)>1)
   {
