@@ -33,8 +33,6 @@
 ############################################################################################################################
 NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,perm_type="row")
 {
-  model=data.matrix(model)
-  FC_data=data.matrix(FC_data)
   ##checks
   #check random variable
   if(missing(random))   {stop("The 'random' parameter has to be specified")} 
@@ -116,6 +114,9 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
       } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
     }
   }
+  
+  model=data.matrix(model)
+  FC_data=data.matrix(FC_data)
 
   #collinearity check
   if(NCOL(model)>1)
