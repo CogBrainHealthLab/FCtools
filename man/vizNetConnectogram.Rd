@@ -21,7 +21,7 @@ vizNetConnectogram(
   legend.text.size = 5,
   expand = 1.1,
   limits,
-  filename = "test.png",
+  filename,
   width = 1000,
   height = 1000
 )
@@ -74,7 +74,7 @@ and node alpha mappings. If not supplied, limits are set automatically to
 \code{c(0, max(abs(weight)))} inside the function.}
 
 \item{filename}{Character. Path/filename for the output PNG. If the argument is
-omitted entirely, no file is written. Default is \code{"test.png"}.}
+omitted entirely, no file is written.}
 
 \item{width}{Integer. Width of the saved PNG in pixels. Default is \code{1000}.}
 
