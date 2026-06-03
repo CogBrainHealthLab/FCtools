@@ -16,8 +16,19 @@ If you have not previously installed this package:
 install.packages("pak")
 pak::pak("CogBrainHealthLab/FCtools")
 ```
+### **1. Network connectogram (New!)**
 
-### **1. Glassbrain (New!)**
+``` r
+library(FCtools)
+
+mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
+data=runif(7021,min = -1,max=1)*mask
+
+vizNetConnectogram(colMeans(demomat))
+```
+![](man/figures/viznetconn.png)
+
+### **2. Glassbrain**
 
 ``` r
 library(FCtools)
@@ -30,7 +41,7 @@ vizGlassbrain(data,orientation_labels = T)
 
 ![](man/figures/plotly.png)
 
-### **2. Connectogram**
+### **3. Connectogram**
 
 **A. Plotting the connectogram**
 
@@ -126,7 +137,7 @@ vizConnectogram(data=rbind(network1,network2,network3,network4),
 
 ![](man/figures/4xFC_119.png)
 
-### **3. Chord diagram**
+### **4. Chord diagram**
 
 The `vizChord()` function can take input vectors of various lengths as described in the connectogram section and additionally, vectors of 68 values — derived from 12x12 functional network matrices generated using the [Gordon](https://academic.oup.com/cercor/article/26/1/288/2367115?login=falseb) atlas. The 12x12 functional network matrices are only available in the ABCD dataset.
 
@@ -177,7 +188,7 @@ vizChord(data=rbind(network1,network2,network3,network4),
 
 ![](man/figures/4xFCchord_119.png)
 
-### **4. Heatmap**
+### **5. Heatmap**
 
 The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used
 

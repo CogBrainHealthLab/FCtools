@@ -151,30 +151,30 @@ vizNetConnectogram=function(FC_dat,
   
   #plot
   
-  plot.obj=ggraph(graph.obj,layout = 'linear', circular = TRUE)+
+  plot.obj=suppressWarnings(ggraph(graph.obj,layout = 'linear', circular = TRUE)+
     ggtitle(title)+
-    geom_node_text(ggplot2::aes(label=igraph::V(graph.obj)$name, x = x * 1.1, y = y* 1.1,
-                                angle = ifelse(atan(-(x/y))*(180/pi) < 0,atan(-(x/y))*(180/pi), atan(-x/y)*(180/pi)),
-                                hjust = 0.5),size=node.text.size) +
     expand_limits(x =c(-expand,expand), y = c(-expand,expand))+
     geom_edge_arc(aes(color=signposneg,alpha=weight),width=edge.thickness,show.legend = F)+
     geom_node_point(color=node.color, size=node.size,show.legend = F)+
     geom_node_point(shape = 21,aes(color=rep(diag.color,8), alpha=abs(diag.alpha)), size=5,stroke=edge.thickness, show.legend = F)+
+    geom_node_text(ggplot2::aes(label=igraph::V(graph.obj)$name, x = x * 1.1, y = y* 1.1,
+                                  angle = ifelse(atan(-(x/y))*(180/pi) < 0,atan(-(x/y))*(180/pi), atan(-x/y)*(180/pi)),
+                                  hjust = 0.5),size=node.text.size) +
     scale_edge_color_manual(guide="none",values = c("pos"=hot,"neg"=cold))+
     scale_edge_alpha_continuous(guide="none",range=c(0,1),limits=limits)+
     scale_alpha_continuous(guide="none",range=c(0,1), limits=limits)+
     theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
-    theme(plot.title = element_text(size=title.size),aspect.ratio = 1, plot.margin=unit(c(0,0,1,0),units = "cm"))
+    theme(plot.title = element_text(size=title.size),aspect.ratio = 1, plot.margin=unit(c(0,0,1,0),units = "cm")))
   
   if(legend==T)
   {
     plot.obj=plot.obj+
-      geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
+      suppressWarnings(geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
       scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +
       guides(fill = guide_colorbar(title.position = "left",
                                    barwidth  = 0.75, 
                                    theme = theme(legend.text = element_text(size = legend.text.size)),
-                                   title.theme = element_text(angle = 90, size=legend.title.size)))
+                                   title.theme = element_text(angle = 90, size=legend.title.size))))
   }
   
   if(!missing(filename))
