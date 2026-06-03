@@ -1,12 +1,12 @@
 #' @title vizNetConnectogram
-#' @description Generate a Network Connectogram from a Vector of Results
+#' @description Generate a Network Connectogram from a Vector of FC network or edge data
 #' 
 #'
 #' @details Creates a circular network connectogram (chord diagram) from a data frame of
 #' connectivity results, visualizing edge weights and their signs using color and
 #' transparency. Node self-connections (diagonal elements) are highlighted on the
 #' node border. Optionally saves the plot to a PNG file.
-#' @param results A data frame with row names in the format \code{"nodeA to nodeB"},
+#' @param data A data frame with row names in the format \code{"nodeA to nodeB"},
 #'   and at minimum two columns: \code{coef} (numeric edge weights / standardized
 #'   coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).
 #' @param thresholded Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
@@ -79,15 +79,15 @@
 #'
 #' @importFrom igraph graph_from_data_frame V E edge_attr edge_attr<-
 #' @importFrom ggraph ggraph geom_edge_arc geom_node_point geom_node_text
-#'   expand_limits theme_graph
-#' @importFrom ggplot2 aes ggtitle geom_point scale_fill_gradientn
-#'   scale_edge_color_manual scale_edge_alpha_continuous scale_alpha_continuous
+#'   theme_graph scale_edge_color_manual scale_edge_alpha_continuous 
+#' @importFrom ggplot2 expand_limits aes ggtitle geom_point scale_fill_gradientn
+#'   scale_alpha_continuous
 #'   guides guide_colorbar theme element_text unit
 #' @export
 ############################################################################################################################
 ############################################################################################################################
 
-vizNetConnectogram=function(results,
+vizNetConnectogram=function(FC_dat,
                                       thresholded=F,
                                       title=NULL,
                                       title.size=10,
@@ -107,16 +107,22 @@ vizNetConnectogram=function(results,
                                       width=1000, 
                                       height=1000)
 {
-  weight=results$coef
-  if(thresholded==T)  {weight[results$p>0.05]=0}
+  ##if input FC data is a numerical edge vector
+  if((is.atomic(FC_dat) || is.list(FC_dat)) && is.null(dim(FC_dat)))
+  {
+    FC_dat=data.frame(coef=t(edges_to_networks(FC_dat)))
+  }
+  
+  weight=FC_dat$coef
+  if(thresholded==T)  {weight[FC_dat$p>0.05]=0}
   
   #generate graph object
-  graph.dat=data.frame(from=sub(" to .*", "", rownames(results)),
-                       to=sub(".* to ", "", rownames(results)),
+  graph.dat=data.frame(from=sub(" to .*", "", rownames(FC_dat)),
+                       to=sub(".* to ", "", rownames(FC_dat)),
                        weight=weight)
   
   diag=graph.dat$weight[which(graph.dat$from==graph.dat$to)]
-  diag=diag[c(2:8,1)] ##need to reoder diagonal values
+  diag=diag[c(2:8,1)] ##need to reorder diagonal values
   diag.alpha=diag
   diag.color=diag
   if(all(diag>1))
@@ -144,6 +150,7 @@ vizNetConnectogram=function(results,
   limits=c(0,max(abs(weight)))
   
   #plot
+  
   plot.obj=ggraph(graph.obj,layout = 'linear', circular = TRUE)+
     ggtitle(title)+
     geom_node_text(ggplot2::aes(label=igraph::V(graph.obj)$name, x = x * 1.1, y = y* 1.1,
@@ -173,10 +180,10 @@ vizNetConnectogram=function(results,
   if(!missing(filename))
   {
     png(filename=filename, width=width, height=height, res=300)
-    print(plot.obj)
+    suppressWarnings(print(plot.obj))
     dev.off()
   }
-  print(plot.obj)
+  suppressWarnings(print(plot.obj))
   return(plot.obj)
 }
 

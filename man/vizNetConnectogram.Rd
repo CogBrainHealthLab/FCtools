@@ -5,7 +5,7 @@
 \title{vizNetConnectogram}
 \usage{
 vizNetConnectogram(
-  results,
+  FC_dat,
   thresholded = F,
   title = NULL,
   title.size = 10,
@@ -27,10 +27,6 @@ vizNetConnectogram(
 )
 }
 \arguments{
-\item{results}{A data frame with row names in the format \code{"nodeA to nodeB"},
-and at minimum two columns: \code{coef} (numeric edge weights / standardized
-coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).}
-
 \item{thresholded}{Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
 to zero (i.e., suppressed in the plot). Default is \code{FALSE}.}
 
@@ -79,6 +75,10 @@ omitted entirely, no file is written.}
 \item{width}{Integer. Width of the saved PNG in pixels. Default is \code{1000}.}
 
 \item{height}{Integer. Height of the saved PNG in pixels. Default is \code{1000}.}
+
+\item{data}{A data frame with row names in the format \code{"nodeA to nodeB"},
+and at minimum two columns: \code{coef} (numeric edge weights / standardized
+coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).}
 }
 \value{
 A \code{ggraph}/\code{ggplot2} plot object (invisibly returned via
@@ -87,7 +87,7 @@ active graphics device, and — if \code{filename} is provided — written to a
 300 dpi PNG file.
 }
 \description{
-Generate a Network Connectogram from a Vector of Results
+Generate a Network Connectogram from a Vector of FC network or edge data
 }
 \details{
 Creates a circular network connectogram (chord diagram) from a data frame of
