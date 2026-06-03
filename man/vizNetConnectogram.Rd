@@ -17,7 +17,7 @@ vizNetConnectogram(
   edge.thickness = 2,
   legend = T,
   legend.title = "Standardized Coefficient",
-  legend.title.size = 8,
+  legend.title.size = 6,
   legend.text.size = 5,
   expand = 1.1,
   limits,
