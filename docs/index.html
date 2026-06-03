@@ -74,10 +74,23 @@
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"CogBrainHealthLab/FCtools"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="id_1-glassbrain-new">
-<strong>1. Glassbrain (New!)</strong><a class="anchor" aria-label="anchor" href="#id_1-glassbrain-new"></a>
+<h3 id="id_1-network-connectogram-new">
+<strong>1. Network connectogram (New!)</strong><a class="anchor" aria-label="anchor" href="#id_1-network-connectogram-new"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FCtools</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">mask</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.999</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">7021</span>,min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,max<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">mask</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/vizNetConnectogram.html">vizNetConnectogram</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">demomat</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/viznetconn.png"></p>
+</div>
+<div class="section level3">
+<h3 id="id_2-glassbrain">
+<strong>2. Glassbrain</strong><a class="anchor" aria-label="anchor" href="#id_2-glassbrain"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">FCtools</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mask</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.999</span><span class="op">)</span><span class="op">)</span></span>
@@ -87,8 +100,8 @@
 <p><img src="reference/figures/plotly.png"></p>
 </div>
 <div class="section level3">
-<h3 id="id_2-connectogram">
-<strong>2. Connectogram</strong><a class="anchor" aria-label="anchor" href="#id_2-connectogram"></a>
+<h3 id="id_3-connectogram">
+<strong>3. Connectogram</strong><a class="anchor" aria-label="anchor" href="#id_3-connectogram"></a>
 </h3>
 <p><strong>A. Plotting the connectogram</strong></p>
 <p>The <code><a href="reference/vizConnectogram.html">vizConnectogram()</a></code> function can take input vectors of the following lengths:</p>
@@ -100,10 +113,10 @@
 </ul>
 <p>The number of nodes to display in the connectogram plot will be automatically determined from the length of the input vector.</p>
 <p>For the first example, we will generate a sparse vector of 23871 random numbers ranging from -1 to 1 and use this vector as the input vector to simulate the results derived from running the network-based statistics on the 219x219 FC matrices. The vector is ‘sparse’ because it contains very few non-zero values. You will see why this is important later</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">23871</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.998</span>,<span class="fl">0.001</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>In the above line, the frequency of the numbers <code>c(1,0, -1)</code> appearing in the vector corresponds to the specified probabilities <code>prob = c(0.001, 0.998,0.001)</code>. Next, we will call upon the <code><a href="reference/vizConnectogram.html">vizConnectogram()</a></code> function from the cloud, and run it on the <code>results</code> vector</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/vizConnectogram.html">vizConnectogram</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">results</span>, filename<span class="op">=</span><span class="st">"FC_219.png"</span><span class="op">)</span></span></code></pre></div>
 <p>The above code will output the following <code>FC_219.png</code> image in your working directory. Do note that the distribution of nodes in the Schaefer-100 and Schaefer-200 parcellation schemes is not symmetrical across both hemispheres.</p>
 <p><img src="reference/figures/FC_219.png"></p>
@@ -116,7 +129,7 @@
 <li><p><code>colorscheme</code>: a vector of 8 color codes/names for all FC matrices or 7 color codes/names for SC matrices</p></li>
 </ul>
 <p>In the next example, we will simulate results derived from the brainnetome atlas (246x246 FC matrices; length of input vector=30135) and also play around with the color-related parameters,</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">30135</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.998</span>,<span class="fl">0.001</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## to generate color codes for the color scheme</span></span>
@@ -127,17 +140,17 @@
 <p>The above code will output the following <code>FC_246.png</code> image in your working directory. <img src="FC_246.png"> As you can see it can be a little difficult to differentiate which network the nodes belong to because the colors are too similar. So do pay attention to the choice of colors if you were to adjust the <code>colorscheme</code> parameter</p>
 <p><strong>C. Excessive cluttering</strong></p>
 <p>The connectograms are ideal for visualizing sparse FC/SC matrices. If there are too many non-zero values in these matrices, the connectogram can become too cluttered and consequently difficult to interpret. Here’s an example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.98</span>,<span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/vizConnectogram.html">vizConnectogram</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">results</span>, filename<span class="op">=</span><span class="st">"FC_119.png"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/FC_119.png"></p>
 <p>You can make it look a little less cluttered by reducing the thickness of the edge links. Note that the default value is <code>0.8</code></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/vizConnectogram.html">vizConnectogram</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">results</span>, filename<span class="op">=</span><span class="st">"4xFC_119_thinedges.png"</span>,edgethickness <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/FC_119_thinedges.png"> This will be very effective if the edges are nicely bundled up, which isn’t the case for the above. So if you tried to reduce the thickness of the edge links and it doesn’t help much, then perhaps you should use a chord diagram instead</p>
 <p><strong>C. Multiple connectograms</strong></p>
 <p>If necessary, you can plot out multiple connectograms and fit them nicely in a grid format.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">network1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">network2</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">network3</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
@@ -151,20 +164,20 @@
 <p><img src="reference/figures/4xFC_119.png"></p>
 </div>
 <div class="section level3">
-<h3 id="id_3-chord-diagram">
-<strong>3. Chord diagram</strong><a class="anchor" aria-label="anchor" href="#id_3-chord-diagram"></a>
+<h3 id="id_4-chord-diagram">
+<strong>4. Chord diagram</strong><a class="anchor" aria-label="anchor" href="#id_4-chord-diagram"></a>
 </h3>
 <p>The <code><a href="reference/vizChord.html">vizChord()</a></code> function can take input vectors of various lengths as described in the connectogram section and additionally, vectors of 68 values — derived from 12x12 functional network matrices generated using the <a href="https://academic.oup.com/cercor/article/26/1/288/2367115?login=falseb" class="external-link">Gordon</a> atlas. The 12x12 functional network matrices are only available in the ABCD dataset.</p>
 <p><strong>A. Plotting the chord diagram</strong></p>
 <p>Here’s a basic use of the <code><a href="reference/vizChord.html">vizChord()</a></code> function on an input vector of 7021 <u>non-zero values</u> ranging from -1 to 1.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">7021</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/vizChord.html">vizChord</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">results</span>, filename<span class="op">=</span><span class="st">"FC_chord119.png"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/FC_chord119.png"></p>
 <p>Just like the <code><a href="reference/vizConnectogram.html">vizConnectogram()</a></code> function, you can customize the <code>hot</code> and <code>cold</code> colors, as well as the colors for the networks. Note that if your input vector has a length of 78 (derived from the 12x12 functional network matrices), you will need to specify 12 colors (because 12 networks) for the <code>colorscheme</code>.</p>
 <p><strong>B. Customizing optional parameters</strong></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">78</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## to generate color codes for the color scheme</span></span>
@@ -175,7 +188,7 @@
 <p><img src="reference/figures/FC_chord12.png"></p>
 <p><strong>C. Multiple connectograms</strong></p>
 <p>Just as above, you can plot out multiple chord diagrams and fit them nicely in a grid format.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">network1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>,<span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">network2</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="va">network3</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">7021</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.005</span>, <span class="fl">0.99</span>,<span class="fl">0.005</span><span class="op">)</span><span class="op">)</span> </span>
@@ -189,16 +202,16 @@
 <p><img src="reference/figures/4xFCchord_119.png"></p>
 </div>
 <div class="section level3">
-<h3 id="id_4-heatmap">
-<strong>4. Heatmap</strong><a class="anchor" aria-label="anchor" href="#id_4-heatmap"></a>
+<h3 id="id_5-heatmap">
+<strong>5. Heatmap</strong><a class="anchor" aria-label="anchor" href="#id_5-heatmap"></a>
 </h3>
 <p>The connectogram and chord diagram cannot be use to visualize edge-level statistics for all edges in the connectome. Instead a heatmap should be used</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sub1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span> <span class="co">## load demo data</span></span>
 <span><span class="fu"><a href="reference/vizHeatmap.html">vizHeatmap</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sub1</span>, filename<span class="op">=</span><span class="st">"heatmap219.png"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/heatmap219.png"></p>
 <p>Multiple heatmaps can be generated in a similar manner</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sub1</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span></span>
 <span><span class="va">sub2</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
 <span><span class="va">sub3</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">"demomat"</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span>,<span class="op">]</span></span>

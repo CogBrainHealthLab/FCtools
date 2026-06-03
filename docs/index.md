@@ -30,7 +30,21 @@ install.packages("pak")
 pak::pak("CogBrainHealthLab/FCtools")
 ```
 
-### **1. Glassbrain (New!)**
+### **1. Network connectogram (New!)**
+
+``` r
+
+library(FCtools)
+
+mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
+data=runif(7021,min = -1,max=1)*mask
+
+vizNetConnectogram(colMeans(demomat))
+```
+
+![](reference/figures/viznetconn.png)
+
+### **2. Glassbrain**
 
 ``` r
 
@@ -44,7 +58,7 @@ vizGlassbrain(data,orientation_labels = T)
 
 ![](reference/figures/plotly.png)
 
-### **2. Connectogram**
+### **3. Connectogram**
 
 **A. Plotting the connectogram**
 
@@ -187,7 +201,7 @@ vizConnectogram(data=rbind(network1,network2,network3,network4),
 
 ![](reference/figures/4xFC_119.png)
 
-### **3. Chord diagram**
+### **4. Chord diagram**
 
 The
 [`vizChord()`](https://cogbrainhealthlab.github.io/FCtools/reference/vizChord.md)
@@ -257,7 +271,7 @@ vizChord(data=rbind(network1,network2,network3,network4),
 
 ![](reference/figures/4xFCchord_119.png)
 
-### **4. Heatmap**
+### **5. Heatmap**
 
 The connectogram and chord diagram cannot be use to visualize edge-level
 statistics for all edges in the connectome. Instead a heatmap should be
