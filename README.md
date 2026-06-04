@@ -21,9 +21,6 @@ pak::pak("CogBrainHealthLab/FCtools")
 ``` r
 library(FCtools)
 
-mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
-data=runif(7021,min = -1,max=1)*mask
-
 vizNetConnectogram(colMeans(demomat))
 ```
 ![](man/figures/viznetconn.png)

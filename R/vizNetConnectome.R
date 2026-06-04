@@ -96,7 +96,7 @@ vizNetConnectogram=function(FC_dat,
                                       node.text.size=2, 
                                       node.size=2,
                                       node.color="black",
-                                      edge.thickness=2,
+                                      edge.thickness=1.5,
                                       legend=T,
                                       legend.title="Standardized Coefficient",
                                       legend.title.size=6,
@@ -105,7 +105,7 @@ vizNetConnectogram=function(FC_dat,
                                       limits,
                                       filename,
                                       width=1000, 
-                                      height=1000)
+                                      height=700)
 {
   ##if input FC data is a numerical edge vector
   if((is.atomic(FC_dat) || is.list(FC_dat)) && is.null(dim(FC_dat)))
@@ -164,12 +164,12 @@ vizNetConnectogram=function(FC_dat,
     scale_edge_alpha_continuous(guide="none",range=c(0,1),limits=limits)+
     scale_alpha_continuous(guide="none",range=c(0,1), limits=limits)+
     theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
-    theme(plot.title = element_text(size=title.size),aspect.ratio = 1, plot.margin=unit(c(0,0,1,0),units = "cm")))
+    theme(plot.title = element_text(size=title.size),aspect.ratio = 1,plot.margin=unit(c(-0.1,0,-0.1,0),units = "cm")))
   
   if(legend==T)
   {
-    plot.obj=plot.obj+
-      suppressWarnings(geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
+    plot.obj=suppressWarnings(plot.obj+
+      geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
       scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +
       guides(fill = guide_colorbar(title.position = "left",
                                    barwidth  = 0.75, 

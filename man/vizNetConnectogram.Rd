@@ -14,7 +14,7 @@ vizNetConnectogram(
   node.text.size = 2,
   node.size = 2,
   node.color = "black",
-  edge.thickness = 2,
+  edge.thickness = 1.5,
   legend = T,
   legend.title = "Standardized Coefficient",
   legend.title.size = 6,
@@ -23,7 +23,7 @@ vizNetConnectogram(
   limits,
   filename,
   width = 1000,
-  height = 1000
+  height = 700
 )
 }
 \arguments{
