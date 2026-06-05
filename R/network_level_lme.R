@@ -1,8 +1,9 @@
-#' @title network_lm
-#' @description mass univariate linear regression at the network level
+#' @title network_lme
+#' @description mass univariate linear mixed effects analysis at the network level
 #'
-#' @details This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear regression analyses on each of the network to network connection
+#' @details This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear mixed effect analyses on each of the network to network connection
 #' @param model A data.frame or matrix containing all the predictors in the model
+#' @param random A N x 1 numeric vector or object containing the values of the random variable (optional). Its length should be equal to the number of subjects in model (it should NOT be inside the model data.frame).
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
 #' @param FC_data An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
@@ -10,18 +11,21 @@
 #'
 #' @examples
 #' \dontrun{
-#' model1=network_lm(model,contrast, FC_data)
+#' model1=network_lme(model,contrast, FC_data)
 #' }
 #' @export
 ############################################################################################################################
 ############################################################################################################################
-network_lm=function(model,contrast, FC_data, threshold.method="fdr")
+network_lme=function(model,contrast,random, FC_data,threshold.method="fdr")
 {
   ##checks
-
+  #check random variable
+  if(missing(random))   {stop("The 'random' parameter has to be specified")}
+  else  {random=match(random,unique(random))}
+  
   #check if nrow is consistent for model and FC_data
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
-
+  
   #incomplete data check
   idxF=which(complete.cases(model)==F)
   if(length(idxF)>0)
@@ -31,14 +35,14 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
   }
-
+  
   #check contrast
   if(NCOL(model)>1)
   {
     for(colno in 1:(NCOL(model)+1))
     {
       if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-
+      
       if(class(contrast) != "integer" & class(contrast) != "numeric")
       {
         if(identical(contrast,model[,colno]))  {break}
@@ -59,7 +63,8 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
       else  {stop("contrast is not contained within model")}
     }
   }
-
+  
+  
   #check categorical variable
   if(NCOL(model)>1)
   {
@@ -70,7 +75,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
         if(length(unique(model[,column]))==2)
         {
           cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
-
+          
           recode=rep(0,NROW(model))
           recode[model[,column]==unique(model[,column])[2]]=1
           model[,column]=recode
@@ -85,7 +90,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
       if(length(unique(model))==2)
       {
         cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
-
+        
         recode=rep(0,NROW(model))
         recode[model==unique(model)[2]]=1
         model=recode
@@ -94,41 +99,40 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     }
   }
   
-  model=data.matrix(model)
-  FC_data=data.matrix(FC_data)
+  model=scale(data.matrix(model))
+  # formula_dataset.copy=formula_dataset
+  FNC_data=scale(edges_to_networks(data.matrix(FC_data)))
+  Nedges=NCOL(FNC_data)
   
-  #collinearity check
-  if(NCOL(model)>1)
+  coef=rep(NA,Nedges)
+  p=rep(NA,Nedges)
+  
+  for(connection in 1:Nedges)
   {
-    cormat=cor(model,use = "pairwise.complete.obs")
-    cormat.0=cormat
-    cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.5)
-    {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
-    }
+    results.connection=lmefast.p(FNC_data[,connection], model, random, contrast=colno+1)
+    coef[connection]=results.connection[1]
+    p[connection]=results.connection[2]
   }
-  #fit model
-  FNC_data=scale(edges_to_networks(FC_data))
-  model.std=data.matrix(scale(model))
-  mod.fitted=.lm.fit(y = FNC_data,x=model.std)
-
-  #compute pvalues
-    
-  n=nrow(FNC_data)
-  p=ncol(model.std)
-  
-  XtX_inv <- solve(t(model.std) %*% model.std)
-  results.lm <- lapply(1:ncol(FNC_data), function(j) {
-  resid_j <- mod.fitted$residuals[, j]
-  sigma2_j <- sum(resid_j^2) / (n - p)
-  se_j <- sqrt(diag(XtX_inv) * sigma2_j)
-  t_vals_j <- mod.fitted$coefficients[, j] / se_j
-  p_vals_j <- 2 * pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
-    
-  results=data.frame(coef=t(mod.fitted$coefficients)[,colno],p.thresholded=p.adjust(t(matrix(unlist(results.lm), nrow=2))[,colno],method = threshold.method))
+  results=data.frame(coef=coef,p.thresholded=p.adjust(p,method=threshold.method))
   rownames(results)=colnames(FNC_data)
     
   return(results)
 }
 
+
+lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast)
+{
+  # Force numeric matrices
+  x <- data.matrix(x)
+  id <- as.integer(as.factor(id))
+  Y <- as.matrix(Y)
+  k <- ncol(Y)
+  
+  # Apply rint.reg efficiently across Y columns
+  beta.p<- sapply(1:k, function(j) {
+    mod <- Rfast::rint.reg(Y[, j], x, id, tol = tol, ranef = ranef, maxiters = maxiters)
+    c(mod$be[contrast],2 * (1 - pnorm(abs(mod$be[contrast] / mod$se[contrast]))))
+  })
+  
+  return(beta.p)
+}

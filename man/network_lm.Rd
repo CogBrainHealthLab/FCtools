@@ -22,7 +22,7 @@ Returns a data.frame object with \code{coef} and corrected \code{p} values
 mass univariate linear regression at the network level
 }
 \details{
-This function implements the NBS analysis described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852)}{Zalesky et al. (2010)}
+This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear regression analyses on each of the network to network connection
 }
 \examples{
 \dontrun{

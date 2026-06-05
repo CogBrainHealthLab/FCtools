@@ -16,6 +16,8 @@
   : NBS
 - [`network_lm()`](https://cogbrainhealthlab.github.io/FCtools/reference/network_lm.md)
   : network_lm
+- [`network_lme()`](https://cogbrainhealthlab.github.io/FCtools/reference/network_lme.md)
+  : network_lme
 - [`vizChord()`](https://cogbrainhealthlab.github.io/FCtools/reference/vizChord.md)
   : vizChord
 - [`vizConnectogram()`](https://cogbrainhealthlab.github.io/FCtools/reference/vizConnectogram.md)
