@@ -18,7 +18,6 @@
 network_lm=function(model,contrast, FC_data, threshold.method="fdr")
 {
   ##checks
-  
   #check if nrow is consistent for model and FC_data
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
   
@@ -32,33 +31,6 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     FC_data=FC_data[-idxF,]
   }
   
-  #check contrast
-  if(NCOL(model)>1)
-  {
-    for(colno in 1:(NCOL(model)+1))
-    {
-      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-      
-      if(class(contrast) != "integer" & class(contrast) != "numeric")
-      {
-        if(identical(contrast,model[,colno]))  {break}
-      } else
-      {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
-      }
-    }
-  }  else
-  {
-    if(class(contrast) != "integer" & class(contrast) != "numeric")
-    {
-      if(identical(contrast,model))  {colno=1}
-      else  {stop("contrast is not contained within model")}
-    } else
-    {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
-      else  {stop("contrast is not contained within model")}
-    }
-  }
   
   #check categorical variable
   if(NCOL(model)>1)
@@ -91,6 +63,34 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
         model=recode
         contrast=model
       } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
+    }
+  }
+  
+  #check contrast
+  if(NCOL(model)>1)
+  {
+    for(colno in 1:(NCOL(model)+1))
+    {
+      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
+      
+      if(class(contrast) != "integer" & class(contrast) != "numeric")
+      {
+        if(identical(contrast,model[,colno]))  {break}
+      } else
+      {
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+      }
+    }
+  }  else
+  {
+    if(class(contrast) != "integer" & class(contrast) != "numeric")
+    {
+      if(identical(contrast,model))  {colno=1}
+      else  {stop("contrast is not contained within model")}
+    } else
+    {
+      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      else  {stop("contrast is not contained within model")}
     }
   }
   
