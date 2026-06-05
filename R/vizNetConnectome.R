@@ -183,7 +183,6 @@ vizNetConnectogram=function(FC_dat,
     suppressWarnings(print(plot.obj))
     dev.off()
   }
-  suppressWarnings(print(plot.obj))
   return(plot.obj)
 }
 

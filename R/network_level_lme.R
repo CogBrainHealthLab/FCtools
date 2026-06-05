@@ -34,7 +34,9 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr")
     model=model[-idxF,]
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
+    random=random[-idxF]
   }
+  
   
   #check contrast
   if(NCOL(model)>1)
@@ -48,7 +50,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr")
         if(identical(contrast,model[,colno]))  {break}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(contrast,model[,colno]))  {break}
       }
     }
   }  else
@@ -59,11 +61,10 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr")
       else  {stop("contrast is not contained within model")}
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      if(identical(contrast,model))  {colno=1}
       else  {stop("contrast is not contained within model")}
     }
   }
-  
   
   #check categorical variable
   if(NCOL(model)>1)
@@ -98,6 +99,8 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr")
       } else if(length(unique(model))>2)    {stop(paste("The categorical variable '",colnames(model),"' contains more than 2 levels, please code it into binarized dummy variables",sep=""))}
     }
   }
+  
+  
   
   model=scale(data.matrix(model))
   # formula_dataset.copy=formula_dataset

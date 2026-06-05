@@ -50,6 +50,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     model=model[-idxF,]
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
+    random=random[-idxF] 
   }
 
   #check contrast

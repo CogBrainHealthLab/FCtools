@@ -31,6 +31,33 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     FC_data=FC_data[-idxF,]
   }
   
+  #check contrast
+  if(NCOL(model)>1)
+  {
+    for(colno in 1:(NCOL(model)+1))
+    {
+      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
+      
+      if(class(contrast) != "integer" & class(contrast) != "numeric")
+      {
+        if(identical(contrast,model[,colno]))  {break}
+      } else
+      {
+        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+      }
+    }
+  }  else
+  {
+    if(class(contrast) != "integer" & class(contrast) != "numeric")
+    {
+      if(identical(contrast,model))  {colno=1}
+      else  {stop("contrast is not contained within model")}
+    } else
+    {
+      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      else  {stop("contrast is not contained within model")}
+    }
+  }
   
   #check categorical variable
   if(NCOL(model)>1)
@@ -66,33 +93,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     }
   }
   
-  #check contrast
-  if(NCOL(model)>1)
-  {
-    for(colno in 1:(NCOL(model)+1))
-    {
-      if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-      
-      if(class(contrast) != "integer" & class(contrast) != "numeric")
-      {
-        if(identical(contrast,model[,colno]))  {break}
-      } else
-      {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
-      }
-    }
-  }  else
-  {
-    if(class(contrast) != "integer" & class(contrast) != "numeric")
-    {
-      if(identical(contrast,model))  {colno=1}
-      else  {stop("contrast is not contained within model")}
-    } else
-    {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
-      else  {stop("contrast is not contained within model")}
-    }
-  }
+ 
   
   model=data.matrix(model)
   FC_data=data.matrix(FC_data)
