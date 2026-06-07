@@ -7,7 +7,7 @@ Generate a Network Connectogram from a Vector of FC network or edge data
 ``` r
 vizNetConnectogram(
   FC_dat,
-  show.sig = F,
+  show.sig = T,
   title = NULL,
   title.size = 10,
   hot = "#F8766D",

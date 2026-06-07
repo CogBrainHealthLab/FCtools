@@ -82,15 +82,15 @@
 #' @importFrom igraph graph_from_data_frame V E edge_attr edge_attr<-
 #' @importFrom ggraph ggraph geom_edge_arc geom_node_point geom_node_text
 #'   theme_graph scale_edge_color_manual scale_edge_alpha_continuous 
-#' @importFrom ggplot2 expand_limits aes ggtitle geom_point scale_fill_gradientn
-#'   scale_alpha_continuous
+#' @importFrom ggplot2 expand_limits aes ggtitle geom_point geom_line scale_fill_gradientn
+#'   scale_alpha_continuous scale_size
 #'   guides guide_colorbar theme element_text unit
 #' @export
 ############################################################################################################################
 ############################################################################################################################
 
 vizNetConnectogram=function(FC_dat,
-                            show.sig=F,
+                            show.sig=T,
                             title=NULL,
                             title.size=10,
                             hot="#F8766D", 
@@ -176,17 +176,31 @@ vizNetConnectogram=function(FC_dat,
   
   if(legend==T)
   {
-    plot.obj=suppressWarnings(plot.obj+
-                                geom_line(data = data.frame(x = NA_real_, y = NA_real_, col_val=NA_real_),aes(x = x, y = y,  color=as.factor(col_val)),na.rm = TRUE, inherit.aes = FALSE, linewidth = 2, show.legend = T) +
-                                geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
-                                scale_color_manual(name=NULL, values = c(hot=hot,cold=cold,"1"=sig.color),breaks = 1,labels=expression('p'[FDR]*'<.05'))+
-                                scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +
-                                guides(fill = guide_colorbar(title.position = "left",
-                                                             barwidth  = 0.75, 
-                                                             theme = theme(legend.text = element_text(size = legend.text.size)),
-                                                             title.theme = element_text(angle = 90, size=legend.title.size)),
-                                       color = guide_legend(theme = theme(legend.text = element_text(size = legend.text.size*2), legend.text.position = "left")))
-    )
+    if(show.sig==T && sum(sig)!=0)
+    {
+      plot.obj=suppressMessages(suppressWarnings(plot.obj+
+                                  geom_line(data = data.frame(x = NA_real_, y = NA_real_, col_val=1),aes(x = x, y = y,  color=as.factor(col_val)),na.rm = TRUE, inherit.aes = FALSE, linewidth = 2, show.legend = T) +
+                                  geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
+                                  scale_color_manual(name=NULL, values = c(hot=hot,cold=cold,"1"=sig.color), breaks = 1,labels=expression('p'[FDR]*'<.05'))+
+                                  scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +
+                                  guides(fill = guide_colorbar(title.position = "left",
+                                                               barwidth  = 0.75, 
+                                                               theme = theme(legend.text = element_text(size = legend.text.size)),
+                                                               title.theme = element_text(angle = 90, size=legend.title.size)),
+                                         color = guide_legend(theme = theme(legend.text = element_text(size = legend.text.size*2), legend.text.position = "left"))))
+      )  
+    } else
+    {
+      plot.obj=suppressMessages(suppressWarnings(plot.obj+
+                                  geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
+                                  scale_color_manual(name=NULL, values = c(hot=hot,cold=cold,"1"=sig.color), breaks = 1,labels=expression('p'[FDR]*'<.05'))+
+                                  scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +
+                                  guides(fill = guide_colorbar(title.position = "left",
+                                                               barwidth  = 0.75, 
+                                                               theme = theme(legend.text = element_text(size = legend.text.size)),
+                                                               title.theme = element_text(angle = 90, size=legend.title.size))))
+      )
+    }
   }
   
   if(!missing(filename))
