@@ -7,7 +7,7 @@ Generate a Network Connectogram from a Vector of FC network or edge data
 ``` r
 vizNetConnectogram(
   FC_dat,
-  thresholded = F,
+  show.sig = F,
   title = NULL,
   title.size = 10,
   hot = "#F8766D",
@@ -16,6 +16,7 @@ vizNetConnectogram(
   node.size = 2,
   node.color = "black",
   edge.thickness = 1.5,
+  sig.color = "darkgrey",
   legend = T,
   legend.title = "Standardized Coefficient",
   legend.title.size = 6,
@@ -30,10 +31,10 @@ vizNetConnectogram(
 
 ## Arguments
 
-- thresholded:
+- show.sig:
 
-  Logical. If `TRUE`, edges with `p > 0.05` are set to zero (i.e.,
-  suppressed in the plot). Default is `FALSE`.
+  Logical. If `TRUE`, significant edges will be outlined with
+  `sig.color`. Default is `FALSE`.
 
 - title:
 
@@ -116,6 +117,16 @@ vizNetConnectogram(
   A data frame with row names in the format `"nodeA to nodeB"`, and at
   minimum two columns: `coef` (numeric edge weights / standardized
   coefficients) and `p` (p-values, used when `thresholded = TRUE`).
+
+- show.color:
+
+  characer. Color used for outlining significant edges.Default is
+  `darkgrey`.
+
+- thresholded:
+
+  Logical. If `TRUE`, edges with `p > 0.05` are set to zero (i.e.,
+  suppressed in the plot). Default is `FALSE`.
 
 ## Value
 

@@ -6,7 +6,7 @@
 \usage{
 vizNetConnectogram(
   FC_dat,
-  thresholded = F,
+  show.sig = F,
   title = NULL,
   title.size = 10,
   hot = "#F8766D",
@@ -15,6 +15,7 @@ vizNetConnectogram(
   node.size = 2,
   node.color = "black",
   edge.thickness = 1.5,
+  sig.color = "darkgrey",
   legend = T,
   legend.title = "Standardized Coefficient",
   legend.title.size = 6,
@@ -27,8 +28,7 @@ vizNetConnectogram(
 )
 }
 \arguments{
-\item{thresholded}{Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
-to zero (i.e., suppressed in the plot). Default is \code{FALSE}.}
+\item{show.sig}{Logical. If \code{TRUE}, significant edges will be outlined with \code{sig.color}. Default is \code{FALSE}.}
 
 \item{title}{Character string for the plot title. Default is \code{NULL} (no title).}
 
@@ -79,6 +79,11 @@ omitted entirely, no file is written.}
 \item{data}{A data frame with row names in the format \code{"nodeA to nodeB"},
 and at minimum two columns: \code{coef} (numeric edge weights / standardized
 coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).}
+
+\item{show.color}{characer. Color used for outlining significant edges.Default is \code{darkgrey}.}
+
+\item{thresholded}{Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
+to zero (i.e., suppressed in the plot). Default is \code{FALSE}.}
 }
 \value{
 A \code{ggraph}/\code{ggplot2} plot object (invisibly returned via

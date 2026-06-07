@@ -1,7 +1,7 @@
 Package: FCtools
 Type: Package
 Title: Post-processing, analyzing and visualizng brain connectivity data
-Version: 2.2.0
+Version: 2.3.0
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),

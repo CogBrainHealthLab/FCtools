@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">FCtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vizNetConnectogram</span><span class="op">(</span></span>
 <span>  <span class="va">FC_dat</span>,</span>
-<span>  thresholded <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>  show.sig <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title.size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  hot <span class="op">=</span> <span class="st">"#F8766D"</span>,</span>
@@ -56,6 +56,7 @@
 <span>  node.size <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  node.color <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>  edge.thickness <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>  sig.color <span class="op">=</span> <span class="st">"darkgrey"</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="st">"Standardized Coefficient"</span>,</span>
 <span>  legend.title.size <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -72,9 +73,8 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-thresholded">thresholded<a class="anchor" aria-label="anchor" href="#arg-thresholded"></a></dt>
-<dd><p>Logical. If <code>TRUE</code>, edges with <code>p &gt; 0.05</code> are set
-to zero (i.e., suppressed in the plot). Default is <code>FALSE</code>.</p></dd>
+<dl><dt id="arg-show-sig">show.sig<a class="anchor" aria-label="anchor" href="#arg-show-sig"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, significant edges will be outlined with <code>sig.color</code>. Default is <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
@@ -161,6 +161,15 @@ omitted entirely, no file is written.</p></dd>
 <dd><p>A data frame with row names in the format <code>"nodeA to nodeB"</code>,
 and at minimum two columns: <code>coef</code> (numeric edge weights / standardized
 coefficients) and <code>p</code> (p-values, used when <code>thresholded = TRUE</code>).</p></dd>
+
+
+<dt id="arg-show-color">show.color<a class="anchor" aria-label="anchor" href="#arg-show-color"></a></dt>
+<dd><p>characer. Color used for outlining significant edges.Default is <code>darkgrey</code>.</p></dd>
+
+
+<dt id="arg-thresholded">thresholded<a class="anchor" aria-label="anchor" href="#arg-thresholded"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, edges with <code>p &gt; 0.05</code> are set
+to zero (i.e., suppressed in the plot). Default is <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
