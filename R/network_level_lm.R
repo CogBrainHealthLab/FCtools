@@ -6,6 +6,8 @@
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
 #' @param FC_data An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
+#' @param perm If set to `TRUE`, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to `TRUE` by default
+#' @param nperm number of permutations to use if `perm=T`.
 #' @returns Returns a data.frame object with `coef` and corrected `p` values
 #'
 #' @examples
@@ -15,7 +17,7 @@
 #' @export
 ############################################################################################################################
 ############################################################################################################################
-network_lm=function(model,contrast, FC_data, threshold.method="fdr")
+network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=T, nperm=1000)
 {
   ##checks
   #check if nrow is consistent for model and FC_data
@@ -93,7 +95,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     }
   }
   
- 
+  
   
   model=data.matrix(model)
   FC_data=data.matrix(FC_data)
@@ -110,7 +112,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     }
   }
   #fit model
-  FNC_data=scale(edges_to_networks(FC_data))
+  FNC_data=scale(FCtools::edges_to_networks(FC_data))
   model.std=data.matrix(scale(model))
   mod.fitted=.lm.fit(y = FNC_data,x=model.std)
   
@@ -118,6 +120,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
   
   n=nrow(FNC_data)
   p=ncol(model.std)
+  Nedges=ncol(FNC_data)
   
   XtX_inv <- solve(t(model.std) %*% model.std)
   results.lm <- lapply(1:ncol(FNC_data), function(j) {
@@ -127,8 +130,48 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr")
     t_vals_j <- mod.fitted$coefficients[, j] / se_j
     p_vals_j <- 2 * pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
   
-  results=data.frame(coef=t(mod.fitted$coefficients)[,colno],p.thresholded=p.adjust(t(matrix(unlist(results.lm), nrow=ncol(model)))[,colno],method = threshold.method))
+  if(perm==T)
+  { set.seed(123)
+    #permutation
+    coef.unperm=mod.fitted$coefficients[colno,]
+    coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
+    for(iter in 1:nperm)
+    {
+      mod.fitted=.lm.fit(y = FNC_data[sample(n),],x=model.std)
+      coef.perm[iter,]=as.numeric(mod.fitted$coefficients[colno,])
+    }
+    
+    p.perm=rep(NA,Nedges)
+    #calculate permutation p values
+    for(connection in 1:Nedges)
+    {
+      if(coef.unperm[connection]<0)
+      {
+        if(length(which(coef.perm[,connection]<coef.unperm[connection]))>0)
+        {
+          p.perm[connection]=length(which(coef.perm[,connection]<coef.unperm[connection]))/nperm  
+        } else
+        {
+          p.perm[connection]=1/nperm
+        }  
+      } else
+      {
+        if(length(which(coef.perm[,connection]>coef.unperm[connection]))>0)
+        {
+          p.perm[connection]=length(which(coef.perm[,connection]>coef.unperm[connection]))/nperm  
+        } else
+        {
+          p.perm[connection]=1/nperm
+        }  
+      }
+    }
+    results=data.frame(coef=coef.unperm,
+                       p.thresholded=p.adjust(p.perm,method = threshold.method))
+  } else
+  {
+    results=data.frame(coef=coef.unperm,
+                       p.thresholded=p.adjust(t(matrix(unlist(results.lm), nrow=ncol(model)))[,colno],method = threshold.method))
+  }
   rownames(results)=colnames(FNC_data)
-  
   return(results)
 }

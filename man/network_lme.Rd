@@ -4,7 +4,17 @@
 \alias{network_lme}
 \title{network_lme}
 \usage{
-network_lme(model, contrast, random, FC_data, threshold.method = "fdr")
+network_lme(
+  model,
+  contrast,
+  random,
+  FC_data,
+  threshold.method = "fdr",
+  perm = T,
+  nperm = 1000,
+  perm_type = "within_between",
+  nthread = 4
+)
 }
 \arguments{
 \item{model}{A data.frame or matrix containing all the predictors in the model}
@@ -16,6 +26,12 @@ network_lme(model, contrast, random, FC_data, threshold.method = "fdr")
 \item{FC_data}{An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges}
 
 \item{threshold.method}{method for correcting for multiple tests. set to \code{fdr} by default}
+
+\item{perm}{If set to \code{TRUE}, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to \code{TRUE} by default}
+
+\item{nperm}{number of permutations to use if \code{perm=T}.}
+
+\item{perm_type}{A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row".}
 }
 \value{
 Returns a data.frame object with \code{coef} and corrected \code{p} values
@@ -25,9 +41,4 @@ mass univariate linear mixed effects analysis at the network level
 }
 \details{
 This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear mixed effect analyses on each of the network to network connection
-}
-\examples{
-\dontrun{
-model1=network_lme(model,contrast, FC_data)
-}
 }

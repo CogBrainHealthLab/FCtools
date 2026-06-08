@@ -112,22 +112,6 @@ edge transparency encodes absolute magnitude.
 The function relies on \code{igraph}, \code{ggraph}, and \code{ggplot2}.
 }
 \examples{
-\dontrun{
-# Minimal example with a dummy results data frame
-nodes <- c("A", "B", "C")
-pairs <- expand.grid(from = nodes, to = nodes)
-rn <- paste(pairs$from, "to", pairs$to)
-res <- data.frame(
-  coef = rnorm(nrow(pairs)),
-  p    = runif(nrow(pairs)),
-  row.names = rn
-)
-
-p <- vizNetConnectogram(
-  results  = res,
-  title    = "My Connectogram",
-  filename = "connectogram.png"
-)
-}
+vizNetConnectogram(colMeans(demomat))
 
 }

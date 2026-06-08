@@ -156,21 +156,6 @@ The function relies on `igraph`, `ggraph`, and `ggplot2`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Minimal example with a dummy results data frame
-nodes <- c("A", "B", "C")
-pairs <- expand.grid(from = nodes, to = nodes)
-rn <- paste(pairs$from, "to", pairs$to)
-res <- data.frame(
-  coef = rnorm(nrow(pairs)),
-  p    = runif(nrow(pairs)),
-  row.names = rn
-)
+vizNetConnectogram(colMeans(demomat))
 
-p <- vizNetConnectogram(
-  results  = res,
-  title    = "My Connectogram",
-  filename = "connectogram.png"
-)
-} # }
 ```

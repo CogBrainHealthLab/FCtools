@@ -34,13 +34,8 @@
 NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,perm_type="row")
 {
   ##checks
-  #check random variable
-  if(missing(random))   {stop("The 'random' parameter has to be specified")} 
-  else  {random=match(random,unique(random))}
-
   #check if nrow is consistent for model and FC_data
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
-
 
   #incomplete data check
   idxF=which(complete.cases(model)==F)
@@ -52,7 +47,11 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     FC_data=FC_data[-idxF,]
     random=random[-idxF] 
   }
-
+  
+  #check random variable
+  if(missing(random))   {stop("The 'random' parameter has to be specified")} 
+  else  {random=match(random,unique(random))}
+  
   #check contrast
   if(NCOL(model)>1)
   {

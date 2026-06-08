@@ -4,7 +4,14 @@
 \alias{network_lm}
 \title{network_lm}
 \usage{
-network_lm(model, contrast, FC_data, threshold.method = "fdr")
+network_lm(
+  model,
+  contrast,
+  FC_data,
+  threshold.method = "fdr",
+  perm = T,
+  nperm = 1000
+)
 }
 \arguments{
 \item{model}{A data.frame or matrix containing all the predictors in the model}
@@ -14,6 +21,10 @@ network_lm(model, contrast, FC_data, threshold.method = "fdr")
 \item{FC_data}{An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges}
 
 \item{threshold.method}{method for correcting for multiple tests. set to \code{fdr} by default}
+
+\item{perm}{If set to \code{TRUE}, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to \code{TRUE} by default}
+
+\item{nperm}{number of permutations to use if \code{perm=T}.}
 }
 \value{
 Returns a data.frame object with \code{coef} and corrected \code{p} values

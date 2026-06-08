@@ -5,7 +5,14 @@ mass univariate linear regression at the network level
 ## Usage
 
 ``` r
-network_lm(model, contrast, FC_data, threshold.method = "fdr")
+network_lm(
+  model,
+  contrast,
+  FC_data,
+  threshold.method = "fdr",
+  perm = T,
+  nperm = 1000
+)
 ```
 
 ## Arguments
@@ -27,6 +34,16 @@ network_lm(model, contrast, FC_data, threshold.method = "fdr")
 - threshold.method:
 
   method for correcting for multiple tests. set to `fdr` by default
+
+- perm:
+
+  If set to `TRUE`, p values will be calculated using a permutation
+  approach by shuffling subjects' labels, before correcting for FDR. Set
+  to `TRUE` by default
+
+- nperm:
+
+  number of permutations to use if `perm=T`.
 
 ## Value
 

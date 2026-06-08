@@ -61,24 +61,8 @@
 #' The function relies on \code{igraph}, \code{ggraph}, and \code{ggplot2}.
 #'
 #' @examples
-#' \dontrun{
-#' # Minimal example with a dummy results data frame
-#' nodes <- c("A", "B", "C")
-#' pairs <- expand.grid(from = nodes, to = nodes)
-#' rn <- paste(pairs$from, "to", pairs$to)
-#' res <- data.frame(
-#'   coef = rnorm(nrow(pairs)),
-#'   p    = runif(nrow(pairs)),
-#'   row.names = rn
-#' )
-#'
-#' p <- vizNetConnectogram(
-#'   results  = res,
-#'   title    = "My Connectogram",
-#'   filename = "connectogram.png"
-#' )
-#' }
-#'
+#' vizNetConnectogram(colMeans(demomat))
+#' 
 #' @importFrom igraph graph_from_data_frame V E edge_attr edge_attr<-
 #' @importFrom ggraph ggraph geom_edge_arc geom_node_point geom_node_text
 #'   theme_graph scale_edge_color_manual scale_edge_alpha_continuous 
