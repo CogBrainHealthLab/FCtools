@@ -28,6 +28,7 @@
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom igraph components graph_from_adjacency_matrix
 #' @importFrom Rfast rint.reg
+#' @importFrom utils getFromNamespace
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -153,9 +154,11 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
 
   #activate parallel processing
   unregister_dopar = function() {
-    env = foreach:::.foreachGlobals
+    .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
     rm(list=ls(name=env), pos=env)
   }
+  unregister_dopar()
+  
 
   cl=parallel::makeCluster(nthread)
   doParallel::registerDoParallel(nthread)
