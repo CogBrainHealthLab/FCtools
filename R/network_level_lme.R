@@ -7,7 +7,7 @@
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
 #' @param FC_data An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges
 #' @param perm If set to `TRUE`, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to `TRUE` by default
-#' @param nperm number of permutations to use if `perm=T`.
+#' @param nperm number of permutations to use if `perm=TRUE`.
 #' @param perm_type A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row". 
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
 #' @returns Returns a data.frame object with `coef` and corrected `p` values
@@ -15,14 +15,14 @@
 #' @export
 ############################################################################################################################
 ############################################################################################################################
-network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=T, nperm=1000,perm_type="within_between",nthread=4)
+network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=TRUE, nperm=1000,perm_type="within_between",nthread=4)
 {
   ##checks
   #check if nrow is consistent for model and FC_data
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
   
   #incomplete data check
-  idxF=which(complete.cases(model)==F)
+  idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -115,7 +115,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     p[connection]=results.connection[2]
   }
   
-  if(perm==T)
+  if(perm==TRUE)
   {
     start=Sys.time()
     #generating permutation sequences
@@ -151,7 +151,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
         coef.perm=matrix(NA,nrow=1, ncol=Nedges)
         for(connection in 1:Nedges)
         {
-          results.connection=lmefast.p(FNC_data[permseq[,iter],connection], model, random, contrast=colno+1,p=F)
+          results.connection=lmefast.p(FNC_data[permseq[,iter],connection], model, random, contrast=colno+1,p=FALSE)
           coef.perm[1,connection]=results.connection[1]
         }
         return(coef.perm)
@@ -195,7 +195,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
 }
 
 
-lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast,p=T)
+lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast,p=TRUE)
 {
   # Force numeric matrices
   x <- data.matrix(x)
@@ -204,7 +204,7 @@ lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast,
   k <- ncol(Y)
   
   # Apply rint.reg efficiently across Y columns
-  if(p==T)
+  if(p==TRUE)
   {
     beta.p<- sapply(1:k, function(j) {
       mod <- Rfast::rint.reg(Y[, j], x, id, tol = tol, ranef = ranef, maxiters = maxiters)
@@ -212,7 +212,7 @@ lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast,
     })  
   }
   
-  if(p==F)
+  if(p==FALSE)
   {
     beta.p<- sapply(1:k, function(j) {
       mod <- Rfast::rint.reg(Y[, j], x, id, tol = tol, ranef = ranef, maxiters = maxiters)

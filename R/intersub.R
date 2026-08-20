@@ -35,7 +35,7 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
   outcome=data.matrix(outcome)
   
   #incomplete data check
-  idxF=which(complete.cases(outcome)==F)
+  idxF=which(complete.cases(outcome)==FALSE)
   if(length(idxF)>0)
   {
     cat(paste("outcome contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))

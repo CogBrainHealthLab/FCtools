@@ -74,7 +74,7 @@
 ############################################################################################################################
 
 vizNetConnectogram=function(FC_dat,
-                            show.sig=T,
+                            show.sig=TRUE,
                             title=NULL,
                             title.size=10,
                             hot="#F8766D", 
@@ -84,7 +84,7 @@ vizNetConnectogram=function(FC_dat,
                             node.color="black",
                             edge.thickness=1.5,
                             sig.color="darkgrey",
-                            legend=T,
+                            legend=TRUE,
                             legend.title="Standardized Coefficient",
                             legend.title.size=6,
                             legend.text.size=5,
@@ -103,7 +103,7 @@ vizNetConnectogram=function(FC_dat,
   weight=FC_dat$coef
   
   sig=rep(0,NROW(FC_dat))
-  if(show.sig==T) {sig[FC_dat$p<0.05]=1}
+  if(show.sig==TRUE) {sig[FC_dat$p<0.05]=1}
   
   
   #generate graph object
@@ -158,12 +158,12 @@ vizNetConnectogram=function(FC_dat,
       theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
       theme(plot.title = element_text(size=title.size),aspect.ratio = 1,plot.margin=unit(c(-0.1,0,-0.1,0),units = "cm")))
   
-  if(legend==T)
+  if(legend==TRUE)
   {
-    if(show.sig==T && sum(sig)!=0)
+    if(show.sig==TRUE && sum(sig)!=0)
     {
       plot.obj=suppressMessages(suppressWarnings(plot.obj+
-                                  geom_line(data = data.frame(x = NA_real_, y = NA_real_, col_val=1),aes(x = x, y = y,  color=as.factor(col_val)),na.rm = TRUE, inherit.aes = FALSE, linewidth = 2, show.legend = T) +
+                                  geom_line(data = data.frame(x = NA_real_, y = NA_real_, col_val=1),aes(x = x, y = y,  color=as.factor(col_val)),na.rm = TRUE, inherit.aes = FALSE, linewidth = 2, show.legend = TRUE) +
                                   geom_point(data = data.frame(x = NA_real_, y = NA_real_, fill_val = NA_real_),aes(x = x, y = y, fill = fill_val),na.rm = TRUE, inherit.aes = FALSE) +
                                   scale_color_manual(name=NULL, values = c(hot=hot,cold=cold,"1"=sig.color), breaks = 1,labels=expression('p'[FDR]*'<.05'))+
                                   scale_fill_gradientn(colours = c(cold,"white",hot),limits= c(-abs(limits[2]),abs(limits[2])), name= legend.title, na.value = NA) +

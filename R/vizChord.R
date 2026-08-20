@@ -87,7 +87,7 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
                                       guide = "colourbar", limits=c(-1,1), breaks=c(-1,1),
                                       labels=c("Strong negative","Strong positive"))+
               ggplot2::geom_point()+
-              ggplot2::guides(color=ggplot2::guide_colorbar(ticks=F,title.position = "left",barheight = 0.5))+
+              ggplot2::guides(color=ggplot2::guide_colorbar(ticks=FALSE,title.position = "left",barheight = 0.5))+
               ggplot2::theme(legend.position = "bottom",legend.title=ggplot2::element_text(face="bold", size=7,vjust=1),
                              legend.text =ggplot2::element_text(size=6))
   legend = cowplot::get_plot_component(legend.plot, 'guide-box-bottom', return_all = TRUE)
@@ -123,7 +123,7 @@ genChord_12x12=function(data,hot,cold, colorscheme)
   
   #reconstruct 12 x 12 FC matrices
   FC_12X12=array(rep(NA,12^2),dim=c(12,12))
-  FC_12X12[upper.tri(FC_12X12, diag=T)] = data
+  FC_12X12[upper.tri(FC_12X12, diag=TRUE)] = data
   
   a=1
   
@@ -140,7 +140,7 @@ genChord_12x12=function(data,hot,cold, colorscheme)
   }
   #converting 12 x 12 FC matrices to a 'from node to node' data frame
   datFC=datFC0[-which(is.na(datFC0[,3])),]
-  datFC=data.frame(datFC, stringsAsFactors = F)
+  datFC=data.frame(datFC, stringsAsFactors = FALSE)
   
   colnames(datFC)<-c("from","to","value")
   
@@ -214,7 +214,7 @@ genChord=function(data,hot,cold, colorscheme)
   }
   
   datFC=x[-which(is.na(x[,3])),]
-  datFC=data.frame(datFC, stringsAsFactors = F)
+  datFC=data.frame(datFC, stringsAsFactors = FALSE)
   
   colnames(datFC)=c("from","to","value")
   col_funFC = circlize::colorRamp2(range(datFC$value), c(cold,hot))

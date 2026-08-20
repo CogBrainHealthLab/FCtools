@@ -26,7 +26,7 @@
 #' @param title.alignment string object specifying title's alignment relatively to its plot options are 'left', 'center' (default), 'right'.
 #' @param legend.title.size size parameter for the legend title. Set to 8 by default.
 #' @param legend.text.size size parameter for the legend text. Set to 6 by default.
-#' @param limits a pair of values that governs the limits of the edge strengths displayed. If missing `limits=range(abs(data),na.rm=T)`
+#' @param limits a pair of values that governs the limits of the edge strengths displayed. If missing `limits=range(abs(data),na.rm=TRUE)`
 #' @param colorbar_title title for the colorbar legend
 #' @param edge_labels Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").
 #' @param row_title a vector of strings to be used as left vertical titles for each row of plots when there are many
@@ -110,7 +110,7 @@ vizConnectogram=function(data,
   if(missing("colorscheme")){colorscheme = param$nodecol[[atlas]]}
   if(missing("title")){title=rep(" ",NROW(data))}
   if(missing("node.size")){node.size=param$nodesize[atlas]}
-  if(missing("limits")){limits=range(abs(data),na.rm=T)}
+  if(missing("limits")){limits=range(abs(data),na.rm=TRUE)}
   param$xlim=list(c(-1.2, 1.2),
                   c(-1.1, 1.1),
                   c(-1.1, 1.1),
@@ -137,7 +137,7 @@ vizConnectogram=function(data,
   
   ##graph object
   
-  graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+  graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
   EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
   posnegFC=EvalFC
   posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
@@ -163,7 +163,7 @@ vizConnectogram=function(data,
       #reshaping FC vector to FC matrix
       edgelab=edge_labels
       conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
-      conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = sample(c(-1,1),size=length(data[1,]),replace=T,prob = c(50,50))
+      conmat_NxNhalf[upper.tri(conmat_NxNhalf, diag = FALSE)] = sample(c(-1,1),size=length(data[1,]),replace=TRUE,prob = c(50,50))
       conmat_NxN=conmat_NxNhalf+t(conmat_NxNhalf)
       
       nodeorder=as.numeric(rep(NA,nnodes))
@@ -176,7 +176,7 @@ vizConnectogram=function(data,
       
       ##graph object
       
-      graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+      graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
       EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
       posnegFC=EvalFC
       posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
@@ -191,7 +191,7 @@ vizConnectogram=function(data,
       ggraph::scale_edge_alpha_continuous(guide="none", limits=limits)+
       ggraph::scale_edge_color_manual(name=colorbar_title, labels= edgelab,values=c(hot,cold),drop = FALSE)+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
-      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size*1.5, shape=19,show.legend = T) +
+      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size*1.5, shape=19,show.legend = TRUE) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
                                           hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
@@ -280,12 +280,12 @@ vizConnectogram=function(data,
   } else if(mode=="vector")
   {
     FCplot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
-      ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = T) +
+      ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = TRUE) +
       ggraph::scale_edge_alpha_continuous(guide="none", limits=limits)+
       ggraph::scale_edge_color_manual(name=colorbar_title, labels=edgelab,values=c(hot,cold))+
       ggplot2::scale_color_manual(values =colorscheme, name="Network")+
       ggplot2::ggtitle(title[1])+
-      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = T) +
+      ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = TRUE) +
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
                                           hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
@@ -342,7 +342,7 @@ genplot=function(row_data,
   
   ##graph object
   
-  graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+  graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
   EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
   posnegFC=EvalFC
   posnegFC=replace(posnegFC, which(posnegFC < 0), "2_neg")
@@ -365,11 +365,11 @@ genplot=function(row_data,
   else {talign=0.5}
   
   ggplot.obj=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
-    ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = F) +
+    ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = FALSE) +
     ggraph::scale_edge_alpha_continuous(guide="none",limits=limits)+
     ggraph::scale_edge_color_manual(name=colorbar_title, labels=edge_labels,values=c(hot,cold))+
     ggplot2::scale_color_manual(values =colorscheme, name="Network")+
-    ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = F) +
+    ggraph::geom_node_point(ggplot2::aes(colour = RegionsFC),size=node.size, shape=19,show.legend = FALSE) +
     ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                         angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
                                         hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
@@ -438,7 +438,7 @@ edgelist=function(data)
   
   ##graph object
   
-  graphobj=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=T)
+  graphobj=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
   edgelist=data.frame(cbind(igraph::get.edgelist(graphobj) , igraph::E(graphobj)$weight))
   names(edgelist)=c("node_1","node_2","weight")
   return(edgelist)

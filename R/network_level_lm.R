@@ -7,7 +7,7 @@
 #' @param FC_data An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
 #' @param perm If set to `TRUE`, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to `TRUE` by default
-#' @param nperm number of permutations to use if `perm=T`.
+#' @param nperm number of permutations to use if `perm=TRUE`.
 #' @returns Returns a data.frame object with `coef` and corrected `p` values
 #'
 #' @examples
@@ -17,14 +17,14 @@
 #' @export
 ############################################################################################################################
 ############################################################################################################################
-network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=T, nperm=1000)
+network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, nperm=1000)
 {
   ##checks
   #check if nrow is consistent for model and FC_data
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
   
   #incomplete data check
-  idxF=which(complete.cases(model)==F)
+  idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -106,9 +106,9 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=T, nper
     cormat=cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.7)
+    if(max(abs(cormat.0),na.rm = TRUE) >0.7)
     {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = TRUE),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
     }
   }
   #fit model
@@ -130,7 +130,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=T, nper
     t_vals_j <- mod.fitted$coefficients[, j] / se_j
     p_vals_j <- 2 * pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
   
-  if(perm==T)
+  if(perm==TRUE)
   { set.seed(123)
     #permutation
     coef.unperm=mod.fitted$coefficients[colno,]

@@ -29,7 +29,7 @@
 #' mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
 #' data=runif(7021,min = -1,max=1)*mask
 #'
-#' vizGlassbrain(data,orientation_labels = T)
+#' vizGlassbrain(data,orientation_labels = TRUE)
 #' 
 #' @importFrom plotly plot_ly add_trace layout
 #' @export
@@ -66,7 +66,7 @@ vizGlassbrain=function(data,
   maxlimit=max(abs(range(data,na.rm = TRUE)))
   if(missing(limits)) 
   {
-    limits.range=range(data,na.rm = T)
+    limits.range=range(data,na.rm = TRUE)
     if(limits.range[1]>=0) {limits=c(0,limits.range[2])} ##if image contains all positive values
     else if(limits.range[2]<=0) {limits=c(limits.range[1],0)} ##if image contains all negative values
     else if(limits.range[1]<0 & limits.range[2]>0){limits=c(-maxlimit,maxlimit)} ##symmetrical limits will be used if image contains both positive and negative values
@@ -114,7 +114,7 @@ vizGlassbrain=function(data,
   fs5brain=get('fs5brain')
   fig=plotly::plot_ly()
   
-  if(remove_brain==F)
+  if(remove_brain==FALSE)
   {
   fig=plotly::add_trace(fig,type = 'mesh3d',hoverinfo="skip",
                         x = fs5brain[[1]][,1],
@@ -129,33 +129,33 @@ vizGlassbrain=function(data,
                         line = list(width = edgethickness, 
                                color = ~strength, 
                                colorscale = cmap,
-                               cauto = F,
+                               cauto = FALSE,
                                cmin = limits[1],
                                cmax = limits[2],
                                colorbar = list(ticklabelposition="outside left",
                                                title = list(text=colorbar_title,side="right"))),
                         text=labs,hoverinfo = 'text',
-                        marker = list(size = node_size, color = node_color),showlegend = F)
+                        marker = list(size = node_size, color = node_color),showlegend = FALSE)
 
   ##add node labels
-  if(node_label==T)
+  if(node_label==TRUE)
   {
   fig=plotly::add_text(fig,data = MNIdat, x = ~X, y = ~Y, z = ~Z, text = labs, textfont=list(size=node_label_size, color=node_label_color))
   }
   ##turn off grid, tick labels, and axes labels
   fig=plotly::layout(fig,hoverlabel = list(align = "left"),
                      scene = list(camera=list(eye = list(x = 0, y = 1.5, z = 1.5)),
-                                  xaxis = list(showgrid = F,showticklabels=F,showspikes=F,zeroline=F, title=""),
-                                  yaxis = list(showgrid = F,showticklabels=F,showspikes=F,zeroline=F, title=""),
-                                  zaxis = list(showgrid = F,showticklabels=F,showspikes=F,zeroline=F, title="")))
+                                  xaxis = list(showgrid = FALSE,showticklabels=FALSE,showspikes=FALSE,zeroline=FALSE, title=""),
+                                  yaxis = list(showgrid = FALSE,showticklabels=FALSE,showspikes=FALSE,zeroline=FALSE, title=""),
+                                  zaxis = list(showgrid = FALSE,showticklabels=FALSE,showspikes=FALSE,zeroline=FALSE, title="")))
   
   ##add optional orientation labels
-  if(orientation_labels==T)
+  if(orientation_labels==TRUE)
   {
     fig=plotly::layout(fig,hoverlabel = list(align = "left"),
-                       scene = list(xaxis = list(showgrid = T,showticklabels=T,showspikes=F,zeroline=F, title=""),
-                                    yaxis = list(showgrid = T,showticklabels=T,showspikes=F,zeroline=F, title=""),
-                                    zaxis = list(showgrid = T,showticklabels=T,showspikes=F,zeroline=F, title="")))
+                       scene = list(xaxis = list(showgrid = TRUE,showticklabels=TRUE,showspikes=FALSE,zeroline=FALSE, title=""),
+                                    yaxis = list(showgrid = TRUE,showticklabels=TRUE,showspikes=FALSE,zeroline=FALSE, title=""),
+                                    zaxis = list(showgrid = TRUE,showticklabels=TRUE,showspikes=FALSE,zeroline=FALSE, title="")))
     axx = list(ticketmode = 'array',ticktext =  c("Left","Right"),tickvals = range(fs5brain[[1]][,1]))
     axy = list(ticketmode = 'array',ticktext = c("Posterior","Anterior"),tickvals = range(fs5brain[[1]][,2]))
     axz = list(ticketmode = 'array',ticktext = c("Inferior","Superior"),tickvals = range(fs5brain[[1]][,3]))

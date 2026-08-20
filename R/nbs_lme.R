@@ -38,7 +38,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
 
   #incomplete data check
-  idxF=which(complete.cases(model)==F)
+  idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -124,9 +124,9 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     cormat=cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
-    if(max(abs(cormat.0),na.rm = T) >0.5)
+    if(max(abs(cormat.0),na.rm = TRUE) >0.5)
     {
-      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = T),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
+      warning(paste("correlations among variables in model are observed to be as high as ",round(max(abs(cormat.0),na.rm = TRUE),2),", suggesting potential collinearity among predictors.\nAnalysis will continue...",sep=""))
     }
   }
 
@@ -230,8 +230,8 @@ cluster.stat=function(data,nnodes,tcrit)
   FC_mat.weighted=matrix(0,nrow=nnodes,ncol=nnodes)
   
   ##thresholding
-  FC_mat.weighted[upper.tri(FC_mat.weighted,diag = F)]=tstat.thresholded
-  FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag = F)]=tstat.thresholded.bin
+  FC_mat.weighted[upper.tri(FC_mat.weighted,diag = FALSE)]=tstat.thresholded
+  FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag = FALSE)]=tstat.thresholded.bin
   FC_mat.weighted=abs(FC_mat.weighted)-(FC_mat.unweighted*tcrit)
   
   #clustering
