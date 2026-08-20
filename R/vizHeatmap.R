@@ -14,7 +14,7 @@
 #' @param cold color for the negative connections. Set to `#00BFC4` by default.
 #' @param mid color for the mid point of the color scale. Set to `white` by default.
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.
-#' @param filename output filename with a *.png file extension. Set to "heatmap.png" by default
+#' @param filename output filename with a *.png file extension. Set to `heatmap.png` by default in the temporary directory (tempdir()).
 #' @param title a vector of strings to be used as title
 #' @param width width (in pixels) of each heatmap. Set to 1000 by default. Not used for single row data
 #' @param height height (in pixels) of each heatmap . Set to 1000 by default. Not used for single row data
@@ -47,7 +47,7 @@ vizHeatmap=function(data,
                     mid="white",
                     ncol,
                     nrow, 
-                    filename="heatmap.png", 
+                    filename=paste0(tempdir(),"/heatmap.png"), 
                     colorscheme, 
                     line.color="black",
                     title,
@@ -144,6 +144,7 @@ vizHeatmap=function(data,
                             cowplot::get_plot_component(nodecol, 'guide-box-right', return_all = TRUE), nrow=2)
     main=genplot_heatmap(row_data=data[1,],title=title[1],nnodes,label, hot, cold,mid,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
     #output plot
+    if(filename==paste0(tempdir(),"/heatmap.png")){message(paste0("Saving image to ", filename))}
     png(filename=filename,width=width+leg.size, height=height, res=300)
     suppressWarnings(print(cowplot::plot_grid(main,legend,ncol=2, rel_widths = c(height,leg.size))))
     dev.off()

@@ -13,7 +13,7 @@
 #' @param hot color for the positive connections. Set to `#F8766D` by default.
 #' @param cold color for the negative connections. Set to `#00BFC4` by default.
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.
-#' @param filename output filename with a *.png file extension. Set to "conn.png" by default
+#' @param filename output path and file name with a *.png file extension. Set to `conn.png` by default in the temporary directory (tempdir()).
 #' @param edgethickness a value to adjust the thickness of the edges. Set to 0.8 by default.
 #' @param title a vector of strings to be used as title
 #' @param width width (in pixels) of each connectogram. Set to 1000 by default. Not used for single row data
@@ -54,7 +54,7 @@ vizConnectogram=function(data,
                          ncol=1,
                          nrow=1, 
                          edgethickness=0.8,
-                         filename="conn.png", 
+                         filename=paste0(tempdir(),"/conn.png"), 
                          colorscheme, 
                          title,
                          width=1000,
@@ -272,6 +272,7 @@ vizConnectogram=function(data,
       width=ncol*width
       widths=rep(1,ncol)}
     
+    if(filename==paste0(tempdir(),"/conn.png")){message(paste0("Saving image to ", filename))}
     png(filename=filename,width=width, height=(nrow*height)+leg.height,res=300)
     suppressWarnings(print(cowplot::plot_grid(gridExtra::grid.arrange(grobs=ggplot.obj,nrow=nrow,ncol=ncol, widths = widths),legend,nrow=2, rel_heights = c((nrow*height),leg.height))))
     dev.off()
