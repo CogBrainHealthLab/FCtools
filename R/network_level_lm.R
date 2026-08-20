@@ -131,7 +131,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     p_vals_j <- 2 * pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
   
   if(perm==TRUE)
-  { set.seed(123)
+  { 
     #permutation
     coef.unperm=mod.fitted$coefficients[colno,]
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)

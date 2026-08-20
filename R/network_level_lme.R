@@ -119,7 +119,6 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
   {
     start=Sys.time()
     #generating permutation sequences
-    set.seed(123)
     permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
     
     if(perm_type=="within_between") {for (perm in 1:nperm)  {permseq[,perm]=perm_within_between(as.numeric(random))}} 
