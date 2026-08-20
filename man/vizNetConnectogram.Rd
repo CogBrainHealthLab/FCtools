@@ -6,7 +6,7 @@
 \usage{
 vizNetConnectogram(
   FC_dat,
-  show.sig = T,
+  show.sig = TRUE,
   title = NULL,
   title.size = 10,
   hot = "#F8766D",
@@ -16,7 +16,7 @@ vizNetConnectogram(
   node.color = "black",
   edge.thickness = 1.5,
   sig.color = "darkgrey",
-  legend = T,
+  legend = TRUE,
   legend.title = "Standardized Coefficient",
   legend.title.size = 6,
   legend.text.size = 5,

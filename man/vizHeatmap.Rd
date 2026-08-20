@@ -11,7 +11,7 @@ vizHeatmap(
   mid = "white",
   ncol,
   nrow,
-  filename = "heatmap.png",
+  filename = paste0(tempdir(), "/heatmap.png"),
   colorscheme,
   line.color = "black",
   title,
@@ -39,7 +39,7 @@ vizHeatmap(
 
 \item{nrow}{number of rows in the plot. Not used for single row data}
 
-\item{filename}{output filename with a *.png file extension. Set to "heatmap.png" by default}
+\item{filename}{output filename with a *.png file extension. Set to \code{heatmap.png} by default in the temporary directory (tempdir()).}
 
 \item{colorscheme}{an optional vector of color names or color codes to color code the networks.}
 
@@ -64,7 +64,7 @@ vizHeatmap(
 \item{colorbar_title}{title for the colorbar legend}
 }
 \value{
-outputs a .png image
+A .png image
 }
 \description{
 Visualizing brain connectivity matrices with heatmaps

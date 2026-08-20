@@ -16,7 +16,7 @@ intersubject_similarity(FC_data, outcome, mode = "diff", nperm = 1000)
 \item{nperm}{number of permutations for the correlation test between FC similarity and outcome similarity}
 }
 \value{
-a list object containing
+A list object containing
 \itemize{
 \item \code{FC_difference_matrix} The FC difference matrix
 \item \code{Outcome_difference_matrix} The outcome difference matrix

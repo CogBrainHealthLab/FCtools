@@ -10,7 +10,7 @@ edges_to_networks(FCmat)
 \item{FCmat}{an FC matrix or vector}
 }
 \value{
-returns a network level FC matrix
+A network level FC matrix
 }
 \description{
 convert an edge level FC matrix into a network level FC matrix

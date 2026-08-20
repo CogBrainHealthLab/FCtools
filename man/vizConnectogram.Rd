@@ -11,7 +11,7 @@ vizConnectogram(
   ncol = 1,
   nrow = 1,
   edgethickness = 0.8,
-  filename = "conn.png",
+  filename = paste0(tempdir(), "/conn.png"),
   colorscheme,
   title,
   width = 1000,
@@ -43,7 +43,7 @@ vizConnectogram(
 
 \item{edgethickness}{a value to adjust the thickness of the edges. Set to 0.8 by default.}
 
-\item{filename}{output filename with a *.png file extension. Set to "conn.png" by default}
+\item{filename}{output path and file name with a *.png file extension. Set to \code{conn.png} by default in the temporary directory (tempdir()).}
 
 \item{colorscheme}{an optional vector of color names or color codes to color code the networks.}
 
@@ -65,7 +65,7 @@ vizConnectogram(
 
 \item{legend.title.size}{size parameter for the legend title. Set to 8 by default.}
 
-\item{limits}{a pair of values that governs the limits of the edge strengths displayed. If missing \code{limits=range(abs(data),na.rm=T)}}
+\item{limits}{a pair of values that governs the limits of the edge strengths displayed. If missing \code{limits=range(abs(data),na.rm=TRUE)}}
 
 \item{title.size}{size parameter for the title. Set to 11 by default.}
 
@@ -78,7 +78,7 @@ vizConnectogram(
 \item{row_title}{a vector of strings to be used as left vertical titles for each row of plots when there are many}
 }
 \value{
-outputs a .png image
+A .png image
 }
 \description{
 Visualizing brain connectivity profiles with multiple connectogram

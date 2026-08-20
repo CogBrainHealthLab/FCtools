@@ -10,7 +10,7 @@ vizChord(
   cold = "#00BFC4",
   width = 1200,
   height = 1200,
-  filename = "conn.png",
+  filename = paste0(tempdir(), "/conn.png"),
   colorscheme,
   title,
   leg.height = 100,
@@ -30,7 +30,7 @@ vizChord(
 
 \item{height}{height (in pixels) of each connectogram . Set to 1200 by default.}
 
-\item{filename}{output filename with a *.png file extension. Set to \code{conn.png} by default}
+\item{filename}{output path and file name with a *.png file extension. Set to \code{conn.png} by default in the temporary directory (tempdir()).}
 
 \item{colorscheme}{an optional vector of color names or color codes to color code the networks.}
 
@@ -45,7 +45,7 @@ vizChord(
 \item{colorbar_title}{title for the colorbar legend}
 }
 \value{
-outputs a .png image
+A .png image
 }
 \description{
 Visualizing brain connectivity profiles with a chord diagram

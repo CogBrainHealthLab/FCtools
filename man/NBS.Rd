@@ -20,7 +20,7 @@ NBS(model, contrast, FC_data, nperm = 100, nthread = 1, p = 0.001)
 \item{p}{the edge-wise threshold. Set to 0.001 by default}
 }
 \value{
-Returns a list object containing
+A list object containing
 \itemize{
 \item \code{results} Edge- and network-wise results in a data.frame object
 \item \code{t.orig} Edge-wise t-stats

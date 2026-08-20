@@ -2,6 +2,7 @@ Package: FCtools
 Type: Package
 Title: Post-processing, analyzing and visualizng brain connectivity data
 Version: 2.3.0
+Date: 2026-08-20
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),
@@ -9,7 +10,7 @@ Authors@R: c(
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
 Maintainer: Junhong Yu <junhong.yu@ntu.edu.sg>
-Description: A collection of in-house R functions for analyzing and visualizing brain connectivity data
+Description: A collection of R functions for analyzing and visualizing brain connectivity data
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

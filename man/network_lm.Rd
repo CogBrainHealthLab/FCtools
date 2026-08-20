@@ -9,7 +9,7 @@ network_lm(
   contrast,
   FC_data,
   threshold.method = "fdr",
-  perm = T,
+  perm = TRUE,
   nperm = 1000
 )
 }
@@ -24,10 +24,10 @@ network_lm(
 
 \item{perm}{If set to \code{TRUE}, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to \code{TRUE} by default}
 
-\item{nperm}{number of permutations to use if \code{perm=T}.}
+\item{nperm}{number of permutations to use if \code{perm=TRUE}.}
 }
 \value{
-Returns a data.frame object with \code{coef} and corrected \code{p} values
+A data.frame object with \code{coef} and corrected \code{p} values
 }
 \description{
 mass univariate linear regression at the network level

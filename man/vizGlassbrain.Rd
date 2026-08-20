@@ -51,7 +51,7 @@ vizGlassbrain(
 \item{remove_brain}{A boolean object specifying cortical surface should be removed. Set to \code{FALSE} by default}
 }
 \value{
-outputs a plot_ly object
+A plot_ly object
 }
 \description{
 Visualizing brain connectivity with a glass brain plot
@@ -64,6 +64,6 @@ This function takes a vector of edge values and visualizes the edge-to-edge conn
 mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
 data=runif(7021,min = -1,max=1)*mask
 
-vizGlassbrain(data,orientation_labels = T)
+vizGlassbrain(data,orientation_labels = TRUE)
 
 }

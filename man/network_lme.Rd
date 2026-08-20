@@ -10,7 +10,7 @@ network_lme(
   random,
   FC_data,
   threshold.method = "fdr",
-  perm = T,
+  perm = TRUE,
   nperm = 1000,
   perm_type = "within_between",
   nthread = 4
@@ -29,12 +29,12 @@ network_lme(
 
 \item{perm}{If set to \code{TRUE}, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to \code{TRUE} by default}
 
-\item{nperm}{number of permutations to use if \code{perm=T}.}
+\item{nperm}{number of permutations to use if \code{perm=TRUE}.}
 
 \item{perm_type}{A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row".}
 }
 \value{
-Returns a data.frame object with \code{coef} and corrected \code{p} values
+A data.frame object with \code{coef} and corrected \code{p} values
 }
 \description{
 mass univariate linear mixed effects analysis at the network level

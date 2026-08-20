@@ -33,7 +33,7 @@ NBS_lme(
 \item{perm_type}{A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row".}
 }
 \value{
-Returns a list object containing
+A list object containing
 \itemize{
 \item \code{results} Edge- and network-wise results in a data.frame object
 \item \code{t.orig} Edge-wise t-stats
