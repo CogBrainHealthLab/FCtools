@@ -25,7 +25,7 @@
 #' @param line.width line thickness parameter for grid lines dividing the connectome in to networks. Set to 0.3 by default.
 #' @param line.color color parameter for grid lines dividing the connectome in to networks. Set to `"black"` by default.
 #' @param colorbar_title title for the colorbar legend
-#' @returns outputs a .png image
+#' @returns A .png image
 #'
 #' @examples
 #' if (FALSE) {

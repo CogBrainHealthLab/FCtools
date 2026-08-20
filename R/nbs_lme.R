@@ -11,7 +11,7 @@
 #' @param nthread The number of CPU threads to use. Set to 1 by default
 #' @param p the edge-wise threshold. Set to 0.001 by default
 #' @param perm_type A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row". 
-#' @returns Returns a list object containing
+#' @returns A list object containing
 #' \itemize{
 #'  \item `results` Edge- and network-wise results in a data.frame object
 #'  \item `t.orig` Edge-wise t-stats
@@ -41,7 +41,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
-    cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+    warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
     model=model[-idxF,]
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
@@ -90,7 +90,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
       {
         if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          message(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
 
           recode=rep(0,NROW(model))
           recode[model[,column]==unique(model[,column])[2]]=1
@@ -105,7 +105,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     {
       if(length(unique(model))==2)
       {
-        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
+        message(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
 
         recode=rep(0,NROW(model))
         recode[model==unique(model)[2]]=1
@@ -139,7 +139,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   
   if(any(is.nan(orig.clust))){orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
 
-  if(sum(orig.clust==0))  {cat(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
+  if(sum(orig.clust==0))  {message(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
   } else
   {
   ##permuted models
@@ -169,7 +169,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
 
 
   start=Sys.time()
-  cat("\nEstimating permuted network strengths...\n")
+  message("\nEstimating permuted network strengths...\n")
 
   max.netstr=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("cluster.stat","lmefast"),.packages = "Rfast", .options.snow = opts)  %dopar%
     {
@@ -186,7 +186,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
       return(max.netstr)
     }
   end=Sys.time()
-  cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+  message(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
 
   ##processing results
     #saving cluster-related results into a data.frame object

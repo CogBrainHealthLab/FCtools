@@ -21,7 +21,7 @@
 #' @param colorbar_title title for the colorbar legend
 #' @param filename output filename with a *.png file extension. Set to `conn.png` by default
 #'
-#' @returns outputs a .png image
+#' @returns A .png image
 #'
 #' @examples
 #'

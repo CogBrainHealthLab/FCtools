@@ -7,7 +7,7 @@
 #' @details This function first identifies the unique network pairs in the appropriate FC atlas and then averages the edges within each of the network pairs
 #' @param FCmat an FC matrix or vector
 #' 
-#' @returns returns a network level FC matrix
+#' @returns A network level FC matrix
 #'
 #' @examples
 #' edges_to_networks(runif(23871))

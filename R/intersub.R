@@ -13,7 +13,7 @@
 #' @param mode When set to `"diff"`, FC similarity is calculated as absolute difference between the FC vectors of a pair of subjects. When set to `"corr"`,FC similarity is calculated as 1 - (pearson's correlation coefficient between the FC vectors of a pair of subjects). Set to `"diff"` by default.
 #' @param nperm number of permutations for the correlation test between FC similarity and outcome similarity
 #'
-#' @returns a list object containing
+#' @returns A list object containing
 #' \itemize{
 #'  \item `FC_difference_matrix` The FC difference matrix
 #'  \item `Outcome_difference_matrix` The outcome difference matrix
@@ -38,7 +38,7 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
   idxF=which(complete.cases(outcome)==FALSE)
   if(length(idxF)>0)
   {
-    cat(paste("outcome contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+    warning(paste("outcome contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
     outcome=outcome[-idxF,]
     FC_data=FC_data[-idxF,]
   }
@@ -124,7 +124,7 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
   outcome.sim.mat[outcome.sim.mat==0]=NA
   
   #output results as a message
-  cat(paste0("\nCorrelation between FC and Outcome similarity matrice = ",round(rho,3)," ; p ",p))
+  message(paste0("\nCorrelation between FC and Outcome similarity matrice = ",round(rho,3)," ; p ",p))
   
   return.obj=list(FC.sim.mat,outcome.sim.mat,perm_dat)
   names(return.obj)=c("FC_similarity_matrix","Outcome_similarity_matrix","permutation_data")

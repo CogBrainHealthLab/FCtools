@@ -30,7 +30,7 @@
 #' @param colorbar_title title for the colorbar legend
 #' @param edge_labels Vector of two strings defining the labels for the edge legends. Default is c("Positive","Negative").
 #' @param row_title a vector of strings to be used as left vertical titles for each row of plots when there are many
-#' @returns outputs a .png image
+#' @returns A .png image
 #'
 #' @examples
 #' if (FALSE) {

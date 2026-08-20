@@ -8,7 +8,7 @@
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
 #' @param perm If set to `TRUE`, p values will be calculated using a permutation approach by shuffling subjects' labels, before correcting for FDR. Set to `TRUE` by default
 #' @param nperm number of permutations to use if `perm=TRUE`.
-#' @returns Returns a data.frame object with `coef` and corrected `p` values
+#' @returns A data.frame object with `coef` and corrected `p` values
 #'
 #' @examples
 #' \dontrun{
@@ -27,7 +27,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
-    cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+    warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
     model=model[-idxF,]
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
@@ -70,7 +70,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
       {
         if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          message(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(model))
           recode[model[,column]==unique(model[,column])[2]]=1
@@ -85,7 +85,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     {
       if(length(unique(model))==2)
       {
-        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
+        message(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
         
         recode=rep(0,NROW(model))
         recode[model==unique(model)[2]]=1

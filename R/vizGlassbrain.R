@@ -22,7 +22,7 @@
 #' @param orientation_labels A boolean object specifying if orientation labels are to be displayed. Set to `TRUE` by default
 #' @param remove_brain A boolean object specifying cortical surface should be removed. Set to `FALSE` by default
 #'
-#' @returns outputs a plot_ly object
+#' @returns A plot_ly object
 #'
 #' @examples
 #' 

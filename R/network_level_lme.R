@@ -10,7 +10,7 @@
 #' @param nperm number of permutations to use if `perm=TRUE`.
 #' @param perm_type A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row". 
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
-#' @returns Returns a data.frame object with `coef` and corrected `p` values
+#' @returns A data.frame object with `coef` and corrected `p` values
 #'
 #' @export
 ############################################################################################################################
@@ -25,7 +25,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
   idxF=which(complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
-    cat(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
+    warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
     model=model[-idxF,]
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
@@ -73,7 +73,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
       {
         if(length(unique(model[,column]))==2)
         {
-          cat(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
+          message(paste("The binary variable '",colnames(model)[column],"' will be recoded with ",unique(model[,column])[1],"=0 and ",unique(model[,column])[2],"=1 for the analysis\n",sep=""))
           
           recode=rep(0,NROW(model))
           recode[model[,column]==unique(model[,column])[2]]=1
@@ -88,7 +88,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     {
       if(length(unique(model))==2)
       {
-        cat(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
+        message(paste("The binary variable '",colnames(model),"' will be recoded such that ",unique(model)[1],"=0 and ",unique(model)[2],"=1 for the analysis\n",sep=""))
         
         recode=rep(0,NROW(model))
         recode[model==unique(model)[2]]=1
@@ -145,7 +145,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
     pb = txtProgressBar(min = 0, max = nperm, style = 3) 
-    cat("\nEstimating permuted network strengths...\n")
+    message("\nEstimating permuted network strengths...\n")
     coef.perm.all=foreach::foreach(iter=1:nperm, .combine="rbind",.export="lmefast.p",.packages = "Rfast", .options.snow = opts)  %dopar%
       {
         coef.perm=matrix(NA,nrow=1, ncol=Nedges)
@@ -184,7 +184,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     results=data.frame(coef=coef.unperm,
                        p.thresholded=p.adjust(p.perm,method = threshold.method))
     end=Sys.time()
-    cat(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
+    message(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
   } else
   {
     results=data.frame(coef=coef.unperm,p.thresholded=p.adjust(p,method=threshold.method))
