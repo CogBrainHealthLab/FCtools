@@ -101,7 +101,7 @@ vizConnectogram=function(data,
   param$nodecol[3:4]=param$nodecol[2]
   param$nodesize=c(1.4,1.3,1,1)
   param$margins=c(-margins[1], margins[2],margins[3],-margins[4])
-  data("labels_dat", package = "FCtools")
+  labels_dat=get('labels_dat')
   label=labels_dat[[atlas]]
   label=label[order(label$oldorder),]
   label.neworder=label[order(label$neworder),]
@@ -174,8 +174,10 @@ vizConnectogram=function(data,
       reordered=conmat_NxN[nodeorder,nodeorder]
       RegionsFC=as.factor(label$regionlabel)[nodeorder]
       
-      ##graph object
+      #Solves the "no visible binding for global variable" issue
+      . <- weight <- name <- x <- y <- NULL;
       
+      ##graph object
       graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
       EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
       posnegFC=EvalFC
@@ -280,6 +282,7 @@ vizConnectogram=function(data,
     grid::grid.raster(img)
   } else if(mode=="vector")
   {
+    
     FCplot=ggraph::ggraph(graphobjFC, layout = 'linear', circular = TRUE) +
       ggraph::geom_edge_arc(ggplot2::aes(color=posnegFC, alpha=weight), edge_width=edgethickness, show.legend = TRUE) +
       ggraph::scale_edge_alpha_continuous(guide="none", limits=limits)+
@@ -341,8 +344,10 @@ genplot=function(row_data,
   reordered=conmat_NxN[nodeorder,nodeorder]
   RegionsFC=as.factor(label$regionlabel)[nodeorder]
   
-  ##graph object
+  #Solves the "no visible binding for global variable" issue
+  . <- weight <- name <- x <- y <- NULL;
   
+  ##graph object
   graphobjFC=igraph::graph_from_adjacency_matrix(reordered, mode="undirected", diag=FALSE, weighted=TRUE)
   EvalFC=igraph::edge_attr(graphobjFC, "weight", index = igraph::E(graphobjFC))
   posnegFC=EvalFC
@@ -416,6 +421,7 @@ edgelist=function(data)
   }
   
   ##plot parameters
+  labels_dat=get('labels_dat')
   label=labels_dat[[match(length(data),edge_lengths)]]
   label=label[order(label$oldorder),]
   label$labels=paste(label$hemi,"_",label$labels,sep="")

@@ -25,7 +25,8 @@
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom igraph components graph_from_adjacency_matrix
-#' @importFrom utils getFromNamespace
+#' @importFrom utils getFromNamespace txtProgressBar setTxtProgressBar
+#' @importFrom stats complete.cases cor lm.fit qt
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -37,7 +38,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
 
   #incomplete data check
-  idxF=which(complete.cases(model)==FALSE)
+  idxF=which(stats::complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -114,7 +115,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   #collinearity check
   if(NCOL(model)>1)
   {
-    cormat=cor(model,use = "pairwise.complete.obs")
+    cormat=stats::cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = TRUE) >0.5)
@@ -124,12 +125,12 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   }
 
   ##unpermuted model
-  mod=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model)))
+  mod=stats::lm.fit(y = FC_data,x=data.matrix(cbind(1,model)))
 
   #define/init variables
   t.orig=extract.t(mod,colno+1)
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
-  tcrit=qt(p/2, NROW(model)-NCOL(model)-1, lower=FALSE)
+  tcrit=stats::qt(p/2, NROW(model)-NCOL(model)-1, lower=FALSE)
   orig.clust=cluster.stat(t.orig,nnodes,tcrit)
   
   if(any(is.nan(orig.clust))){orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
@@ -156,8 +157,8 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 
   #progress bar
   doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
+  pb=utils::txtProgressBar(max = nperm, style = 3)
+  progress=function(n) utils::setTxtProgressBar(pb, n)
   opts=list(progress = progress)
 
 
@@ -167,7 +168,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   max.netstr=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("extract.t","cluster.stat"), .options.snow = opts)  %dopar%
     {
       #fitting permuted regression model and extracting max netstr in parallel streams
-      mod.permuted=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
+      mod.permuted=lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
       t.perm=extract.t(mod.permuted,colno+1)
       netstr=cluster.stat(t.perm,nnodes,tcrit)
       if(any(is.nan(netstr))) {netstr=netstr[-which(is.nan(netstr[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s

@@ -12,6 +12,8 @@
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
 #' @returns A data.frame object with `coef` and corrected `p` values
 #'
+#' @importFrom utils getFromNamespace
+#' @importFrom stats pnorm p.adjust
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -127,14 +129,19 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     else if(perm_type=="row") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
     
     #activate parallel processing
+    #activate parallel processing
     unregister_dopar = function() {
-      env = foreach:::.foreachGlobals
+      .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
       rm(list=ls(name=env), pos=env)
     }
+    unregister_dopar()
     
     cl=parallel::makeCluster(nthread)
     doParallel::registerDoParallel(nthread)
     `%dopar%` = foreach::`%dopar%`
+    
+    #Solves the "no visible binding for global variable" issue
+    . <- iter <- NULL;
     
     #progress bar
     doSNOW::registerDoSNOW(cl)
@@ -181,12 +188,12 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
       }
     }
     results=data.frame(coef=coef.unperm,
-                       p.thresholded=p.adjust(p.perm,method = threshold.method))
+                       p.thresholded=stats::p.adjust(p.perm,method = threshold.method))
     end=Sys.time()
     message(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
   } else
   {
-    results=data.frame(coef=coef.unperm,p.thresholded=p.adjust(p,method=threshold.method))
+    results=data.frame(coef=coef.unperm,p.thresholded=stats::p.adjust(p,method=threshold.method))
   }
 
   rownames(results)=colnames(FNC_data)
@@ -207,7 +214,7 @@ lmefast.p=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast,
   {
     beta.p<- sapply(1:k, function(j) {
       mod <- Rfast::rint.reg(Y[, j], x, id, tol = tol, ranef = ranef, maxiters = maxiters)
-      c(mod$be[contrast],2 * (1 - pnorm(abs(mod$be[contrast] / mod$se[contrast]))))
+      c(mod$be[contrast],2 * (1 - stats::pnorm(abs(mod$be[contrast] / mod$se[contrast]))))
     })  
   }
   

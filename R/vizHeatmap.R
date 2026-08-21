@@ -99,22 +99,24 @@ vizHeatmap=function(data,
   nnodes=NROW(label)
   label=label[order(label$region),]
   
-    #determine the end indices of each network
-    ends=list()
-    count=1
-    for(row in 2:NROW(label))
+  #determine the end indices of each network
+  ends=list()
+  count=1
+  for(row in 2:NROW(label))
+  {
+    if(label$regionlabel[row]!=label$regionlabel[row-1])
     {
-      if(label$regionlabel[row]!=label$regionlabel[row-1])
-      {
-        ends[[count]]=(row+row-1)/2
-        count=count+1
-      }
+      ends[[count]]=(row+row-1)/2
+      count=count+1
     }
-    ends=unlist(ends)
-    
-    ##dummy data for legend
-    dummy_dat=data.frame(1:nnodes,1:nnodes,label$region)
-    colnames(dummy_dat)=c("Var1","Var2","value")
+  }
+  ends=unlist(ends)
+  
+  ##dummy data for legend
+  #Solves the "no visible binding for global variable" issue
+  . <- Var1 <- Var2 <- value <- NULL;
+  dummy_dat=data.frame(1:nnodes,1:nnodes,label$region)
+  colnames(dummy_dat)=c("Var1","Var2","value")
     
   ##different steps depending on mode
   if(mode=="vector")
@@ -198,6 +200,7 @@ vizHeatmap=function(data,
 ##function to generate individual plots
 genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,mid,colorscheme,atlas,title.size,limits,ends,line.color,line.width)
 {
+  
   ##generate first plot
   #reshaping FC vector to FC matrix
   conmat_NxNhalf = matrix(0, nrow = nnodes, ncol = nnodes)
@@ -206,7 +209,9 @@ genplot_heatmap=function(row_data,title,nnodes,label, hot, cold,mid,colorscheme,
   conmat_NxN=conmat_NxN[label$oldorder,label$oldorder]
   
   plotdat=reshape2::melt(conmat_NxN)
-
+  
+  #Solves the "no visible binding for global variable" issue
+  . <- Var1 <- Var2 <- value <- NULL;
   ##graph object
   ggplot2::ggplot(data=plotdat,ggplot2::aes(x=Var1, y=Var2,fill=value))+
     ggplot2::geom_tile()+

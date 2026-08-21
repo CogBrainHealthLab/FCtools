@@ -119,6 +119,8 @@ vizNetConnectogram=function(FC_dat,
   diag.sig=graph.dat$sig[which(graph.dat$from==graph.dat$to)]
   diag.sig=diag.sig[c(2:8,1)] ##need to reorder diagonal values
   
+  #Solves the "no visible binding for global variable" issue
+  . <- x <- y <- col_val <- signposneg <- fill_val <- NULL;
   
   #set graph parameter
   graph.dat=graph.dat[-which(graph.dat$from==graph.dat$to),]

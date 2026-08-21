@@ -28,7 +28,8 @@
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom igraph components graph_from_adjacency_matrix
 #' @importFrom Rfast rint.reg
-#' @importFrom utils getFromNamespace
+#' @importFrom utils getFromNamespace txtProgressBar setTxtProgressBar
+#' @importFrom stats complete.cases cor qt
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -39,7 +40,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
 
   #incomplete data check
-  idxF=which(complete.cases(model)==FALSE)
+  idxF=which(stats::complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -122,7 +123,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   #collinearity check
   if(NCOL(model)>1)
   {
-    cormat=cor(model,use = "pairwise.complete.obs")
+    cormat=stats::cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = TRUE) >0.5)
@@ -133,7 +134,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
 
   ##unpermuted model
   z.orig=lmefast(FC_data, model, random,contrast=colno+1)
-  tcrit=qnorm(p/2, mean = 0, sd = 1, lower.tail = FALSE)
+  tcrit=stats::qnorm(p/2, mean = 0, sd = 1, lower.tail = FALSE)
   
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
   orig.clust=cluster.stat(z.orig,nnodes, tcrit)
@@ -166,8 +167,8 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
 
   #progress bar
   doSNOW::registerDoSNOW(cl)
-  pb=txtProgressBar(max = nperm, style = 3)
-  progress=function(n) setTxtProgressBar(pb, n)
+  pb=utils::txtProgressBar(max = nperm, style = 3)
+  progress=function(n) utils::setTxtProgressBar(pb, n)
   opts=list(progress = progress)
 
 

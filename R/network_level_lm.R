@@ -14,6 +14,8 @@
 #' \dontrun{
 #' model1=network_lm(model,contrast, FC_data)
 #' }
+#' @importFrom utils getFromNamespace
+#' @importFrom stats complete.cases cor lm.fit pt p.adjust
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -24,7 +26,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   if(NROW(FC_data)!=NROW(model))  {stop(paste("The number of rows for FC_data (",NROW(FC_data),") and model (",NROW(model),") are not the same",sep=""))}
   
   #incomplete data check
-  idxF=which(complete.cases(model)==FALSE)
+  idxF=which(stats::complete.cases(model)==FALSE)
   if(length(idxF)>0)
   {
     warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -103,7 +105,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   #collinearity check
   if(NCOL(model)>1)
   {
-    cormat=cor(model,use = "pairwise.complete.obs")
+    cormat=stats::cor(model,use = "pairwise.complete.obs")
     cormat.0=cormat
     cormat.0[cormat.0==1]=NA
     if(max(abs(cormat.0),na.rm = TRUE) >0.7)
@@ -114,7 +116,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   #fit model
   FNC_data=scale(FCtools::edges_to_networks(FC_data))
   model.std=data.matrix(scale(model))
-  mod.fitted=.lm.fit(y = FNC_data,x=model.std)
+  mod.fitted=stats::lm.fit(y = FNC_data,x=model.std)
   
   #compute pvalues
   
@@ -128,7 +130,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     sigma2_j <- sum(resid_j^2) / (n - p)
     se_j <- sqrt(diag(XtX_inv) * sigma2_j)
     t_vals_j <- mod.fitted$coefficients[, j] / se_j
-    p_vals_j <- 2 * pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
+    p_vals_j <- 2 * stats::pt(abs(t_vals_j), df = n - p, lower.tail = FALSE)})
   
   if(perm==TRUE)
   { 
@@ -137,7 +139,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
     for(iter in 1:nperm)
     {
-      mod.fitted=.lm.fit(y = FNC_data[sample(n),],x=model.std)
+      mod.fitted=stats::lm.fit(y = FNC_data[sample(n),],x=model.std)
       coef.perm[iter,]=as.numeric(mod.fitted$coefficients[colno,])
     }
     
@@ -166,11 +168,11 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
       }
     }
     results=data.frame(coef=coef.unperm,
-                       p.thresholded=p.adjust(p.perm,method = threshold.method))
+                       p.thresholded=stats::p.adjust(p.perm,method = threshold.method))
   } else
   {
     results=data.frame(coef=coef.unperm,
-                       p.thresholded=p.adjust(t(matrix(unlist(results.lm), nrow=ncol(model)))[,colno],method = threshold.method))
+                       p.thresholded=stats::p.adjust(t(matrix(unlist(results.lm), nrow=ncol(model)))[,colno],method = threshold.method))
   }
   rownames(results)=colnames(FNC_data)
   return(results)

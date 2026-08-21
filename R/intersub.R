@@ -27,6 +27,7 @@
 #' \dontrun{
 #' results=intersub(FC_data = dat_FC, outcome=dat_beh[,10:15],mode="diff")
 #' }
+#' @importFrom stats complete.cases cor
 #' @export
 ########################################################################################################
 ########################################################################################################
@@ -35,7 +36,7 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
   outcome=data.matrix(outcome)
   
   #incomplete data check
-  idxF=which(complete.cases(outcome)==FALSE)
+  idxF=which(stats::complete.cases(outcome)==FALSE)
   if(length(idxF)>0)
   {
     warning(paste("outcome contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
@@ -72,7 +73,7 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
       {
         sim_dat[a,1]=subj1
         sim_dat[a,2]=subjlist2[subj2]
-        sim_dat[a,3]=1-cor(FC_data[subj1,],FC_data[subjlist2[subj2],]) #similarity between FC
+        sim_dat[a,3]=1-stats::cor(FC_data[subj1,],FC_data[subjlist2[subj2],]) #similarity between FC
         sim_dat[a,4]=sum(abs(outcome[subj1,]-outcome[subjlist2[subj2],])) #similarity between behavioral outcomes
         a=a+1
       } 
@@ -97,8 +98,8 @@ intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)
       }  
     }  
   }
-  perm.rho=as.numeric(cor(sim_dat[,4],perm_dat))
-  rho=cor(sim_dat[,3],sim_dat[,4])
+  perm.rho=as.numeric(stats::cor(sim_dat[,4],perm_dat))
+  rho=stats::cor(sim_dat[,3],sim_dat[,4])
   
   ##format p values
   p=length(which(perm.rho>rho))/nperm

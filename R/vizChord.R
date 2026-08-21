@@ -34,6 +34,7 @@
 #' @importFrom ggplotify as.grob
 #' @importFrom png readPNG
 #' @importFrom grid grid.raster
+#' @importFrom grDevices colorRampPalette png dev.off
 #' @export
 ##Main function
 ########################################################################################################
@@ -81,6 +82,8 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
     for(rowno in 1:NROW(data))  {chordplots[[rowno]]=genChord_12x12(data[rowno,],hot,cold,colorscheme)}
   }
   ##make colorbar legend
+  #Solves the "no visible binding for global variable" issue
+  . <- v1 <- NULL;
   leg.dat=data.frame(v1=-100:100)
   legend.plot=ggplot2::ggplot(leg.dat, ggplot2::aes(color=v1, x=v1, y=v1))+
               ggplot2::scale_colour_gradient2(name=colorbar_title,low=cold,mid="white",high=hot,
@@ -97,9 +100,9 @@ vizChord=function(data, hot="#F8766D", cold="#00BFC4", width=1200, height=1200,f
   main=cowplot::plot_grid(chord,legend,ncol=1, nrow=2, rel_heights = c(nrow*height,leg.height))
   
   if(filename==paste0(tempdir(),"/conn.png")){message(paste0("Saving image to ", filename))}
-  png(filename=filename, width=ncol*width,height=nrow*height+leg.height,res=300)
-    print(main)
-  dev.off()
+  grDevices::png(filename=filename, width=ncol*width,height=nrow*height+leg.height,res=300)
+  print(main)
+  grDevices::dev.off()
   img=png::readPNG(source =filename)
   grid::grid.raster(img)
 }
@@ -117,8 +120,8 @@ genChord_12x12=function(data,hot,cold, colorscheme)
   
   #color parameters
   colarrFC=array()
-  pos_color_range= colorRampPalette(c("white",hot))
-  neg_color_range = colorRampPalette(c("white",cold))
+  pos_color_range= grDevices::colorRampPalette(c("white",hot))
+  neg_color_range = grDevices::colorRampPalette(c("white",cold))
   pos_color_val=pos_color_range(101)
   neg_color_val=neg_color_range(101)
   
@@ -179,8 +182,8 @@ genChord=function(data,hot,cold, colorscheme)
   nnode=nrow(label)
   
   ##color parameters
-  pos_color_range= colorRampPalette(c("white",hot))
-  neg_color_range = colorRampPalette(c("white",cold))
+  pos_color_range= grDevices::colorRampPalette(c("white",hot))
+  neg_color_range = grDevices::colorRampPalette(c("white",cold))
   pos_color_val=pos_color_range(101)
   neg_color_val=neg_color_range(101)
   
