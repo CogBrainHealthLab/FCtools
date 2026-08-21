@@ -60,8 +60,8 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     for(colno in 1:(NCOL(model)+1))
     {
       if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
-
-      if(class(contrast) != "integer" & class(contrast) != "numeric")
+      
+      if(!inherits(contrast, "integer") & !inherits(contrast, "numeric"))
       {
         if(identical(contrast,model[,colno]))  {break}
       } else
@@ -71,7 +71,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     }
   }  else
   {
-    if(class(contrast) != "integer" & class(contrast) != "numeric")
+    if(!inherits(contrast, "integer") & !inherits(contrast, "numeric"))
     {
       if(identical(contrast,model))  {colno=1}
       else  {stop("contrast is not contained within model")}
@@ -88,7 +88,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   {
     for (column in 1:NCOL(model))
     {
-      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+      if(!inherits(model[,column],'integer') & !inherits(model[,column],'numeric'))
       {
         if(length(unique(model[,column]))==2)
         {

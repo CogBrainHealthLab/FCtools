@@ -197,7 +197,7 @@ vizConnectogram=function(data,
       ggraph::geom_node_text(ggplot2::aes(label = name, x = x * 1.03, y = y* 1.03,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
                                           hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
-      ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
+      ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black', base_family = "")+
       ggplot2::guides(edge_color = ggplot2::guide_legend(override.aes = list(shape = NA),nrow=2),
                       color= ggplot2::guide_legend(override.aes = list(edge_width = NA)))+
       ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4), 
@@ -294,7 +294,7 @@ vizConnectogram=function(data,
                                           angle = ifelse(atan(-(x/y))*(180/pi) < 0,90 + atan(-(x/y))*(180/pi), 270 + atan(-x/y)*(180/pi)),
                                           hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
       ggplot2::coord_fixed()+
-      ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
+      ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black', base_family = "")+
       ggplot2::expand_limits(x = param$xlim[[atlas]], y = param$ylim[[atlas]])+
       ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),plot.title=ggplot2::element_text(size=title.size),
                      legend.title=ggplot2::element_text(size=legend.title.size-2,face = "bold"),
@@ -381,7 +381,7 @@ genplot=function(row_data,
                                         hjust = ifelse(x > 0, 0 ,1)), size=node.text.size) +
     ggplot2::coord_fixed()+
     ggplot2::ggtitle(title)+
-    ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
+    ggraph::theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black', base_family = "")+
     ggplot2::expand_limits(x = param$margin[1:2], y = param$margin[3:4])+
     ggplot2::theme(plot.margin = rep(ggplot2::unit(0,"null"),4),
                    plot.title=ggplot2::element_text(size=title.size,

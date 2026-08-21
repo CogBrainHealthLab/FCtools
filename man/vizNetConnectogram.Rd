@@ -112,6 +112,7 @@ edge transparency encodes absolute magnitude.
 The function relies on \code{igraph}, \code{ggraph}, and \code{ggplot2}.
 }
 \examples{
+demomat=get('demomat')
 vizNetConnectogram(colMeans(demomat))
 
 }

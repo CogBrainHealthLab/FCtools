@@ -42,7 +42,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     {
       if(colno==(NCOL(model)+1))  {stop("contrast is not contained within model")}
       
-      if(class(contrast) != "integer" & class(contrast) != "numeric")
+      if(!inherits(contrast,'integer') & !inherits(contrast,'numeric'))
       {
         if(identical(contrast,model[,colno]))  {break}
       } else
@@ -52,7 +52,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     }
   }  else
   {
-    if(class(contrast) != "integer" & class(contrast) != "numeric")
+    if(!inherits(contrast,'integer') & !inherits(contrast,'numeric'))
     {
       if(identical(contrast,model))  {colno=1}
       else  {stop("contrast is not contained within model")}
@@ -68,7 +68,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   {
     for (column in 1:NCOL(model))
     {
-      if(class(model[,column]) != "integer" & class(model[,column]) != "numeric")
+      if(!inherits(model[,column],'integer') & !inherits(model[,column],'numeric'))
       {
         if(length(unique(model[,column]))==2)
         {

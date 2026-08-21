@@ -61,14 +61,13 @@
 #' The function relies on \code{igraph}, \code{ggraph}, and \code{ggplot2}.
 #'
 #' @examples
+#' demomat=get('demomat')
 #' vizNetConnectogram(colMeans(demomat))
 #' 
 #' @importFrom igraph graph_from_data_frame V E edge_attr edge_attr<-
 #' @importFrom ggraph ggraph geom_edge_arc geom_node_point geom_node_text
 #'   theme_graph scale_edge_color_manual scale_edge_alpha_continuous 
-#' @importFrom ggplot2 expand_limits aes ggtitle geom_point geom_line scale_fill_gradientn
-#'   scale_alpha_continuous scale_size
-#'   guides guide_colorbar theme element_text unit
+#' @importFrom ggplot2 expand_limits aes ggtitle geom_point geom_line scale_fill_gradientn scale_alpha_continuous scale_size guides guide_colorbar theme element_text unit
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -157,7 +156,7 @@ vizNetConnectogram=function(FC_dat,
       scale_edge_color_manual(guide="none",values = c("pos"=hot,"neg"=cold,"1"=sig.color))+
       scale_edge_alpha_continuous(guide="none",range=c(0,1),limits=limits)+
       scale_alpha_continuous(guide="none",range=c(0,1), limits=limits)+
-      theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black')+
+      theme_graph(background = 'white', text_colour = 'black', bg_text_colour = 'black', base_family = "")+
       theme(plot.title = element_text(size=title.size),aspect.ratio = 1,plot.margin=unit(c(-0.1,0,-0.1,0),units = "cm")))
   
   if(legend==TRUE)
