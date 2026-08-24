@@ -15,7 +15,7 @@
 #' model1=network_lm(model,contrast, FC_data)
 #' }
 #' @importFrom utils getFromNamespace
-#' @importFrom stats complete.cases cor lm.fit pt p.adjust
+#' @importFrom stats complete.cases cor .lm.fit pt p.adjust
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -116,7 +116,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
   #fit model
   FNC_data=scale(FCtools::edges_to_networks(FC_data))
   model.std=data.matrix(scale(model))
-  mod.fitted=stats::lm.fit(y = FNC_data,x=model.std)
+  mod.fitted=stats::.lm.fit(y = FNC_data,x=model.std)
   
   #compute pvalues
   
@@ -139,7 +139,7 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
     for(iter in 1:nperm)
     {
-      mod.fitted=stats::lm.fit(y = FNC_data[sample(n),],x=model.std)
+      mod.fitted=stats::.lm.fit(y = FNC_data[sample(n),],x=model.std)
       coef.perm[iter,]=as.numeric(mod.fitted$coefficients[colno,])
     }
     

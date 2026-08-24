@@ -2,7 +2,8 @@
 #'
 #' @description Network-based statistics analysis
 #'
-#' @details This function implements the NBS analysis described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852)}{Zalesky et al. (2010)}
+#' @details This function implements the NBS analysis described in
+#' Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
 #' @param model A data.frame or matrix containing all the predictors in the model
 #' @param random A N x 1 numeric vector or object containing the values of the random variable (optional). Its length should be equal to the number of subjects in model (it should NOT be inside the model data.frame).
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
@@ -44,7 +45,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   if(length(idxF)>0)
   {
     warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
-    model=model[-idxF,]
+    if(!is.null(ncol(model))) {model=model[-idxF,]} else {model=model[-idxF]}
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
     random=random[-idxF] 

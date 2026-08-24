@@ -50,7 +50,7 @@ The `vizConnectogram()` function can take input vectors of the following lengths
 
 - 7021 — derived from 119x119 FC matrices generated using the [Schaefer](https://github.com/ThomasYeoLab/CBIG/tree/master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal)-100 atlas + 19 subcortical regions from the freesurfer subcortical segmentations. This is typically used in the ABCD dataset
 
-- 4005 — derived from 90x90 SC matrices generated using the [AAL](https://www.sciencedirect.com/science/article/abs/pii/S1053811901909784?via%3Dihub)-90 atlas
+- 4005 — derived from 90x90 SC matrices generated using the [AAL](https://doi.org/10.1006/nimg.2001.0978)-90 atlas
 
 The number of nodes to display in the connectogram plot will be automatically determined from the length of the input vector.
 
@@ -136,7 +136,7 @@ vizConnectogram(data=rbind(network1,network2,network3,network4),
 
 ### **4. Chord diagram**
 
-The `vizChord()` function can take input vectors of various lengths as described in the connectogram section and additionally, vectors of 68 values — derived from 12x12 functional network matrices generated using the [Gordon](https://academic.oup.com/cercor/article/26/1/288/2367115?login=falseb) atlas. The 12x12 functional network matrices are only available in the ABCD dataset.
+The `vizChord()` function can take input vectors of various lengths as described in the connectogram section and additionally, vectors of 68 values — derived from 12x12 functional network matrices generated using the [Gordon](https://doi.org/10.1093/cercor/bhu239) atlas. The 12x12 functional network matrices are only available in the ABCD dataset.
 
 **A. Plotting the chord diagram**
 

@@ -26,7 +26,7 @@
 #' @examples
 #'
 #' results=runif(7021, min = -1, max = 1)
-#' vizChord(data=results, filename="FC_chord119.png")
+#' vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
 #'
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text
 #' @importFrom circlize colorRamp2 chordDiagram

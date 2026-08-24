@@ -56,6 +56,6 @@ This function takes a matrix (NROW=number of edges in the connectome; NCOL=numbe
 \examples{
 
 results=runif(7021, min = -1, max = 1)
-vizChord(data=results, filename="FC_chord119.png")
+vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
 
 }

@@ -2,7 +2,8 @@
 #'
 #' @description Network-based statistics analysis
 #'
-#' @details This function implements the NBS analysis described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852)}{Zalesky et al. (2010)}
+#' @details This function implements the NBS analysis described in
+#' Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
 #' @param model A data.frame or matrix containing all the predictors in the model
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
 #' @param FC_data An N x E matrix containing the vectorized edges; where N = number of subjects, E=number of edges
@@ -26,7 +27,7 @@
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom igraph components graph_from_adjacency_matrix
 #' @importFrom utils getFromNamespace txtProgressBar setTxtProgressBar
-#' @importFrom stats complete.cases cor lm.fit qt
+#' @importFrom stats complete.cases cor .lm.fit qt
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -42,7 +43,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   if(length(idxF)>0)
   {
     warning(paste("model contains",length(idxF),"subjects with incomplete data. Subjects with incomplete data will be excluded in the current analysis\n"))
-    model=model[-idxF,]
+    if(!is.null(ncol(model))) {model=model[-idxF,]} else {model=model[-idxF]}
     contrast=contrast[-idxF]
     FC_data=FC_data[-idxF,]
   }
@@ -125,7 +126,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   }
 
   ##unpermuted model
-  mod=stats::lm.fit(y = FC_data,x=data.matrix(cbind(1,model)))
+  mod=stats::.lm.fit(y = FC_data,x=data.matrix(cbind(1,model)))
 
   #define/init variables
   t.orig=extract.t(mod,colno+1)
@@ -168,7 +169,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   max.netstr=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("extract.t","cluster.stat"), .options.snow = opts)  %dopar%
     {
       #fitting permuted regression model and extracting max netstr in parallel streams
-      mod.permuted=lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
+      mod.permuted=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
       t.perm=extract.t(mod.permuted,colno+1)
       netstr=cluster.stat(t.perm,nnodes,tcrit)
       if(any(is.nan(netstr))) {netstr=netstr[-which(is.nan(netstr[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s

@@ -22,7 +22,7 @@
 #' @examples
 #'
 #' results=runif(7021, min = -1, max = 1)
-#' vizChord(data=results, filename="FC_chord119.png")
+#' vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
 #'
 #' \dontrun{
 #' results=intersub(FC_data = dat_FC, outcome=dat_beh[,10:15],mode="diff")

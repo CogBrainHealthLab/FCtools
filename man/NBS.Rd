@@ -32,7 +32,8 @@ A list object containing
 Network-based statistics analysis
 }
 \details{
-This function implements the NBS analysis described in \href{https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852)}{Zalesky et al. (2010)}
+This function implements the NBS analysis described in
+Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
 }
 \examples{
 \dontrun{
