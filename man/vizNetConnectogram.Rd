@@ -28,9 +28,7 @@ vizNetConnectogram(
 )
 }
 \arguments{
-\item{FC_dat}{A data frame with row names in the format \code{"nodeA to nodeB"},
-and at minimum two columns: \code{coef} (numeric edge weights / standardized
-coefficients) and \code{p} (p-values).}
+\item{FC_dat}{a matrix of edge values with 4005, 7021, 23871 or 30135 columns}
 
 \item{show.sig}{Logical. If \code{TRUE}, significant edges will be outlined with \code{sig.color}. Default is \code{FALSE}.}
 
