@@ -32,6 +32,8 @@ network_lme(
 \item{nperm}{number of permutations to use if \code{perm=TRUE}.}
 
 \item{perm_type}{A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row".}
+
+\item{nthread}{The number of CPU threads to use. Default is 4.}
 }
 \value{
 A data.frame object with \code{coef} and corrected \code{p} values

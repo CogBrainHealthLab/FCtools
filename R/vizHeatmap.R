@@ -16,6 +16,7 @@
 #' @param colorscheme an optional vector of color names or color codes to color code the networks.
 #' @param filename output filename with a *.png file extension. Set to `heatmap.png` by default in the temporary directory (tempdir()).
 #' @param title a vector of strings to be used as title
+#' @param limits Numeric vector of length 2, composed of the lower and upper scale limits of the plot. When left unspecified, the symmetrical limits `c(-max(abs(data),max(abs(data)))` will be used. 
 #' @param width width (in pixels) of each heatmap. Set to 1000 by default. Not used for single row data
 #' @param height height (in pixels) of each heatmap . Set to 1000 by default. Not used for single row data
 #' @param leg.size height/width (in pixels) of legend, in pixels. Set to 200 by default.

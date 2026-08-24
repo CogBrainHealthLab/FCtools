@@ -6,13 +6,10 @@
 #' connectivity results, visualizing edge weights and their signs using color and
 #' transparency. Node self-connections (diagonal elements) are highlighted on the
 #' node border. Optionally saves the plot to a PNG file.
-#' @param data A data frame with row names in the format \code{"nodeA to nodeB"},
+#' @param FC_dat A data frame with row names in the format \code{"nodeA to nodeB"},
 #'   and at minimum two columns: \code{coef} (numeric edge weights / standardized
-#'   coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).
+#'   coefficients) and \code{p} (p-values).
 #' @param show.sig Logical. If \code{TRUE}, significant edges will be outlined with `sig.color`. Default is \code{FALSE}.
-#' @param show.color characer. Color used for outlining significant edges.Default is `darkgrey`.
-#' @param thresholded Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
-#'   to zero (i.e., suppressed in the plot). Default is \code{FALSE}.
 #' @param title Character string for the plot title. Default is \code{NULL} (no title).
 #' @param title.size Numeric. Font size of the plot title. Default is \code{10}.
 #' @param hot Character. Color used for positive edges and node highlights.
@@ -25,6 +22,7 @@
 #'   \code{"black"}.
 #' @param edge.thickness Numeric. Width of the edges (and node border stroke).
 #'   Default is \code{2}.
+#' @param sig.color Character. Color for the significant edges. Default is \code{"darkgrey"}
 #' @param legend Logical. If \code{TRUE}, a continuous color bar legend is added
 #'   to the plot. Default is \code{TRUE}.
 #' @param legend.title Character string for the legend title. Default is

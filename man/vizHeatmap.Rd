@@ -47,6 +47,8 @@ vizHeatmap(
 
 \item{title}{a vector of strings to be used as title}
 
+\item{limits}{Numeric vector of length 2, composed of the lower and upper scale limits of the plot. When left unspecified, the symmetrical limits \verb{c(-max(abs(data),max(abs(data)))} will be used.}
+
 \item{title.size}{size parameter for the title. Set to 12 by default.}
 
 \item{legend.title.size}{size parameter for the legend title. Set to 8 by default.}

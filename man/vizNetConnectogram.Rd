@@ -28,6 +28,10 @@ vizNetConnectogram(
 )
 }
 \arguments{
+\item{FC_dat}{A data frame with row names in the format \code{"nodeA to nodeB"},
+and at minimum two columns: \code{coef} (numeric edge weights / standardized
+coefficients) and \code{p} (p-values).}
+
 \item{show.sig}{Logical. If \code{TRUE}, significant edges will be outlined with \code{sig.color}. Default is \code{FALSE}.}
 
 \item{title}{Character string for the plot title. Default is \code{NULL} (no title).}
@@ -49,6 +53,8 @@ Default is \code{"#00BFC4"} (teal).}
 
 \item{edge.thickness}{Numeric. Width of the edges (and node border stroke).
 Default is \code{2}.}
+
+\item{sig.color}{Character. Color for the significant edges. Default is \code{"darkgrey"}}
 
 \item{legend}{Logical. If \code{TRUE}, a continuous color bar legend is added
 to the plot. Default is \code{TRUE}.}
@@ -75,15 +81,6 @@ omitted entirely, no file is written.}
 \item{width}{Integer. Width of the saved PNG in pixels. Default is \code{1000}.}
 
 \item{height}{Integer. Height of the saved PNG in pixels. Default is \code{1000}.}
-
-\item{data}{A data frame with row names in the format \code{"nodeA to nodeB"},
-and at minimum two columns: \code{coef} (numeric edge weights / standardized
-coefficients) and \code{p} (p-values, used when \code{thresholded = TRUE}).}
-
-\item{show.color}{characer. Color used for outlining significant edges.Default is \code{darkgrey}.}
-
-\item{thresholded}{Logical. If \code{TRUE}, edges with \code{p > 0.05} are set
-to zero (i.e., suppressed in the plot). Default is \code{FALSE}.}
 }
 \value{
 A \code{ggraph}/\code{ggplot2} plot object (invisibly returned via

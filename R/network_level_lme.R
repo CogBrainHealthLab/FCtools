@@ -10,6 +10,7 @@
 #' @param nperm number of permutations to use if `perm=TRUE`.
 #' @param perm_type A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row". 
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
+#' @param nthread The number of CPU threads to use. Default is 4.
 #' @returns A data.frame object with `coef` and corrected `p` values
 #'
 #' @importFrom utils getFromNamespace
