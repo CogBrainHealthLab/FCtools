@@ -2,14 +2,14 @@ Package: FCtools
 Type: Package
 Title: Tools for Post-Processing, Analyzing and Visualizing Brain Connectivity Data
 Version: 2.3.0
-Date: 2026-08-20
+Date: 2026-08-24
 Authors@R: c(
-    person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = c("aut","cre"),
+    person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),
-    person("Charly", "Billaud", , "charly.billaud@ntu.edu.sg", role = "aut",
+    person("Charly", "Billaud", , "charly.billaud@ntu.edu.sg", role = c("aut","cre"),
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
-Maintainer: Junhong Yu <junhong.yu@ntu.edu.sg>
+Maintainer: Charly Billaud <charly.billaud@ntu.edu.sg>
 Description: A collection of R functions for analyzing and visualizing brain connectivity data.
 License: GPL-3
 Encoding: UTF-8
