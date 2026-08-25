@@ -1,6 +1,6 @@
 Package: FCtools
 Type: Package
-Title: Tools for Post-Processing, Analyzing and Visualizing Brain Connectivity Data
+Title: Functional Connectivity Tools
 Version: 2.3.0
 Date: 2026-08-24
 Authors@R: c(
@@ -10,7 +10,7 @@ Authors@R: c(
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
 Maintainer: Charly Billaud <charly.billaud@ntu.edu.sg>
-Description: A collection of R functions for analyzing and visualizing brain connectivity data.
+Description: A collection of functions for analyzing and visualizing brain connectivity data.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
