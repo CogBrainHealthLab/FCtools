@@ -166,7 +166,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   #activate parallel processing
   unregister_dopar = function() {
     .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
-    rm(list=ls(name=env), pos=env)
+    #rm(list=ls(name=env), pos=env) #handled by foreach::registerDoSEQ()
   }
   unregister_dopar()
   
@@ -184,6 +184,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   #safe connection clean up at the end of the run
   on.exit({
     try(parallel::stopCluster(cl), silent = TRUE)
+    foreach::registerDoSEQ()
   }, add = TRUE)
   
   start=Sys.time()

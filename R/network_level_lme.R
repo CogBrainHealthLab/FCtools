@@ -142,7 +142,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     #activate parallel processing
     unregister_dopar = function() {
       .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
-      rm(list=ls(name=env), pos=env)
+      #rm(list=ls(name=env), pos=env) #handled by foreach::registerDoSEQ()
     }
     unregister_dopar()
     
@@ -162,6 +162,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     #safe connection clean up at the end of the run
     on.exit({
       try(parallel::stopCluster(cl), silent = TRUE)
+      foreach::registerDoSEQ()
     }, add = TRUE)
     
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
