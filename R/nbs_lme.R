@@ -74,7 +74,8 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
         if(identical(contrast,model[,colno]))  {break}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(suppressWarnings(as.numeric(contrast)),
+                     suppressWarnings(as.numeric(model[,colno]))))  {break}
       }
     }
   }  else
@@ -85,7 +86,8 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
       else  {stop("contrast is not contained within model")}
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      if(identical(suppressWarnings(as.numeric(contrast)),
+                   suppressWarnings(as.numeric(model))))  {colno=1}
       else  {stop("contrast is not contained within model")}
     }
   }

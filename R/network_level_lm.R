@@ -51,7 +51,8 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
         if(identical(contrast,model[,colno]))  {break}
       } else
       {
-        if(identical(as.numeric(contrast),as.numeric(model[,colno])))  {break}
+        if(identical(suppressWarnings(as.numeric(contrast)),
+                     suppressWarnings(as.numeric(model[,colno]))))  {break}
       }
     }
   }  else
@@ -62,7 +63,8 @@ network_lm=function(model,contrast, FC_data, threshold.method="fdr",perm=TRUE, n
       else  {stop("contrast is not contained within model")}
     } else
     {
-      if(identical(as.numeric(contrast),as.numeric(model)))  {colno=1}
+      if(identical(suppressWarnings(as.numeric(contrast)),
+                   suppressWarnings(as.numeric(model))))  {colno=1}
       else  {stop("contrast is not contained within model")}
     }
   }
