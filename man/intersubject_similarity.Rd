@@ -30,11 +30,6 @@ This function runs an intersubject similarity analysis to determine if there is 
 This function runs an intersubject similarity analysis to determine if there is a relationship between similarity in FC and similarity in one or multiple outcomes. The outcome(s) will be z-standardized prior to calculating the intersubject similarity in the outcome(s).
 }
 \examples{
-
-results=runif(7021, min = -1, max = 1)
-vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
-
-\dontrun{
-results=intersub(FC_data = dat_FC, outcome=dat_beh[,10:15],mode="diff")
-}
+demomat=get('demomat')
+results=intersubject_similarity(FC_data = demomat, outcome=c(1,1,2,2),mode="diff")
 }

@@ -36,7 +36,11 @@ mass univariate linear regression at the network level
 This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear regression analyses on each of the network to network connection
 }
 \examples{
-\dontrun{
-model1=network_lm(model,contrast, FC_data)
-}
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=network_lm(model=contrast, 
+                 contrast=contrast, 
+                 FC_data=demomat, 
+                 nperm=1)
 }

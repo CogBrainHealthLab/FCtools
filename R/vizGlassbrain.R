@@ -25,10 +25,8 @@
 #' @returns A plot_ly object
 #'
 #' @examples
-#' 
 #' mask=sample(c(1,0), 7021, replace = TRUE, prob = c(0.001, 0.999))
 #' data=runif(7021,min = -1,max=1)*mask
-#'
 #' vizGlassbrain(data,orientation_labels = TRUE)
 #' 
 #' @importFrom plotly plot_ly add_trace layout

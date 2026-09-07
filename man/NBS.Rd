@@ -36,7 +36,13 @@ This function implements the NBS analysis described in
 Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
 }
 \examples{
-\dontrun{
-model1=NBS(model,contrast, FC_data, nperm=1000, nthread=8, p=0.001)
-}
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=NBS(model=contrast, 
+           contrast=contrast, 
+           FC_data=demomat, 
+           nperm=2, 
+           nthread=2, 
+           p=0.001)
 }

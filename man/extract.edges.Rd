@@ -28,7 +28,10 @@ Generates edge-wise masks for calculating subject-level network strengths
 This function generates positive and negative masks (vectors of 1s and 0s), where 1s indicate a significant network-thresholded edge. These masks can then be used to perform a matrix multiplication with the vectorized FC matrices to object subject-level network strengths
 }
 \examples{
-\dontrun{
-extract.edges(model1,network=1)
-}
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=NBS(model=contrast, contrast=contrast, FC_data=demomat, nperm=2, nthread=1, p=0.001)
+
+edges=extract.edges(model1,network=1)
 }

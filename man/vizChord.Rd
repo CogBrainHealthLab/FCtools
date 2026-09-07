@@ -54,7 +54,6 @@ Visualizing brain connectivity profiles with a chord diagram
 This function takes a matrix (NROW=number of edges in the connectome; NCOL=number of edges in the connectome) of edge values and visualizes the average network-to-network connectivity in a chord diagram.
 }
 \examples{
-
 results=runif(7021, min = -1, max = 1)
 vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
 

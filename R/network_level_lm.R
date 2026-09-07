@@ -11,9 +11,13 @@
 #' @returns A data.frame object with `coef` and corrected `p` values
 #'
 #' @examples
-#' \dontrun{
-#' model1=network_lm(model,contrast, FC_data)
-#' }
+#' demomat=get('demomat')
+#' contrast=c(1,1,2,2)
+#' random=c('sub1','sub2','sub3','sub4')
+#'model1=network_lm(model=contrast, 
+#'                  contrast=contrast, 
+#'                  FC_data=demomat, 
+#'                  nperm=1)
 #' @importFrom utils getFromNamespace
 #' @importFrom stats complete.cases cor .lm.fit pt p.adjust
 #' @export

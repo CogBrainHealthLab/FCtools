@@ -29,10 +29,8 @@
 #' @returns A .png image
 #'
 #' @examples
-#' if (FALSE) {
 #' data=data=runif(7021,min = -1,max=1)
 #' vizHeatmap(data=data)
-#' }
 #' @importFrom ggplot2 ggplot aes geom_tile scale_y_continuous scale_x_continuous scale_fill_gradient2 ggtitle theme element_line element_text element_blank margin unit
 #' @importFrom reshape2 melt
 #' @importFrom gridExtra grid.arrange

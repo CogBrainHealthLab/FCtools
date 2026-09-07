@@ -12,7 +12,16 @@
 #' @param threshold.method method for correcting for multiple tests. set to `fdr` by default
 #' @param nthread The number of CPU threads to use. Default is 4.
 #' @returns A data.frame object with `coef` and corrected `p` values
-#'
+#' @examples
+#' demomat=get('demomat')
+#' contrast=c(1,1,2,2)
+#' random=c('sub1','sub2','sub3','sub4')
+#' model1=network_lme(model=contrast, 
+#'                    contrast=contrast, 
+#'                    random=random, 
+#'                    FC_data=demomat, 
+#'                    nperm=1, 
+#'                    nthread=2)
 #' @importFrom utils getFromNamespace
 #' @importFrom stats pnorm p.adjust
 #' @export
@@ -138,7 +147,7 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     unregister_dopar()
     
     cl=parallel::makeCluster(nthread)
-    doParallel::registerDoParallel(nthread)
+    doParallel::registerDoParallel(cl)
     `%dopar%` = foreach::`%dopar%`
     
     #Solves the "no visible binding for global variable" issue
@@ -149,6 +158,11 @@ network_lme=function(model,contrast,random, FC_data,threshold.method="fdr",perm=
     pb=txtProgressBar(max = nperm, style = 3)
     progress=function(n) setTxtProgressBar(pb, n)
     opts=list(progress = progress)
+    
+    #safe connection clean up at the end of the run
+    on.exit({
+      try(parallel::stopCluster(cl), silent = TRUE)
+    }, add = TRUE)
     
     coef.perm=matrix(NA,nrow=nperm, ncol=Nedges)
     pb = txtProgressBar(min = 0, max = nperm, style = 3) 

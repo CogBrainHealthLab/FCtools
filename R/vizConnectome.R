@@ -33,10 +33,8 @@
 #' @returns A .png image
 #'
 #' @examples
-#' if (FALSE) {
-#' data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
-#' vizConnectogram(data=data,ncol=3, nrow=2)
-#' }
+#' data=matrix(sample(c(1,0, -1), 23871*1, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=1)
+#' vizConnectogram(data=data)
 #' @importFrom ggplot2 ggplot aes scale_colour_gradient2 geom_point guides theme guide_colorbar element_text scale_color_manual expand_limits unit guide_legend coord_fixed
 #' @importFrom igraph graph_from_adjacency_matrix get.edgelist E edge_attr
 #' @importFrom gridExtra grid.arrange

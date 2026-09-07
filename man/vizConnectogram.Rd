@@ -87,8 +87,6 @@ Visualizing brain connectivity profiles with multiple connectogram
 This function takes a matrix (NROW=number of edges in the connectome; NCOL=number of edges in the connectome) of edge values and visualizes the edge-to-edge connectivity with multiple connectograms
 }
 \examples{
-if (FALSE) {
-data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
-vizConnectogram(data=data,ncol=3, nrow=2)
-}
+data=matrix(sample(c(1,0, -1), 23871*1, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=1)
+vizConnectogram(data=data)
 }

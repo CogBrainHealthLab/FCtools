@@ -20,9 +20,16 @@
 #'  \item `max.netstr` A vector containing the null distribution of the permuted network strengths
 #'}
 #' @examples
-#' \dontrun{
-#' model1=NBS_lme(model,contrast, random, FC_data, nperm=1000, nthread=8, p=0.001)
-#' }
+#' demomat=get('demomat')[,1:7021] 
+#' contrast=c(1,1,2,2)
+#' random=c('sub1','sub2','sub3','sub4')
+#' model1=NBS_lme(model=contrast, 
+#'                contrast=contrast, 
+#'                random=random, 
+#'                FC_data=demomat, 
+#'                nperm=1,
+#'                nthread=1, 
+#'                p=0.001)
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
@@ -163,7 +170,7 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   
 
   cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(nthread)
+  doParallel::registerDoParallel(cl)
   `%dopar%` = foreach::`%dopar%`
 
   #progress bar
@@ -172,7 +179,11 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   progress=function(n) utils::setTxtProgressBar(pb, n)
   opts=list(progress = progress)
 
-
+  #safe connection clean up at the end of the run
+  on.exit({
+    try(parallel::stopCluster(cl), silent = TRUE)
+  }, add = TRUE)
+  
   start=Sys.time()
   message("\nEstimating permuted network strengths...\n")
 

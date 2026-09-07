@@ -44,3 +44,14 @@ mass univariate linear mixed effects analysis at the network level
 \details{
 This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear mixed effect analyses on each of the network to network connection
 }
+\examples{
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=network_lme(model=contrast, 
+                   contrast=contrast, 
+                   random=random, 
+                   FC_data=demomat, 
+                   nperm=1, 
+                   nthread=2)
+}

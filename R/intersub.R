@@ -20,15 +20,11 @@
 #'  \item `permutation_data` The permuted correlation values
 #'  }
 #' @examples
-#'
-#' results=runif(7021, min = -1, max = 1)
-#' vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
-#'
-#' \dontrun{
-#' results=intersub(FC_data = dat_FC, outcome=dat_beh[,10:15],mode="diff")
-#' }
+#' demomat=get('demomat')
+#' results=intersubject_similarity(FC_data = demomat, outcome=c(1,1,2,2),mode="diff")
 #' @importFrom stats complete.cases cor
 #' @export
+
 ########################################################################################################
 ########################################################################################################
 intersubject_similarity=function(FC_data, outcome,mode="diff", nperm=1000)

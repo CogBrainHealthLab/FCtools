@@ -18,9 +18,15 @@
 #'  \item `max.netstr` A vector containing the null distribution of the permuted network strengths
 #'}
 #' @examples
-#' \dontrun{
-#' model1=NBS(model,contrast, FC_data, nperm=1000, nthread=8, p=0.001)
-#' }
+#' demomat=get('demomat')
+#' contrast=c(1,1,2,2)
+#' random=c('sub1','sub2','sub3','sub4')
+#' model1=NBS(model=contrast, 
+#'            contrast=contrast, 
+#'            FC_data=demomat, 
+#'            nperm=2, 
+#'            nthread=2, 
+#'            p=0.001)
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
@@ -136,8 +142,9 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   
   if(any(is.nan(orig.clust))){orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
   remove(mod)
-
+  suppressWarnings(closeAllConnections())
   if(sum(orig.clust==0))  {message(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
+    
   } else
   {
   ##permuted models
@@ -153,7 +160,7 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   unregister_dopar()
 
   cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(nthread)
+  doParallel::registerDoParallel(cl)
   `%dopar%` = foreach::`%dopar%`
 
   #progress bar
@@ -161,8 +168,12 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   pb=utils::txtProgressBar(max = nperm, style = 3)
   progress=function(n) utils::setTxtProgressBar(pb, n)
   opts=list(progress = progress)
-
-
+  
+  #safe connection clean up at the end of the run
+  on.exit({
+    try(parallel::stopCluster(cl), silent = TRUE)
+  }, add = TRUE)
+  
   start=Sys.time()
   message("\nEstimating permuted network strengths...\n")
 
@@ -227,9 +238,12 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
 #'  \item `neg.mask` A vector of 1s and 0s indicating the significant network-thresholded negative edges.
 #'}
 #' @examples
-#' \dontrun{
-#' extract.edges(model1,network=1)
-#' }
+#' demomat=get('demomat')
+#' contrast=c(1,1,2,2)
+#' random=c('sub1','sub2','sub3','sub4')
+#' model1=NBS(model=contrast, contrast=contrast, FC_data=demomat, nperm=2, nthread=1, p=0.001)
+#' 
+#' edges=extract.edges(model1,network=1)
 #' @importFrom igraph graph_from_adjacency_matrix components
 #' @export
 
