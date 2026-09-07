@@ -18,7 +18,7 @@
 #'  \item `max.netstr` A vector containing the null distribution of the permuted network strengths
 #'}
 #' @examples
-#' demomat=get('demomat')
+#' demomat=get('demomat')[,1:7021] 
 #' contrast=c(1,1,2,2)
 #' random=c('sub1','sub2','sub3','sub4')
 #' model1=NBS(model=contrast, 

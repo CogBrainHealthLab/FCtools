@@ -13,7 +13,7 @@
 #' @param nthread The number of CPU threads to use. Default is 4.
 #' @returns A data.frame object with `coef` and corrected `p` values
 #' @examples
-#' demomat=get('demomat')
+#' demomat=get('demomat')[,1:7021] 
 #' contrast=c(1,1,2,2)
 #' random=c('sub1','sub2','sub3','sub4')
 #' model1=network_lme(model=contrast, 
