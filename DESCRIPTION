@@ -1,8 +1,8 @@
 Package: FCtools
 Type: Package
 Title: Functional Connectivity Tools
-Version: 2.3.0
-Date: 2026-08-24
+Version: 2.3.1
+Date: 2026-09-07
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),
