@@ -61,7 +61,7 @@ NBS_lme(
 
 ## Value
 
-Returns a list object containing
+A list object containing
 
 - `results` Edge- and network-wise results in a data.frame object
 
@@ -74,13 +74,22 @@ Returns a list object containing
 
 ## Details
 
-This function implements the NBS analysis described in [Zalesky et al.
-(2010)](https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852))
+This function implements the NBS analysis described in Zalesky et al.
+(2010)
+[doi:10.1016/j.neuroimage.2010.06.041](https://doi.org/10.1016/j.neuroimage.2010.06.041)
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-model1=NBS_lme(model,contrast, random, FC_data, nperm=1000, nthread=8, p=0.001)
-} # }
+demomat=get('demomat')[,1:4005] 
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=NBS_lme(model=contrast, 
+               contrast=contrast, 
+               random=random, 
+               FC_data=demomat, 
+               nperm=1,
+               nthread=1, 
+               p=0.001)
+#> Error in NBS_lme(model = contrast, contrast = contrast, random = random,     FC_data = demomat, nperm = 1, nthread = 1, p = 0.001): could not find function "NBS_lme"
 ```

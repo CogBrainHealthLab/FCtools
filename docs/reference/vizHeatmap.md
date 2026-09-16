@@ -12,7 +12,7 @@ vizHeatmap(
   mid = "white",
   ncol,
   nrow,
-  filename = "heatmap.png",
+  filename = paste0(tempdir(), "/heatmap.png"),
   colorscheme,
   line.color = "black",
   title,
@@ -56,8 +56,8 @@ vizHeatmap(
 
 - filename:
 
-  output filename with a \*.png file extension. Set to "heatmap.png" by
-  default
+  output filename with a \*.png file extension. Set to `heatmap.png` by
+  default in the temporary directory (tempdir()).
 
 - colorscheme:
 
@@ -72,6 +72,12 @@ vizHeatmap(
 - title:
 
   a vector of strings to be used as title
+
+- limits:
+
+  Numeric vector of length 2, composed of the lower and upper scale
+  limits of the plot. When left unspecified, the symmetrical limits
+  `c(-max(abs(data),max(abs(data)))` will be used.
 
 - title.size:
 
@@ -110,7 +116,7 @@ vizHeatmap(
 
 ## Value
 
-outputs a .png image
+A .png image
 
 ## Details
 
@@ -121,8 +127,6 @@ the edge-to-edge connectivity with multiple connectograms
 ## Examples
 
 ``` r
-if (FALSE) {
 data=data=runif(7021,min = -1,max=1)
 vizHeatmap(data=data)
-}
 ```

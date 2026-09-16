@@ -51,7 +51,14 @@ vectorized FC matrices to object subject-level network strengths
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-extract.edges(model1,network=1)
-} # }
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=NBS(model=contrast, contrast=contrast, FC_data=demomat, nperm=2, nthread=1, p=0.001)
+#>   |                                                                              |                                                                      |   0%
+#> Estimating permuted network strengths...
+#>   |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
+#> Completed in :0.1 minutes 
+
+edges=extract.edges(model1,network=1)
 ```

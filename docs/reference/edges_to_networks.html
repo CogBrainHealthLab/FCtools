@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">FCtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>returns a network level FC matrix</p>
+    <p>A network level FC matrix</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -68,40 +68,7 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">edges_to_networks</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">23871</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Visual to Visual Somatomotor to Visual Somatomotor to Somatomotor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]        0.4942361             0.4919609                  0.5019111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Dorsal Attention to Visual Dorsal Attention to Somatomotor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                  0.5016897                       0.4908962</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Dorsal Attention to Dorsal Attention Ventral Attention to Visual</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                            0.4934034                   0.5148714</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Ventral Attention to Somatomotor Ventral Attention to Dorsal Attention</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                        0.4943804                             0.5048606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Ventral Attention to Ventral Attention Limbic to Visual</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                              0.4993221        0.4939142</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Limbic to Somatomotor Limbic to Dorsal Attention</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]             0.4945089                  0.4911724</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Limbic to Ventral Attention Limbic to Limbic Frontoparietal to Visual</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                    0.487485        0.4796126                0.4978072</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Frontoparietal to Somatomotor Frontoparietal to Dorsal Attention</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                     0.4977796                          0.4805301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Frontoparietal to Ventral Attention Frontoparietal to Limbic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                           0.5130455                0.5525792</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Frontoparietal to Frontoparietal Default mode to Visual</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                        0.5049862               0.506067</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Default mode to Somatomotor Default mode to Dorsal Attention</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                   0.5067924                        0.4873407</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Default mode to Ventral Attention Default mode to Limbic</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                         0.4874604              0.4723027</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Default mode to Frontoparietal Default mode to Default mode</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                       0.498743                    0.5066932</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Subcortical to Visual Subcortical to Somatomotor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]             0.5062473                  0.4863675</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Subcortical to Dorsal Attention Subcortical to Ventral Attention</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                           0.473                        0.4909915</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Subcortical to Limbic Subcortical to Frontoparietal</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]             0.4730012                     0.4797091</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Subcortical to Default mode Subcortical to Subcortical</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]                    0.512936                  0.5031385</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in edges_to_networks(runif(23871)):</span> could not find function "edges_to_networks"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

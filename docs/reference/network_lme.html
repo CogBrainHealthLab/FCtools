@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">FCtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@
 <span>  <span class="va">random</span>,</span>
 <span>  <span class="va">FC_data</span>,</span>
 <span>  threshold.method <span class="op">=</span> <span class="st">"fdr"</span>,</span>
-<span>  perm <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  perm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nperm <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  perm_type <span class="op">=</span> <span class="st">"within_between"</span>,</span>
 <span>  nthread <span class="op">=</span> <span class="fl">4</span></span>
@@ -87,22 +87,40 @@
 
 
 <dt id="arg-nperm">nperm<a class="anchor" aria-label="anchor" href="#arg-nperm"></a></dt>
-<dd><p>number of permutations to use if <code>perm=T</code>.</p></dd>
+<dd><p>number of permutations to use if <code>perm=TRUE</code>.</p></dd>
 
 
 <dt id="arg-perm-type">perm_type<a class="anchor" aria-label="anchor" href="#arg-perm-type"></a></dt>
 <dd><p>A string object specifying whether to permute the rows ("row"), between subjects ("between"), within subjects ("within") or between and within subjects ("within_between") for random subject effects. Default is "row".</p></dd>
 
+
+<dt id="arg-nthread">nthread<a class="anchor" aria-label="anchor" href="#arg-nthread"></a></dt>
+<dd><p>The number of CPU threads to use. Default is 4.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a data.frame object with <code>coef</code> and corrected <code>p</code> values</p>
+    <p>A data.frame object with <code>coef</code> and corrected <code>p</code> values</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function first summarizes the FC edges into their respective networks and then carry out mass univariate linear mixed effect analyses on each of the network to network connection</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">demomat</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">'demomat'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">7021</span><span class="op">]</span> </span></span>
+<span class="r-in"><span><span class="va">contrast</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">random</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'sub1'</span>,<span class="st">'sub2'</span>,<span class="st">'sub3'</span>,<span class="st">'sub4'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model1</span><span class="op">=</span><span class="fu">network_lme</span><span class="op">(</span>model<span class="op">=</span><span class="va">contrast</span>, </span></span>
+<span class="r-in"><span>                   contrast<span class="op">=</span><span class="va">contrast</span>, </span></span>
+<span class="r-in"><span>                   random<span class="op">=</span><span class="va">random</span>, </span></span>
+<span class="r-in"><span>                   FC_data<span class="op">=</span><span class="va">demomat</span>, </span></span>
+<span class="r-in"><span>                   nperm<span class="op">=</span><span class="fl">1</span>, </span></span>
+<span class="r-in"><span>                   nthread<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in network_lme(model = contrast, contrast = contrast, random = random,     FC_data = demomat, nperm = 1, nthread = 2):</span> could not find function "network_lme"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

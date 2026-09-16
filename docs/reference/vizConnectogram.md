@@ -12,7 +12,7 @@ vizConnectogram(
   ncol = 1,
   nrow = 1,
   edgethickness = 0.8,
-  filename = "conn.png",
+  filename = paste0(tempdir(), "/conn.png"),
   colorscheme,
   title,
   width = 1000,
@@ -60,8 +60,8 @@ vizConnectogram(
 
 - filename:
 
-  output filename with a \*.png file extension. Set to "conn.png" by
-  default
+  output path and file name with a \*.png file extension. Set to
+  `conn.png` by default in the temporary directory (tempdir()).
 
 - colorscheme:
 
@@ -115,7 +115,7 @@ vizConnectogram(
 - limits:
 
   a pair of values that governs the limits of the edge strengths
-  displayed. If missing `limits=range(abs(data),na.rm=T)`
+  displayed. If missing `limits=range(abs(data),na.rm=TRUE)`
 
 - title.size:
 
@@ -142,7 +142,7 @@ vizConnectogram(
 
 ## Value
 
-outputs a .png image
+A .png image
 
 ## Details
 
@@ -153,8 +153,6 @@ the edge-to-edge connectivity with multiple connectograms
 ## Examples
 
 ``` r
-if (FALSE) {
-data=matrix(sample(c(1,0, -1), 23871*6, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=6)
-vizConnectogram(data=data,ncol=3, nrow=2)
-}
+data=matrix(sample(c(1,0, -1), 23871*1, replace = TRUE, prob = c(0.001, 0.998,0.001)),nrow=1)
+vizConnectogram(data=data)
 ```

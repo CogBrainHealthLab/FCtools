@@ -9,14 +9,13 @@
 
 ## Citation
 
-Yu J, Billaud C (2026). *FCtools: Post-processing, analyzing and
-visualizng brain connectivity data*. R package version 2.3.0,
-<https://cogbrainhealthlab.github.io/FCtools/>.
+Yu J, Billaud C (2026). *FCtools: Functional Connectivity Tools*. R
+package version 2.3.1, <https://cogbrainhealthlab.github.io/FCtools/>.
 
     @Manual{,
-      title = {FCtools: Post-processing, analyzing and visualizng brain connectivity data},
+      title = {FCtools: Functional Connectivity Tools},
       author = {Junhong Yu and Charly Billaud},
       year = {2026},
-      note = {R package version 2.3.0},
+      note = {R package version 2.3.1},
       url = {https://cogbrainhealthlab.github.io/FCtools/},
     }

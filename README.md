@@ -94,7 +94,9 @@ colorcodes=c(paletteer_c("ggthemes::Sunset-Sunrise Diverging", 8))
 vizConnectogram(data=results, filename="FC_246.png", hot="red", cold="blue", colorscheme=colorcodes)
 ```
 
-The above code will output the following `FC_246.png` image in your working directory. ![](FC_246.png) As you can see it can be a little difficult to differentiate which network the nodes belong to because the colors are too similar. So do pay attention to the choice of colors if you were to adjust the `colorscheme` parameter
+The above code will output the following `FC_246.png` image in your working directory. ![](man/figures/FC_246.png) 
+
+As you can see it can be a little difficult to differentiate which network the nodes belong to because the colors are too similar. So do pay attention to the choice of colors if you were to adjust the `colorscheme` parameter
 
 **C. Excessive cluttering**
 

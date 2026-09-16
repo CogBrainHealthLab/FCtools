@@ -7,7 +7,7 @@ Generate a Network Connectogram from a Vector of FC network or edge data
 ``` r
 vizNetConnectogram(
   FC_dat,
-  show.sig = T,
+  show.sig = TRUE,
   title = NULL,
   title.size = 10,
   hot = "#F8766D",
@@ -17,7 +17,7 @@ vizNetConnectogram(
   node.color = "black",
   edge.thickness = 1.5,
   sig.color = "darkgrey",
-  legend = T,
+  legend = TRUE,
   legend.title = "Standardized Coefficient",
   legend.title.size = 6,
   legend.text.size = 5,
@@ -30,6 +30,10 @@ vizNetConnectogram(
 ```
 
 ## Arguments
+
+- FC_dat:
+
+  a matrix of edge values with 4005, 7021, 23871 or 30135 columns
 
 - show.sig:
 
@@ -69,6 +73,10 @@ vizNetConnectogram(
 - edge.thickness:
 
   Numeric. Width of the edges (and node border stroke). Default is `2`.
+
+- sig.color:
+
+  Character. Color for the significant edges. Default is `"darkgrey"`
 
 - legend:
 
@@ -112,22 +120,6 @@ vizNetConnectogram(
 
   Integer. Height of the saved PNG in pixels. Default is `1000`.
 
-- data:
-
-  A data frame with row names in the format `"nodeA to nodeB"`, and at
-  minimum two columns: `coef` (numeric edge weights / standardized
-  coefficients) and `p` (p-values, used when `thresholded = TRUE`).
-
-- show.color:
-
-  characer. Color used for outlining significant edges.Default is
-  `darkgrey`.
-
-- thresholded:
-
-  Logical. If `TRUE`, edges with `p > 0.05` are set to zero (i.e.,
-  suppressed in the plot). Default is `FALSE`.
-
 ## Value
 
 A `ggraph`/`ggplot2` plot object (invisibly returned via `print` and
@@ -156,6 +148,7 @@ The function relies on `igraph`, `ggraph`, and `ggplot2`.
 ## Examples
 
 ``` r
+demomat=get('demomat')
 vizNetConnectogram(colMeans(demomat))
-
+#> Error in vizNetConnectogram(colMeans(demomat)): could not find function "vizNetConnectogram"
 ```

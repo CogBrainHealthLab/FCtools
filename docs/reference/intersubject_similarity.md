@@ -37,7 +37,7 @@ intersubject_similarity(FC_data, outcome, mode = "diff", nperm = 1000)
 
 ## Value
 
-a list object containing
+A list object containing
 
 - `FC_difference_matrix` The FC difference matrix
 
@@ -55,12 +55,8 @@ calculating the intersubject similarity in the outcome(s).
 ## Examples
 
 ``` r
-
-results=runif(7021, min = -1, max = 1)
-vizChord(data=results, filename="FC_chord119.png")
-
-
-if (FALSE) { # \dontrun{
-results=intersub(FC_data = dat_FC, outcome=dat_beh[,10:15],mode="diff")
-} # }
+demomat=get('demomat')
+results=intersubject_similarity(FC_data = demomat, outcome=c(1,1,2,2),mode="diff")
+#> 
+#> Correlation between FC and Outcome similarity matrice = 0.328 ; p =0.327
 ```

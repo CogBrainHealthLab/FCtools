@@ -1,8 +1,7 @@
 Package: FCtools
-Type: Package
 Title: Functional Connectivity Tools
 Version: 2.3.1
-Date: 2026-09-07
+Date: 2026-09-08
 Authors@R: c(
     person("Junhong", "Yu", , "junhong.yu@ntu.edu.sg", role = "aut",
            comment = c(ORCID = "0000-0002-2563-9658")),
@@ -10,7 +9,7 @@ Authors@R: c(
            comment = c(ORCID = "0009-0001-3466-9963"))
   )
 Maintainer: Charly Billaud <charly.billaud@ntu.edu.sg>
-Description: Analyzing and visualizing brain connectivity data, including edge-wise connectograms, chord diagrams, network connectograms, heatmaps, and 3D glass brain connectivity plots. FCtools follows Yeo's 7-networks classification, and works with edge vectors from the Brainnetome, Schaefer (100 or 200, each with 19 aseg subcortices), and Automated Anatomical Labeling (AAL) atlases.  
+Description: Analyzing and visualizing brain connectivity data, including network-based statistics (NBS) for linear and linear mixed models, both at edge level and functional network level (Yeo's 7-networks (Schaefer et al. (2017) <doi:10.1093/cercor/bhx179>)). Plots include edge-wise connectograms, chord diagrams, network connectograms, heatmaps, and 3D glass brain connectivity plots. 'FCtools' works with vectors of edges (derived from connectivity/adjacency matrices) from the 'Brainnetome' (Fan et al. (2016) <doi:10.1093/cercor/bhw157>), 'Schaefer' (100 or 200, each with 19 'ASeg' subcortices) (Schaefer et al. (2017) <doi:10.1093/cercor/bhx179>, Fischl et al. (2002) <doi:10.1016/S0896-6273(02)00569-X>), and 'Automated Anatomical Labeling' (AAL) atlases (Tzourio-Mazoyer et al. (2002) <doi:10.1006/nimg.2001.0978>).  
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

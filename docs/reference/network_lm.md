@@ -10,7 +10,7 @@ network_lm(
   contrast,
   FC_data,
   threshold.method = "fdr",
-  perm = T,
+  perm = TRUE,
   nperm = 1000
 )
 ```
@@ -43,11 +43,11 @@ network_lm(
 
 - nperm:
 
-  number of permutations to use if `perm=T`.
+  number of permutations to use if `perm=TRUE`.
 
 ## Value
 
-Returns a data.frame object with `coef` and corrected `p` values
+A data.frame object with `coef` and corrected `p` values
 
 ## Details
 
@@ -58,7 +58,12 @@ on each of the network to network connection
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-model1=network_lm(model,contrast, FC_data)
-} # }
+demomat=get('demomat')
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=network_lm(model=contrast, 
+                 contrast=contrast, 
+                 FC_data=demomat, 
+                 nperm=1)
+#> Error in network_lm(model = contrast, contrast = contrast, FC_data = demomat,     nperm = 1): could not find function "network_lm"
 ```

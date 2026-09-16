@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">FCtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,21 +78,32 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a list object containing</p><ul><li><p><code>results</code> Edge- and network-wise results in a data.frame object</p></li>
+    <p>A list object containing</p><ul><li><p><code>results</code> Edge- and network-wise results in a data.frame object</p></li>
 <li><p><code>t.orig</code> Edge-wise t-stats</p></li>
 <li><p><code>tcrit</code> The critical t-value</p></li>
 <li><p><code>max.netstr</code> A vector containing the null distribution of the permuted network strengths</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function implements the NBS analysis described in <a href="https://www.sciencedirect.com/science/article/abs/pii/S1053811910008852)" class="external-link">Zalesky et al. (2010)</a></p>
+    <p>This function implements the NBS analysis described in
+Zalesky et al. (2010) <a href="https://doi.org/10.1016/j.neuroimage.2010.06.041" class="external-link">doi:10.1016/j.neuroimage.2010.06.041</a></p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">model1</span><span class="op">=</span><span class="fu">NBS</span><span class="op">(</span><span class="va">model</span>,<span class="va">contrast</span>, <span class="va">FC_data</span>, nperm<span class="op">=</span><span class="fl">1000</span>, nthread<span class="op">=</span><span class="fl">8</span>, p<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">demomat</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">'demomat'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">7021</span><span class="op">]</span> </span></span>
+<span class="r-in"><span><span class="va">contrast</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">random</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'sub1'</span>,<span class="st">'sub2'</span>,<span class="st">'sub3'</span>,<span class="st">'sub4'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model1</span><span class="op">=</span><span class="fu">NBS</span><span class="op">(</span>model<span class="op">=</span><span class="va">contrast</span>, </span></span>
+<span class="r-in"><span>           contrast<span class="op">=</span><span class="va">contrast</span>, </span></span>
+<span class="r-in"><span>           FC_data<span class="op">=</span><span class="va">demomat</span>, </span></span>
+<span class="r-in"><span>           nperm<span class="op">=</span><span class="fl">2</span>, </span></span>
+<span class="r-in"><span>           nthread<span class="op">=</span><span class="fl">2</span>, </span></span>
+<span class="r-in"><span>           p<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimating permuted network strengths...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Completed in :0.1 minutes </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

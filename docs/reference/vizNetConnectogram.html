@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">FCtools</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vizNetConnectogram</span><span class="op">(</span></span>
 <span>  <span class="va">FC_dat</span>,</span>
-<span>  show.sig <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  show.sig <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title.size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  hot <span class="op">=</span> <span class="st">"#F8766D"</span>,</span>
@@ -57,7 +57,7 @@
 <span>  node.color <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>  edge.thickness <span class="op">=</span> <span class="fl">1.5</span>,</span>
 <span>  sig.color <span class="op">=</span> <span class="st">"darkgrey"</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  legend.title <span class="op">=</span> <span class="st">"Standardized Coefficient"</span>,</span>
 <span>  legend.title.size <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>  legend.text.size <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -73,7 +73,11 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-show-sig">show.sig<a class="anchor" aria-label="anchor" href="#arg-show-sig"></a></dt>
+<dl><dt id="arg-fc-dat">FC_dat<a class="anchor" aria-label="anchor" href="#arg-fc-dat"></a></dt>
+<dd><p>a matrix of edge values with 4005, 7021, 23871 or 30135 columns</p></dd>
+
+
+<dt id="arg-show-sig">show.sig<a class="anchor" aria-label="anchor" href="#arg-show-sig"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, significant edges will be outlined with <code>sig.color</code>. Default is <code>FALSE</code>.</p></dd>
 
 
@@ -111,6 +115,10 @@ Default is <code>"#00BFC4"</code> (teal).</p></dd>
 <dt id="arg-edge-thickness">edge.thickness<a class="anchor" aria-label="anchor" href="#arg-edge-thickness"></a></dt>
 <dd><p>Numeric. Width of the edges (and node border stroke).
 Default is <code>2</code>.</p></dd>
+
+
+<dt id="arg-sig-color">sig.color<a class="anchor" aria-label="anchor" href="#arg-sig-color"></a></dt>
+<dd><p>Character. Color for the significant edges. Default is <code>"darkgrey"</code></p></dd>
 
 
 <dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
@@ -156,21 +164,6 @@ omitted entirely, no file is written.</p></dd>
 <dt id="arg-height">height<a class="anchor" aria-label="anchor" href="#arg-height"></a></dt>
 <dd><p>Integer. Height of the saved PNG in pixels. Default is <code>1000</code>.</p></dd>
 
-
-<dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A data frame with row names in the format <code>"nodeA to nodeB"</code>,
-and at minimum two columns: <code>coef</code> (numeric edge weights / standardized
-coefficients) and <code>p</code> (p-values, used when <code>thresholded = TRUE</code>).</p></dd>
-
-
-<dt id="arg-show-color">show.color<a class="anchor" aria-label="anchor" href="#arg-show-color"></a></dt>
-<dd><p>characer. Color used for outlining significant edges.Default is <code>darkgrey</code>.</p></dd>
-
-
-<dt id="arg-thresholded">thresholded<a class="anchor" aria-label="anchor" href="#arg-thresholded"></a></dt>
-<dd><p>Logical. If <code>TRUE</code>, edges with <code>p &gt; 0.05</code> are set
-to zero (i.e., suppressed in the plot). Default is <code>FALSE</code>.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -197,8 +190,9 @@ edge transparency encodes absolute magnitude.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vizNetConnectogram</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">demomat</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="vizNetConnectogram-1.png" alt="" width="700" height="433"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">demomat</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="st">'demomat'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">vizNetConnectogram</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">demomat</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vizNetConnectogram(colMeans(demomat)):</span> could not find function "vizNetConnectogram"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

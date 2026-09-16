@@ -11,7 +11,7 @@ network_lme(
   random,
   FC_data,
   threshold.method = "fdr",
-  perm = T,
+  perm = TRUE,
   nperm = 1000,
   perm_type = "within_between",
   nthread = 4
@@ -52,7 +52,7 @@ network_lme(
 
 - nperm:
 
-  number of permutations to use if `perm=T`.
+  number of permutations to use if `perm=TRUE`.
 
 - perm_type:
 
@@ -61,12 +61,31 @@ network_lme(
   and within subjects ("within_between") for random subject effects.
   Default is "row".
 
+- nthread:
+
+  The number of CPU threads to use. Default is 4.
+
 ## Value
 
-Returns a data.frame object with `coef` and corrected `p` values
+A data.frame object with `coef` and corrected `p` values
 
 ## Details
 
 This function first summarizes the FC edges into their respective
 networks and then carry out mass univariate linear mixed effect analyses
 on each of the network to network connection
+
+## Examples
+
+``` r
+demomat=get('demomat')[,1:7021] 
+contrast=c(1,1,2,2)
+random=c('sub1','sub2','sub3','sub4')
+model1=network_lme(model=contrast, 
+                   contrast=contrast, 
+                   random=random, 
+                   FC_data=demomat, 
+                   nperm=1, 
+                   nthread=2)
+#> Error in network_lme(model = contrast, contrast = contrast, random = random,     FC_data = demomat, nperm = 1, nthread = 2): could not find function "network_lme"
+```

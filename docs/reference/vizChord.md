@@ -11,7 +11,7 @@ vizChord(
   cold = "#00BFC4",
   width = 1200,
   height = 1200,
-  filename = "conn.png",
+  filename = paste0(tempdir(), "/conn.png"),
   colorscheme,
   title,
   leg.height = 100,
@@ -46,8 +46,8 @@ vizChord(
 
 - filename:
 
-  output filename with a \*.png file extension. Set to `conn.png` by
-  default
+  output path and file name with a \*.png file extension. Set to
+  `conn.png` by default in the temporary directory (tempdir()).
 
 - colorscheme:
 
@@ -77,7 +77,7 @@ vizChord(
 
 ## Value
 
-outputs a .png image
+A .png image
 
 ## Details
 
@@ -88,8 +88,7 @@ the average network-to-network connectivity in a chord diagram.
 ## Examples
 
 ``` r
-
 results=runif(7021, min = -1, max = 1)
-vizChord(data=results, filename="FC_chord119.png")
+vizChord(data=results, filename=paste0(tempdir(),"/FC_chord119.png"))
 
 ```
