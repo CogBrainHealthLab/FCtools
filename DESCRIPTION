@@ -31,7 +31,12 @@ Imports:
     grid,
     gridExtra,
     igraph,
+    mori,
+    Rcpp (>= 1.0.0),
     parallel,
     plotly,
     png,
     reshape2
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo

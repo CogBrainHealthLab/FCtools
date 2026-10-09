@@ -1,9 +1,9 @@
-#' @title NBS
+#' @title NBS_lme
 #'
 #' @description Network-based statistics analysis
 #'
 #' @details This function implements the NBS analysis described in
-#' Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
+#' Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}, using linear mixed effects models.
 #' @param model A data.frame or matrix containing all the predictors in the model
 #' @param random A N x 1 numeric vector or object containing the values of the random variable (optional). Its length should be equal to the number of subjects in model (it should NOT be inside the model data.frame).
 #' @param contrast The predictor of interest. The edge- and network-wise statistics will only be estimated for this predictor
@@ -30,12 +30,13 @@
 #'                nperm=1,
 #'                nthread=1, 
 #'                p=0.001)
+#' @useDynLib FCtools, .registration = TRUE
+#' @importFrom mori share
+#' @importFrom Rcpp evalCpp
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom igraph components graph_from_adjacency_matrix
-#' @importFrom Rfast rint.reg
 #' @importFrom utils getFromNamespace txtProgressBar setTxtProgressBar
 #' @importFrom stats complete.cases cor qt
 #' @export
@@ -142,16 +143,50 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     }
   }
 
-  ##unpermuted model
-  z.orig=lmefast(FC_data, model, random,contrast=colno+1)
-  tcrit=stats::qnorm(p/2, mean = 0, sd = 1, lower.tail = FALSE)
+  ## Unpermuted random-intercept model
+  X <- data.matrix(cbind(Intercept = 1, model))
+  tested <- colno + 1L
+  nedge <- ncol(FC_data)
   
-  nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
-  orig.clust=cluster.stat(z.orig,nnodes, tcrit)
+  # Exclude constant edges from variance-component estimation.
+  # Restore these edges as zero statistics in the full edge vector.
+  active <- which(vapply(
+    seq_len(nedge),
+    function(j) any(FC_data[, j] != FC_data[1L, j]),
+    logical(1)
+  ))
   
-  if(any(is.nan(orig.clust))){orig.clust=orig.clust[-which(is.nan(orig.clust[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
+  Y <- FC_data[, active, drop = FALSE]
+  fit.orig <- lme_fast(Y = Y,X = X,id = random,add_intercept = FALSE)
+  z.orig <- numeric(nedge)
+  z.orig[active] <- as.numeric(fit.orig$t_stat[tested, ])
 
-  if(sum(orig.clust==0))  {message(paste0("No significant networks are detected using the p<",p," edgewise threshold. You might want to use a more liberal threshold"))
+  # Retain the original normal-reference cluster-forming threshold.
+  # Despite the variable name, z.orig contains coefficient/SE statistics.
+  tcrit <- stats::qnorm(p / 2, lower.tail = FALSE)
+  nnodes <- (1 + sqrt(1 + 8 * nedge)) / 2
+  orig.clust <- cluster.stat(z.orig, nnodes, tcrit)
+  
+  rm(fit.orig)
+
+  if (is.null(dim(orig.clust))) {
+    message(
+      "No qualifying networks detected at the p < ", p,
+      " edgewise threshold."
+    )
+    
+    return(list(
+      results = data.frame(
+        network = integer(),
+        strength.unweighted = numeric(),
+        strength.weighted = numeric(),
+        p.unweighted = numeric(),
+        p.weighted = numeric()
+      ),
+      t.orig = z.orig,
+      tcrit = tcrit,
+      max.netstr = matrix(numeric(), nrow = 0L, ncol = 2L)
+    ))
   } else
   {
   ##permuted models
@@ -163,47 +198,100 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
   else if(perm_type=="between") {for (perm in 1:nperm)  {permseq[,perm]=perm_between(random)}} 
   else if(perm_type=="row") {for (perm in 1:nperm)  {permseq[,perm]=sample.int(NROW(model))}}
 
-  #activate parallel processing
-  unregister_dopar = function() {
-    .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
-    #rm(list=ls(name=env), pos=env) #handled by foreach::registerDoSEQ()
-  }
-  unregister_dopar()
+  ## Reduced model: intercept plus all nuisance predictors
+  Z <- X[, -tested, drop = FALSE]
   
+  fit.reduced <- lme_fast(Y = Y,X = Z,id = random,add_intercept = FALSE)
+  
+  # Marginal residuals retain participant-level random effects.
+  # Therefore permutations must preserve the participant covariance blocks.
+  fitted0 <- Z %*% fit.reduced$coefficients
+  residuals0 <- Y - fitted0
+  
+  shared <- mori::share(list(
+    X = X,
+    id = as.integer(random),
+    fitted0 = fitted0,
+    residuals0 = residuals0,
+    permseq = permseq
+  ))
+  
+  # shared remains referenced until all workers finish.
+  rm(Z, fit.reduced, fitted0, residuals0,permseq, X, Y)
 
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=utils::txtProgressBar(max = nperm, style = 3)
-  progress=function(n) utils::setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
-
-  #safe connection clean up at the end of the run
+  cl <- parallel::makeCluster(
+    min(nthread, nperm),
+    type = "PSOCK"
+  )
+  
+  pb <- NULL
+  
   on.exit({
+    if (!is.null(pb)) {
+      try(close(pb), silent = TRUE)
+    }
+    
     try(parallel::stopCluster(cl), silent = TRUE)
     foreach::registerDoSEQ()
   }, add = TRUE)
   
+  # Load mori before shared objects are deserialized in workers.
+  parallel::clusterEvalQ(cl, {
+    loadNamespace("mori")
+    loadNamespace("FCtools")
+    NULL
+  })
+  
+  doSNOW::registerDoSNOW(cl)
+  `%dopar%` <- foreach::`%dopar%`
+  
+  pb <- utils::txtProgressBar(max = nperm, style = 3)
+  progress <- function(n) utils::setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  
   start=Sys.time()
   message("\nEstimating permuted network strengths...\n")
 
-  max.netstr=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("cluster.stat","lmefast"),.packages = "Rfast", .options.snow = opts)  %dopar%
-    {
-      #fitting permuted regression model and extracting max netstr in parallel streams
-      z.perm=lmefast(FC_data, model[permseq[,perm],], random,contrast=colno+1)
-      netstr=cluster.stat(z.perm,nnodes,tcrit)
-      if(any(is.nan(netstr))) {netstr=netstr[-which(is.nan(netstr[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
-
-      remove(z.perm)
-
-      if(length(netstr)>2)  {max.netstr=c(max(netstr[,1]),max(netstr[,2]))}
-      else {max.netstr=netstr} #if only one row of results is obtained, there is no need to use the max() function
-
-      return(max.netstr)
+  max.netstr <- foreach::foreach(
+    perm = seq_len(nperm),
+    .combine = "rbind",
+    .packages = c("FCtools", "mori"),
+    .options.snow = opts
+  ) %dopar% {
+    
+    
+    # Block-restricted residual permutation, shared across all edges.
+    Yperm <- shared$fitted0 +shared$residuals0[shared$permseq[, perm],,drop = FALSE]
+    fit.perm <- lme_fast(Y = Yperm,X = shared$X,id = shared$id,add_intercept = FALSE)
+    
+    # Do not silently discard failed permutations or treat them as zeros.
+    if (anyNA(fit.perm$status) ||
+        any(fit.perm$status != 0L)) {
+      stop(
+        "Nonzero fitting status in permutation ", perm,
+        ". Inspect convergence before continuing."
+      )
     }
+    
+    z.perm <- numeric(nedge)
+    z.perm[active] <- as.numeric(
+      fit.perm$t_stat[tested, ]
+    )
+    
+    netstr <- cluster.stat(data = z.perm,nnodes = nnodes,tcrit = tcrit)
+    
+    if (is.null(dim(netstr))) {
+      c(0, 0)
+    } else {
+      c(
+        max(netstr[, 1L]),
+        max(netstr[, 2L])
+      )
+    }
+  }
+  
+  # foreach returns a vector when there is only one iteration.
+  max.netstr <- matrix(max.netstr, ncol = 2L)
   end=Sys.time()
   message(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
 
@@ -216,12 +304,11 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     #thresholding clusters using permuted null distribution
     for(row in 1:nrow(orig.clust))
     {
-      orig.clust[row,3]=sum(max.netstr[,1] > orig.clust[row,1])/nperm
-      orig.clust[row,4]=sum(max.netstr[,2] > orig.clust[row,2])/nperm
+      orig.clust[row, 3] <-round((1 + sum(max.netstr[, 1] >= orig.clust[row, 1])) /(nperm + 1),4)
+      orig.clust[row, 4] <-round((1 + sum(max.netstr[, 2] >= orig.clust[row, 2])) /(nperm + 1),4)
     }
 
     #formatting results table
-    orig.clust[,c(3,4)][orig.clust[,c(3,4)]==0]=paste("<",1/nperm,sep="") #if p=0
     orig.clust=cbind(c(1:nrow(orig.clust)),orig.clust)
     colnames(orig.clust)=c("network","strength.unweighted","strength.weighted","p.unweighted","p.weighted")
   
@@ -229,50 +316,9 @@ NBS_lme=function(model,contrast,random, FC_data, nperm=100, nthread=1, p=0.001,p
     returnobj=list(orig.clust,z.orig, tcrit,max.netstr)
     names(returnobj)=c("results","t.orig","tcrit","max.netstr")
     return(returnobj)
-    suppressWarnings(closeAllConnections())
   }
 }
 
-############################################################################################################################
-############################################################################################################################
-### extract cluster-stats from graphs
-cluster.stat=function(data,nnodes,tcrit)
-{
-  ##thresholding
-  tstat.thresholded=data
-  tstat.thresholded[abs(data)<tcrit]=0
-  tstat.thresholded.bin=tstat.thresholded
-  tstat.thresholded.bin[abs(tstat.thresholded.bin)>0]=1
-  
-  ##setting up FCmatrices
-  FC_mat.unweighted=matrix(0,nrow=nnodes,ncol=nnodes)
-  FC_mat.weighted=matrix(0,nrow=nnodes,ncol=nnodes)
-  
-  ##thresholding
-  FC_mat.weighted[upper.tri(FC_mat.weighted,diag = FALSE)]=tstat.thresholded
-  FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag = FALSE)]=tstat.thresholded.bin
-  FC_mat.weighted=abs(FC_mat.weighted)-(FC_mat.unweighted*tcrit)
-  
-  #clustering
-  com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='undirected', weighted=NULL))
-  
-  #count edges in clusters
-  if(length(which(com$csize>2)>0)) #proceed only if there is at least one cluster with 3 nodes (i.e 2 edges). Isolated/unconnected edges are removed
-  {
-    cluster.idx=which(com$csize>2)
-    clust.results=matrix(NA,nrow=length(cluster.idx), ncol=2)
-    
-    for (cluster.no in 1:length(cluster.idx))
-    {
-      idx=which(com$membership==cluster.idx[cluster.no])
-      clust.results[cluster.no,1]=strength.unweighted=sum(FC_mat.unweighted[idx,idx])
-      clust.results[cluster.no,2]=strength.weighted=sum(FC_mat.weighted[idx,idx])
-    }
-  } else  { clust.results=c(0,0)} #if no clusters (with 3 nodes) are detected
-  return(clust.results)
-}
-############################################################################################################################
-############################################################################################################################
 
 ## permutation functions for random subject effects
 ## Paired/grouped data points are first shuffled within subjects, then these pairs/groups are shuffled between subjects
@@ -370,24 +416,3 @@ perm_between=function(random)
   }
   return(perm.idx)
 }
-
-############################################################################################################################
-############################################################################################################################
-
-lmefast=function(Y,x, id, tol = 1e-07, ranef = TRUE, maxiters = 200, contrast)
-{
-  # Force numeric matrices
-  x <- data.matrix(x)
-  id <- as.integer(as.factor(id))
-  Y <- as.matrix(Y)
-  k <- ncol(Y)
-  
-  # Apply rint.reg efficiently across Y columns
-  tstats <- sapply(1:k, function(j) {
-    mod <- Rfast::rint.reg(Y[, j], x, id, tol = tol, ranef = ranef, maxiters = maxiters)
-    mod$be[contrast] / mod$se[contrast]
-  })
-  
-  return(tstats)
-}
-

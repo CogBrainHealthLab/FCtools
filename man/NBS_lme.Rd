@@ -2,7 +2,7 @@
 % Please edit documentation in R/nbs_lme.R
 \name{NBS_lme}
 \alias{NBS_lme}
-\title{NBS}
+\title{NBS_lme}
 \usage{
 NBS_lme(
   model,
@@ -46,7 +46,7 @@ Network-based statistics analysis
 }
 \details{
 This function implements the NBS analysis described in
-Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}
+Zalesky et al. (2010) \doi{10.1016/j.neuroimage.2010.06.041}, using linear mixed effects models.
 }
 \examples{
 demomat=get('demomat')[,1:4005] 

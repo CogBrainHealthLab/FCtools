@@ -27,13 +27,15 @@
 #'            nperm=2, 
 #'            nthread=2, 
 #'            p=0.001)
+#' @useDynLib FCtools, .registration = TRUE
+#' @importFrom mori share
+#' @importFrom Rcpp evalCpp
 #' @importFrom foreach foreach %dopar%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom igraph components graph_from_adjacency_matrix
 #' @importFrom utils getFromNamespace txtProgressBar setTxtProgressBar
-#' @importFrom stats complete.cases cor .lm.fit qt
+#' @importFrom stats complete.cases cor qt
 #' @export
 ############################################################################################################################
 ############################################################################################################################
@@ -133,11 +135,21 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     }
   }
 
-  ##unpermuted model
-  mod=stats::.lm.fit(y = FC_data,x=data.matrix(cbind(1,model)))
+  ## Unpermuted model
+  X <- data.matrix(cbind(Intercept = 1, model))
+  tested <- colno + 1L
+  
+  # Constant edges, including structural zeros, cannot supply a t-statistic.
+  constant.edges <- vapply(
+    seq_len(ncol(FC_data)),
+    function(j) all(FC_data[, j] == FC_data[1L, j]),
+    logical(1)
+  )
+  
+  mod <- lm_fast(X, FC_data)
+  t.orig <- as.numeric(mod[tested, ])
+  t.orig[constant.edges] <- 0
 
-  #define/init variables
-  t.orig=extract.t(mod,colno+1)
   nnodes=(0.5 + sqrt(0.5^2 - 4 * 0.5 * -NCOL(FC_data))) / (2 * 0.5)
   tcrit=stats::qt(p/2, NROW(model)-NCOL(model)-1, lower=FALSE)
   orig.clust=cluster.stat(t.orig,nnodes,tcrit)
@@ -149,27 +161,58 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     
   } else
   {
+
+    # Freedman-Lane reduced model:
+    # retain the intercept and nuisance predictors; remove the tested predictor.
+    Z <- X[, -tested, drop = FALSE]
+    
+    reduced <- lm_fast(Z, FC_data, return_coefficients = TRUE)
+    fitted0 <- Z %*% reduced$coefficients
+    residuals0 <- FC_data - fitted0
+    
+    # Generate row permutations in the main process.
+    # Each permutation uses the same row order across all edges.
+    permseq <- matrix(0L, nrow = nrow(X), ncol = nperm)
+    
+    for (perm in seq_len(nperm)) {
+      permseq[, perm] <- sample.int(nrow(X))
+    }
+    
+    # Shared read-only inputs for workers on the same machine.
+    shared <- mori::share(list(
+      X = X,
+      fitted0 = fitted0,
+      residuals0 = residuals0,
+      permseq = permseq
+    ))
+    
+    # Keep 'shared' alive until the workers have finished.
+    rm(Z, reduced, fitted0, residuals0, permseq, X)
+    
   ##permuted models
-  #generating permutation sequences
-  permseq=matrix(NA, nrow=NROW(model), ncol=nperm)
-  for (perm in 1:nperm)  {permseq[,perm]=sample(1:NROW(model))}
-
-  #activate parallel processing
-  unregister_dopar = function() {
-    .foreachGlobals <- utils::getFromNamespace(".foreachGlobals", "foreach"); env =  .foreachGlobals;
-    #rm(list=ls(name=env), pos=env) #handled by foreach::registerDoSEQ()
-  }
-  unregister_dopar()
-
-  cl=parallel::makeCluster(nthread)
-  doParallel::registerDoParallel(cl)
-  `%dopar%` = foreach::`%dopar%`
-
-  #progress bar
-  doSNOW::registerDoSNOW(cl)
-  pb=utils::txtProgressBar(max = nperm, style = 3)
-  progress=function(n) utils::setTxtProgressBar(pb, n)
-  opts=list(progress = progress)
+    # Local PSOCK workers work on Windows, macOS and Linux.
+    cl <- parallel::makeCluster(nthread, type = "PSOCK")
+    pb <- NULL
+    
+    on.exit({
+      if (!is.null(pb)) try(close(pb), silent = TRUE)
+      try(parallel::stopCluster(cl), silent = TRUE)
+      foreach::registerDoSEQ()
+    }, add = TRUE)
+    
+    # Load mori before workers deserialize the shared objects.
+    parallel::clusterEvalQ(cl, {
+      loadNamespace("mori")
+      loadNamespace("FCtools")
+      NULL
+    })
+    
+    doSNOW::registerDoSNOW(cl)
+    `%dopar%` <- foreach::`%dopar%`
+    
+    pb <- utils::txtProgressBar(max = nperm, style = 3)
+    progress <- function(n) utils::setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
   
   #safe connection clean up at the end of the run
   on.exit({
@@ -180,21 +223,43 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
   start=Sys.time()
   message("\nEstimating permuted network strengths...\n")
 
-  max.netstr=foreach::foreach(perm=1:nperm, .combine="rbind",.export=c("extract.t","cluster.stat"), .options.snow = opts)  %dopar%
-    {
-      #fitting permuted regression model and extracting max netstr in parallel streams
-      mod.permuted=.lm.fit(y = FC_data,x=data.matrix(cbind(1,model))[permseq[,perm],])
-      t.perm=extract.t(mod.permuted,colno+1)
-      netstr=cluster.stat(t.perm,nnodes,tcrit)
-      if(any(is.nan(netstr))) {netstr=netstr[-which(is.nan(netstr[,1])),]} #if there are NaN values, which will happen for sparse SC matrices, they need to be recoded to 0s
-
-      remove(t.perm,mod.permuted)
-
-      if(length(netstr)>2)  {max.netstr=c(max(netstr[,1]),max(netstr[,2]))}
-      else {max.netstr=netstr} #if only one row of results is obtained, there is no need to use the max() function
-
-      return(max.netstr)
+  max.netstr <- foreach::foreach(
+    perm = seq_len(nperm),
+    .combine = "rbind",
+    .packages = c("FCtools", "mori"),
+    .export = c("cluster.stat"),
+    .options.snow = opts
+  ) %dopar% {
+    
+    # Load the installed wrapper and its package-native C++ binding.
+    # Freedman-Lane:
+    # Y* = nuisance fitted values + permuted nuisance-model residuals.
+    Yperm <- shared$fitted0 +
+      shared$residuals0[
+        shared$permseq[, perm],
+        ,
+        drop = FALSE
+      ]
+    
+    # The full design matrix remains unchanged.
+    t.perm <- as.numeric(
+      lm_fast(shared$X, Yperm)[tested, ]
+    )
+    
+    t.perm[constant.edges] <- 0
+    
+    netstr <- cluster.stat(t.perm, nnodes, tcrit)
+    
+    if (is.null(dim(netstr))) {
+      c(0, 0)  # No qualifying network
+    } else {
+      c(max(netstr[, 1L]),max(netstr[, 2L])
+      )
     }
+  }
+  
+  # Preserve two-dimensional indexing even when nperm = 1.
+  max.netstr <- matrix(max.netstr, ncol = 2L)
   end=Sys.time()
   message(paste("\nCompleted in :",round(difftime(end, start, units='mins'),1)," minutes \n",sep=""))
 
@@ -207,12 +272,11 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     #thresholding clusters using permuted null distribution
     for(row in 1:nrow(orig.clust))
     {
-      orig.clust[row,3]=sum(max.netstr[,1] > orig.clust[row,1])/nperm
-      orig.clust[row,4]=sum(max.netstr[,2] > orig.clust[row,2])/nperm
+      orig.clust[row, 3] <-round((1 + sum(max.netstr[, 1] >= orig.clust[row, 1])) / (nperm + 1),4)
+      orig.clust[row, 4] <-round((1 + sum(max.netstr[, 2] >= orig.clust[row, 2])) / (nperm + 1),4)
     }
 
     #formatting results table
-    orig.clust[,c(3,4)][orig.clust[,c(3,4)]==0]=paste("<",1/nperm,sep="") #if p=0
     orig.clust=cbind(c(1:nrow(orig.clust)),orig.clust)
     colnames(orig.clust)=c("network","strength.unweighted","strength.weighted","p.unweighted","p.weighted")
   
@@ -220,7 +284,6 @@ NBS=function(model,contrast, FC_data, nperm=100, nthread=1, p=0.001)
     returnobj=list(orig.clust,t.orig, tcrit,max.netstr)
     names(returnobj)=c("results","t.orig","tcrit","max.netstr")
     return(returnobj)
-    suppressWarnings(closeAllConnections())
   }
 }
 ############################################################################################################################
@@ -279,7 +342,7 @@ extract.edges=function(NBS.obj,network=1)
   FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag =FALSE)]=tstat.thresholded.bin
 
   ##clustering
-  com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='undirected', weighted=NULL))
+  com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='max', weighted=NULL))
   idx=which(com$membership==which(com$csize>2)[network])
 
   ##masking out edges from other networks
@@ -305,59 +368,12 @@ extract.edges=function(NBS.obj,network=1)
 }
 ############################################################################################################################
 ############################################################################################################################
-### extract cluster-stats from graphs
-cluster.stat=function(data,nnodes,tcrit)
-{
-  ##thresholding
-  tstat.thresholded=data
-  tstat.thresholded[abs(data)<tcrit]=0
-  tstat.thresholded.bin=tstat.thresholded
-  tstat.thresholded.bin[abs(tstat.thresholded.bin)>0]=1
-
-  ##setting up FCmatrices
-  FC_mat.unweighted=matrix(0,nrow=nnodes,ncol=nnodes)
-  FC_mat.weighted=matrix(0,nrow=nnodes,ncol=nnodes)
-
-  ##thresholding
-  FC_mat.weighted[upper.tri(FC_mat.weighted,diag =FALSE)]=tstat.thresholded
-  FC_mat.unweighted[upper.tri(FC_mat.unweighted,diag =FALSE)]=tstat.thresholded.bin
-  FC_mat.weighted=abs(FC_mat.weighted)-(FC_mat.unweighted*tcrit)
-  
-  #clustering
-  com=igraph::components(igraph::graph_from_adjacency_matrix(FC_mat.unweighted, mode='undirected', weighted=NULL))
-
-  #count edges in clusters
-  if(length(which(com$csize>2)>0)) #proceed only if there is at least one cluster with 3 nodes (i.e 2 edges). Isolated/unconnected edges are removed
-  {
-    cluster.idx=which(com$csize>2)
-    clust.results=matrix(NA,nrow=length(cluster.idx), ncol=2)
-
-    for (cluster.no in 1:length(cluster.idx))
-    {
-      idx=which(com$membership==cluster.idx[cluster.no])
-      clust.results[cluster.no,1]=strength.unweighted=sum(FC_mat.unweighted[idx,idx])
-      clust.results[cluster.no,2]=strength.weighted=sum(FC_mat.weighted[idx,idx])
-    }
-  } else  { clust.results=c(0,0)} #if no clusters (with 3 nodes) are detected
-  return(clust.results)
+### Extract cluster statistics using C++
+cluster.stat <- function(data, nnodes, tcrit) {
+  cluster_stat_cpp(
+    data = as.numeric(data),
+    nnodes = as.double(nnodes),
+    tcrit = as.double(tcrit)
+  )
 }
-############################################################################################################################
-############################################################################################################################
 
-### extract t-stats efficiently
-extract.t=function(mod,row)
-{
-  p = mod$rank
-  df.residual=NROW(mod$residuals)-NROW(mod$coefficients)
-  rdf = df.residual
-  Qr = mod$qr
-  p1 = 1L:p
-  r = mod$residuals
-  rss = colSums(r^2)
-  resvar = rss/rdf
-  R = chol2inv(Qr[p1, p1, drop = FALSE])
-  se = (sqrt(diag(R) %*% t(resvar)))[row,]
-  est = mod$coefficients[row,]
-  tval = est/se
-  return(tval)
-}
